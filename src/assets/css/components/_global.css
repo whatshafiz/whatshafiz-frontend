@@ -1,0 +1,23 @@
+html {
+  @apply bg-primary md:bg-slate-200;
+  &.dark {
+    @apply bg-darkmode-800;
+    body {
+      @apply text-slate-300;
+      *,
+      ::before,
+      ::after {
+        @apply border-white/5;
+      }
+    }
+  }
+  body {
+    @apply antialiased overflow-x-hidden font-roboto text-sm text-slate-800;
+    @media (max-width: calc(theme("screens.md") - 1px)) {
+      @apply px-8;
+    }
+    @media (max-width: calc(theme("screens.sm") - 1px)) {
+      @apply px-3;
+    }
+  }
+}
