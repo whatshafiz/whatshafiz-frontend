@@ -1,0 +1,14 @@
+.news {
+  .news__preview {
+    height: 400px;
+    @media (max-width: calc(theme("screens.md") - 1px)) {
+      height: 250px;
+    }
+  }
+  p {
+    text-indent: 30px;
+  }
+  .news__input {
+    height: 69px;
+  }
+}
