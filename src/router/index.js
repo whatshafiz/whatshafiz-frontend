@@ -11,6 +11,7 @@ import AuthRegister from "../views/auth/register/Main.vue";
 import AuthForgotPassword from "../views/auth/forgotpassword/Main.vue";
 import AuthRenewPassword from "../views/auth/renewpassword/Main.vue";
 import AuthVerifyUser from "../views/auth/verify/Main.vue";
+
 import UserList from "../views/users/List.vue";
 import UserDetail from "../views/users/Detail.vue";
 import UserCreate from "../views/users/Create.vue";
@@ -143,6 +144,15 @@ const routes = [
   path: "/auth/verify",
   name: "verify-user",
   component: AuthVerifyUser,
+  meta: {
+    requireAuth: true
+  }
+},
+
+{
+  path: "/complete-profile",
+  name: "complete-profile",
+  component: CompleteProfile,
   meta: {
     requireAuth: true
   }

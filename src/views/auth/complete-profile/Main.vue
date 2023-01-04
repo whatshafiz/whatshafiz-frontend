@@ -1,49 +1,151 @@
 <template>
   <div>
-    <DarkModeSwitcher />
+    <DarkModeSwitcher  class="hidden xl:flex" />
     <div class="container sm:px-10">
-      <div class="block xl:grid grid-cols-2 gap-4">
+      <div class="block xl:grid grid-cols-2 gap-3  ">
         <!-- BEGIN: Register Info -->
-        <LoginLeft />
+        <LoginLeft  />
         <!-- END: Register Info -->
         <!-- BEGIN: Register Form -->
-        <div class="h-screen xl:h-auto flex py-5 xl:py-0 my-10 xl:my-0">
+        <div class="h-full xl:h-auto flex py-5 xl:py-0 my-10 xl:my-0">
           <div
-          class="my-auto mx-auto xl:ml-20 bg-white dark:bg-darkmode-600 xl:bg-transparent px-5 sm:px-8 py-8 xl:p-0 rounded-md shadow-md xl:shadow-none w-full sm:w-3/4 lg:w-2/4 xl:w-auto">
+          class="my-auto mx-auto xl:ml-20 bg-white dark:bg-darkmode-600 xl:bg-transparent px-5 sm:px-8 py-8 xl:p-0 rounded-md shadow-md xl:shadow-none w-full sm:w-3/4 lg:w-3/4 xl:w-3/4">
           <h2 class="intro-x font-bold text-2xl xl:text-3xl text-center xl:text-left">
-           Profili Tamamla <small> ({{user_type==1 ? 'Hafız Ol' : 'Hafız Kal'}})</small>
+           Profili Tamamla
          </h2>
 
-         <div class="intro-x mt-2 text-slate-400 xl:hidden text-center">
-          {{user_type==1 ? 'Hafız Ol' : 'Hafız Kal'}} Programına Kayıt oluyorsunuz.
-        </div>
-        <div class="intro-x mt-8">
-          <AuthErrs v-if="errors.length > 0" :errors="errors" />
+         <div class="flex items-center justify-start gap-2 flex-col w-full">
+          <div class="w-full mb-2">
+            <label class="form-label ml-2 mb-0 mt-1">İsim</label>
+            <input type="text" class="form-control req" v-model="form.name" />
+          </div>
 
-            <div class="w-full relative group flex flex-col md:flex-row gap-2 items-center justify-start">
+          <div class="w-full mb-2">
+            <label class="form-label ml-2 mb-0 mt-1">Soyisim</label>
+            <input type="text" class="form-control req" v-model="form.surname" />
+          </div>
+
+          <div class="w-full mb-2">
+            <label class="form-label ml-2 mb-0 mt-1">E-Posta</label>
+            <input type="text" class="form-control req" v-model="form.email" />
+          </div>
 
 
-              Lorem ipsum dolor, sit amet, consectetur adipisicing elit. Ipsam consequatur animi hic vero consequuntur eius iusto et dignissimos assumenda id, magni, nihil rerum dicta omnis illum inventore velit fuga. Voluptatibus!
+          <div class="w-full mb-2">
+            <label class="form-label ml-2 mb-0 mt-1">Cinsiyet</label>
+            <select class="form-select mt-2 sm:mr-2 req" v-model="form.gender" id="">
+              <option value="">Seçiniz</option>
+              <option value="male">Erkek</option>
+              <option value="female">Kadın</option>
+            </select>
+          </div>
 
+
+          <div class="w-full mb-2">
+            <label class="form-label ml-2 mb-0 mt-1">Ülke</label>
+            <select class="form-select mt-2 sm:mr-2 req" v-model="form.country_id" @change="checkCityList()">
+              <option :value="item.id" v-for="item in countries" :key="'ctr'+item.id">{{item.name}}</option>
+
+            </select>
+          </div>
+
+
+          <div class="w-full mb-2" v-if="list_city">
+            <label class="form-label ml-2 mb-0 mt-1">Şehir</label>
+            <select class="form-select mt-2 sm:mr-2 req" v-model="form.city_id" >
+              <option value="">Seçiniz</option>
+              <option :value="item.id" v-for="item in cities" :key="'cty'+item.id">{{item.name}}</option>
+
+            </select>
+          </div>
+
+          <div class="w-full mb-2" v-else>
+            <label class="form-label ml-2 mb-0 mt-1">Şehir</label>
+            <div class="w-full relative">
+              <input type="text" class="form-control" v-model="form.city_id"  placeholder="Şehir adı giriniz..." />
+              <button class="absolute right-1 top-[3px] bg-success text-white rounded-md p-2" @click="saveManuel('city')"><SaveIcon class="w-4 h-4"/></button>
             </div>
-
-
-
+            <p class="w-full py-1 text-slate-500 text-xs pl-2">Şehir adı yazdıktan sonra kaydetmelisiniz.</p>
           </div>
 
 
 
+          <div class="w-full mb-2" v-if="list_uni">
+            <label class="form-label ml-2 mb-0 mt-1">Üniversite</label>
+            <select class="form-select mt-2 sm:mr-2 req" v-model="form.university_id" @change="getFaculties()">
+             <option value="">Seçiniz</option>
+             <option :value="item.id" v-for="item in universities" :key="'ctr'+item.id">{{item.name}}</option>
+             <option value="-1">Diğer</option>
+           </select>
+         </div>
 
-
+         <div class="w-full mb-2" v-else>
+          <label class="form-label ml-2 mb-0 mt-1">Üniversite</label>
+          <div class="w-full relative">
+            <input type="text" class="form-control" v-model="form.university_id"  placeholder="Üniversite adı giriniz..." />
+            <button class="absolute right-1 top-[3px] bg-success text-white rounded-md p-2" @click="saveManuel('university')"><SaveIcon class="w-4 h-4"/></button>
+          </div>
+          <p class="w-full py-1 text-slate-500 text-xs pl-2">Üniversite adı yazdıktan sonra kaydetmelisiniz.</p>
         </div>
+
+
+
+        <div class="w-full mb-2" v-if="list_fkl">
+          <label class="form-label ml-2 mb-0 mt-1">Fakülte</label>
+          <select class="form-select mt-2 sm:mr-2 req" v-model="form.university_faculty_id" @change="getDepartments()">
+           <option value="">Seçiniz</option>
+           <option :value="item.id" v-for="item in faculties" :key="'ctr'+item.id">{{item.name}}</option>
+           <option value="-1">Diğer</option>
+
+         </select>
+       </div>
+
+
+       <div class="w-full mb-2" v-else>
+        <label class="form-label ml-2 mb-0 mt-1">Fakülte</label>
+        <div class="w-full relative">
+          <input type="text" class="form-control" v-model="form.university_faculty_id"  placeholder="Fakülte adı giriniz..." />
+          <button class="absolute right-1 top-[3px] bg-success text-white rounded-md p-2" @click="saveManuel('faculty')"><SaveIcon class="w-4 h-4"/></button>
+        </div>
+        <p class="w-full py-1 text-slate-500 text-xs pl-2">Fakülte adı yazdıktan sonra kaydetmelisiniz.</p>
       </div>
-      <!-- END: register Form -->
+
+
+
+      <div class="w-full mb-2" v-if="list_dep">
+        <label class="form-label ml-2 mb-0 mt-1">Bölüm</label>
+        <select class="form-select mt-2 sm:mr-2 req" v-model="form.university_department_id" @change="checkDep()">
+         <option value="">Seçiniz</option>
+         <option :value="item.id" v-for="item in departments" :key="'ctr'+item.id">{{item.name}}</option>
+         <option value="-1">Diğer</option>
+
+       </select>
+     </div>
+
+
+
+     <div class="w-full mb-2" v-else>
+      <label class="form-label ml-2 mb-0 mt-1">Bölüm</label>
+      <div class="w-full relative">
+        <input type="text" class="form-control" v-model="form.university_department_id"  placeholder="Bölüm adı giriniz..." />
+        <button class="absolute right-1 top-[3px] bg-success text-white rounded-md p-2" @click="saveManuel('department')"><SaveIcon class="w-4 h-4"/></button>
+      </div>
+      <p class="w-full py-1 text-slate-500 text-xs pl-2">Bölüm adı yazdıktan sonra kaydetmelisiniz.</p>
     </div>
+
+
+    <button class="btn btn-primary py-3 px-4 relative w-3/4 md:w-1/2 mt-3 xl:mt-0 flex items-center justify-center gap-3 text-lg rounded-xl" @click="saveProfil"><SaveIcon class="w-6 h-6 "/> Kaydet</button>
+
   </div>
+
+</div>
+</div>
+<!-- END: register Form -->
+</div>
+</div>
 
 
 </div>
-
 
 
 </template>
@@ -55,7 +157,7 @@
   import dom from "@left4code/tw-starter/dist/js/dom";
   import { def } from "@vue/shared";
   import axios from "axios";
-  import AuthErrs from '@/components/AuthErrs/errors.vue';
+
   import { useAuthStore } from "@/stores/auth";
   import { mapStores } from 'pinia';
   import { useRoute } from 'vue-router';
@@ -71,139 +173,287 @@
 
 
       const route = useRoute()
-      const user_type = route.query.type;
+      const program_type = ref(route.query.type);
 
       const staticBackdropModalPreview = ref(true);
 
-      return { authStore, bodyChange,user_type,staticBackdropModalPreview };
+      return { authStore, bodyChange,program_type,staticBackdropModalPreview };
 
 
     },
     mounted() {
-      this.getCountryCode();
+      this.getCountry();
+      this.getCity();
+      this.getUniversities();
 
     },
 
 
     data() {
       return {
-        formData:{
-          name: 'Alan',
-          surname: 'Carroll',
-          email: 'Caden.Nolan39@hotmail.com',
-          gender: 'male',
-          country_id: '1',
-          city_id: '1',
-          university_id: '1',
-          university_faculty_id: '1',
-          university_department_id: '1' 
+
+        form: {
+          name: '',
+          surname: '',
+          email: '',
+          gender: '',
+          country_id: 1,
+          city_id: '',
+          university_id: "",
+          university_faculty_id: "",
+          university_department_id: ""
         },
 
-        errors: [],
-        proccessing: false,
-        isRegistered: false,
-        proccessing_check: false,
-        checkState: false,
-        countryCode: "90",
-        countryCodes: [],
+
+        countries: [],
+        cities: [],
+        universities: [],
+        faculties: [],
+        departments: [],
+        list_city: true,
+        list_uni: true,
+        list_fkl: true,
+        list_dep: true,
+
       }
     },
     components: {
-      AuthErrs,
+
       DarkModeSwitcher,
       LoginLeft
     },
 
     methods: {
 
+      checkCityList(){
+        if (this.form.country_id !== 1) {
+          this.list_city = false;
+        }
+      },
 
-      async getCountryCode() {
+      async getUniversities() {
 
 
-       await axios.get("/countries").then(response => {
+       await axios.get("/universities").then(response => {
 
-        this.countryCodes = response.data.countries;
+        this.universities = response.data.universities;
 
       }).catch(error => {
         console.log(error);
       });
 
-    },
+    },   
 
 
-    async check() {
-
-      this.errors = {}
-
-      if (this.phone_number) {
-        this.proccessing_check = true;
-        const gsm = this.countryCode+this.phone_number;
-        await axios.post("/users/check", { phone_number: gsm }).then(response => {
+    async getFaculties() {
 
 
-          if(response.data.is_banned){
-            this.errors =  ["Aktif olmayan üyeliğe ait bir telefon numarası girdiniz."]
-            this.proccessing_check = false;
-            return;
-          }
+      if (this.form.university_id == -1) {
 
-          if (response.data.is_registered && !response.data.is_banned) {
+        this.form.university_id = ""
+        this.form.university_faculty_id = ""
+        this.form.university_department_id = ""
+        this.list_uni = false;
+        this.list_fkl = false;
+        this.list_dep = false;
+
+        return;
+      }
 
 
-            this.errors = [gsm+ " için Aktif Üyelik mevcuttur! Şifrenizi mi unuttunuz? Şifremi Unuttum'a tıklayın."];
-            this.proccessing_check = false;
+      await axios.get("/universities/"+this.form.university_id+"/faculties").then(response => {
 
-          }else{
+        this.faculties = response.data.faculties;
 
-           this.checkState=true;
-           this.proccessing_check = false;
-           setTimeout(()=>{
-            this.$refs.pass_input.focus();
-                // this.$refs.pass_input.click();
-          } , 500)
-
-         }
-       }).catch(error => {
+      }).catch(error => {
         console.log(error);
       });
 
-
-     } else {
-      this.errors = ["Lütfen GSM alanını doldurunuz!"];
-    }
-  },
-
-  async register() {
+    },   
 
 
-    if (this.password !== this.password_confirmation) {
-      this.errors = ["Şifreler uyuşmuyor!"];
+    async getDepartments() {
+
+
+     if (this.form.university_faculty_id == -1) {
+
+      this.form.university_faculty_id = ""
+
+      this.form.university_department_id = ""
+
+      this.list_fkl = false;
+      this.list_dep = false;
+
       return;
     }
 
 
+    await axios.get("/universities/"+this.form.university_id+"/faculties/"+this.form.university_faculty_id+"/departments").then(response => {
 
-    if (this.phone_number && this.password) {
-      this.proccessing = true;
-      const gsm = this.countryCode+this.phone_number;
-      const result = this
-      .authStore
-      .createAccount( gsm, this.password, this.password_confirmation)
-      .then(() => {
+      this.departments = response.data.departments;
 
-        this.errors = [];
-        this.isRegistered = true;
-            //this.router.push('auth/login');
-      })
-      this.proccessing = false;
-    } else {
-      this.errors = ["Lütfen tüm alanları doldurunuz!"];
-    }
+    }).catch(error => {
+      console.log(error);
+    });
 
-  },
+  },   
+
+  async checkDep() {
+
+
+   if (this.form.university_department_id == -1) {
+
+    this.form.university_department_id = ""
+
+    this.list_dep = false;
+
+    return;
+  }
+},
+
+
+
+async getCountry() {
+
+
+ await axios.get("/countries").then(response => {
+
+  this.countries = response.data.countries;
+
+}).catch(error => {
+  console.log(error);
+});
 
 },
+
+async getCity() {
+
+
+ await axios.get("/countries/"+this.form.country_id+"/cities").then(response => {
+
+  this.cities = response.data.cities;
+
+}).catch(error => {
+  console.log(error);
+});
+
+},
+
+
+async saveManuel(input) {
+
+  if (input == "university") {
+
+    await axios.post("/universities", { name: this.form.university_id }).then(response => {
+
+      this.form.university_id = response.data.university.id;
+      this.getUniversities();
+      this.list_uni = true;
+
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+  if (input == "faculty") {
+
+    await axios.post("/universities/"+this.form.university_id+"/faculties", { name: this.form.university_faculty_id }).then(response => {
+
+      this.form.university_faculty_id = response.data.faculty.id;
+      this.getFaculties();
+      this.list_fkl = true;
+
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+  if (input == "city") {
+
+    await axios.post("/countries/"+this.form.country_id+"/cities", { name: this.form.city_id }).then(response => {
+
+      this.form.city_id = response.data.city.id;
+      this.getCity()
+      this.list_city = true;
+
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+  if (input == "department") {
+
+    await axios.post("/universities/"+this.form.university_id+"/faculties/"+this.form.university_faculty_id+"/departments", { name: this.form.university_department_id }).then(response => {
+
+      this.form.university_department_id = response.data.department.id;
+      this.getDepartments();
+      this.list_dep = true;
+
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+},
+
+
+async saveProfil(){
+
+  const validating = await this.validate_custom('req');
+
+  if (validating) {
+
+    await axios.put("/profile", this.form).then(response => {
+
+    //  console.log(response.data);
+
+     this.$router.push({ name: 'home' });
+
+   }).catch(error => {
+    console.log(error);
+  });
+
+ }else{
+  this.error_toast = "Lütfen tüm alanları doldurunuz";
 }
+
+},
+
+
+validate_custom (className) {
+  const req = document.querySelectorAll('.' + className)
+
+  let validating = true
+
+  req.forEach((item, index) => {
+    if (item.value == '') {
+      item.classList.remove('border-2')
+      item.classList.remove('border-green-500')
+      item.classList.add('border-2')
+      item.classList.add('border-rose-600')
+      item.focus()
+      validating = false
+    } else {
+      item.classList.add('border-2')
+      item.classList.add('border-green-500')
+      item.classList.remove('border-2')
+      item.classList.remove('border-rose-600')
+    }
+  })
+
+  return validating
+},
+
+
+}
+}
+
+
+
 </script>
 <style>
   .tom-select .ts-input .item {
@@ -216,6 +466,12 @@
 
   .login__input{
     min-width: 250px!important;
+  }
+
+  @media (max-width: 768px) {
+    body.login{
+      overflow: auto!important;
+    }
   }
 
 </style>
