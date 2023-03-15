@@ -1,6 +1,4 @@
-import { defineStore, getActivePinia } from 'pinia'
-import { getProfile } from '@/services/AuthService'
-import router from '@/router/index'
+import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -29,7 +27,7 @@ export const useUserStore = defineStore('user', {
     },
     logout() {
       localStorage.removeItem('token')
-      router.push({ name: 'login' })
+      window.location.href = '/login'
     },
   },
 })

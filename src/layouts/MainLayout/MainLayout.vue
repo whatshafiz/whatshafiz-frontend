@@ -44,7 +44,7 @@ onBeforeMount(async () => {
   }
 
   if (!user.profile.gender) {
-    console.log('cinsiyet boş, profil doğrulamaya gidecek2, burası içerde çalışacak.')
+    console.log('cinsiyet boş, profil doğrulamaya gidecek, burası içerde çalışacak.')
   }
 
   if (localStorage.getItem('newCourseRegisterType')) {
