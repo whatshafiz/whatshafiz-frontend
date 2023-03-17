@@ -1,0 +1,50 @@
+name: Build&Deploy to PRODUCTION
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  build-prod-and-deploy:
+    name: 'Building and Deploying To Production'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19'
+
+      # Fix up git URLs for github security issue
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+
+      # Install dependencies
+      - name: Yarn Install
+        run: yarn install
+
+      # Build codes for production
+      - name: Yarn Build for Production
+        run: yarn build
+
+      # Bump latest release version by the default_bump and push the new tag
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.55.0
+        id: version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: master
+          DEFAULT_BUMP: ${{ secrets.VERSION_BUMP }}
+
+      # Deploy code to s3 bucket for the app
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-central-1'
+          SOURCE_DIR: 'dist'
