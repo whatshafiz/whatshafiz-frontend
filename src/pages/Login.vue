@@ -319,7 +319,7 @@ const updateForgotPassword = () => {
                   type="text"
                   :autofocus="true"
                   class="block px-4 py-3 intro-x login__input min-w-full xl:min-w-[350px]"
-                  placeholder="5XXXXXXXXX"
+                  :placeholder="countryPhoneCode === '90' ? '5XXXXXXXXX' : 'Telefon Numaranız'"
                 />
               </div>
               <div class="mt-4 text-center intro-x xl:mt-6 xl:text-right">
