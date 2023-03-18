@@ -3,6 +3,7 @@ import DarkModeSwitcher from '../components/DarkModeSwitcher'
 import logoUrl from '../assets/images/logo-transparent.png'
 import { FormInput, FormLabel } from '../base-components/Form'
 import Button from '../base-components/Button'
+import LoadingIcon from '../base-components/LoadingIcon'
 import TomSelect from '../base-components/TomSelect'
 import Alert from '../base-components/Alert'
 import Lucide from '../base-components/Lucide'
@@ -22,6 +23,7 @@ const errorMessage = ref('')
 const successMessage = ref('')
 const warningMessage = ref('')
 const activeForm = ref('loginForm')
+const isLoading = ref(false)
 const loginFormData = ref({
   phone_number: '',
   password: ''
@@ -48,6 +50,7 @@ onBeforeMount(async () => {
 })
 
 const resetForm = () => {
+  isLoading.value = false
   phoneNumber.value = ''
   password.value = ''
   errorMessage.value = ''
@@ -71,7 +74,11 @@ const checkPhoneNumber = () => {
     return
   }
 
+  isLoading.value = true
+
   checkUser(countryPhoneCode.value + '' + phoneNumber.value).then(response => {
+    isLoading.value = false
+
     if (response.is_banned) {
       errorMessage.value = 'Bu kullanıcı engellenmiştir!'
 
@@ -122,15 +129,20 @@ const login = () => {
   }
 
   loginFormData.value.password = password
+  isLoading.value = true
 
   loginUser(loginFormData.value)
     .then(response => {
+      isLoading.value = false
+
       if (response.token) {
         localStorage.setItem('token', response.token)
         router.push({ name: 'dashboard' })
       }
     })
     .catch(response => {
+      isLoading.value = false
+
       if (response.response.data.message) {
         errorMessage.value = response.response.data.message
 
@@ -159,8 +171,12 @@ const register = () => {
     return
   }
 
+  isLoading.value = true
+
   registerUser(registerFormData.value)
     .then(response => {
+      isLoading.value = false
+
       if (response.token) {
         localStorage.setItem('token', response.token)
         localStorage.setItem('newCourseRegisterType', route.query.type)
@@ -168,6 +184,8 @@ const register = () => {
       }
     })
     .catch(response => {
+      isLoading.value = false
+
       if (response.response.data.message) {
         errorMessage.value = response.response.data.message
 
@@ -188,8 +206,12 @@ const sendForgotPasswordCodeToWhatsapp = () => {
     return
   }
 
+  isLoading.value = true
+
   sendForgotPasswordCode(countryPhoneCode.value + '' + phoneNumber.value)
     .then(response => {
+      isLoading.value = false
+
       if (response.message) {
         successMessage.value = response.message
         warningMessage.value = 'Lütfen gelen mesajı <strong>Spam Değil</strong> olarak işaretleyin.'
@@ -203,6 +225,8 @@ const sendForgotPasswordCodeToWhatsapp = () => {
       activeForm.value = 'updatePasswordForm'
     })
     .catch(response => {
+      isLoading.value = false
+
       if (response.response.data.message) {
         errorMessage.value = response.response.data.message
 
@@ -223,6 +247,8 @@ const updateForgotPassword = () => {
     return
   }
 
+  isLoading.value = true
+
   updatePassword(forgotPasswordFormData.value)
     .then(response => {
       resetForm()
@@ -232,6 +258,8 @@ const updateForgotPassword = () => {
       }
     })
     .catch(response => {
+      isLoading.value = false
+
       if (response.response.data.message) {
         errorMessage.value = response.response.data.message
 
@@ -316,7 +344,7 @@ const updateForgotPassword = () => {
                   id="phoneNumber"
                   v-model="phoneNumber"
                   :value="phoneNumber"
-                  type="text"
+                  type="number"
                   :autofocus="true"
                   class="block px-4 py-3 intro-x login__input min-w-full xl:min-w-[350px]"
                   :placeholder="countryPhoneCode === '90' ? '5XXXXXXXXX' : 'Telefon Numaranız'"
@@ -327,7 +355,9 @@ const updateForgotPassword = () => {
                   @click.prevent="checkPhoneNumber"
                   variant="primary"
                   class="w-full px-4 py-3 align-top xl:w-32 xl:mr-3"
+                  :disabled="isLoading"
                 >
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
                   Devam Et
                 </Button>
               </div>
@@ -355,7 +385,9 @@ const updateForgotPassword = () => {
                   @click.prevent="login"
                   variant="primary"
                   class="w-full px-4 py-3 mt-3 align-top xl:w-32 xl:mt-0"
+                  :disabled="isLoading"
                 >
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
                   Giriş Yap
                 </Button>
               </div>
@@ -402,7 +434,9 @@ const updateForgotPassword = () => {
                   @click.prevent="register"
                   variant="primary"
                   class="w-full px-4 py-3 mt-3 align-top xl:w-64 xl:mt-0"
+                  :disabled="isLoading"
                 >
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
                   Kayıt Ol
                 </Button>
               </div>
@@ -428,7 +462,9 @@ const updateForgotPassword = () => {
                   @click.prevent="sendForgotPasswordCodeToWhatsapp"
                   variant="primary"
                   class="w-full px-4 py-3 mt-3 align-top xl:w-64 xl:mt-0"
+                  :disabled="isLoading"
                 >
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
                   WhatsApp'a Kodu Gönder
                 </Button>
               </div>
@@ -439,7 +475,7 @@ const updateForgotPassword = () => {
                   <FormLabel htmlFor="verification_code">Doğrulama Kodu:</FormLabel>
                   <FormInput
                     id="verification_code"
-                    type="text"
+                    type="number"
                     v-model="forgotPasswordFormData.verification_code"
                     :value="forgotPasswordFormData.verification_code"
                     :autofocus="true"
@@ -484,7 +520,9 @@ const updateForgotPassword = () => {
                   @click.prevent="updateForgotPassword"
                   variant="primary"
                   class="w-full px-4 py-3 mt-3 align-top xl:w-64 xl:mt-0"
+                  :disabled="isLoading"
                 >
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
                   Gönder
                 </Button>
               </div>
