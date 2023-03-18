@@ -4,6 +4,7 @@ import Page1 from "@/pages/Page1.vue";
 import Page2 from "@/pages/Page2.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import Login from "@/pages/Login.vue";
+import Logout from "@/pages/Logout.vue";
 import Register from "@/pages/Register.vue";
 import VerifyPhoneNumber from "@/pages/VerifyPhoneNumber.vue";
 
@@ -38,6 +39,12 @@ const routes = [
     path: "/verify-phone-number",
     name: "verify-phone-number",
     component: VerifyPhoneNumber,
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: Logout
+    ,
   },
 ];
 
