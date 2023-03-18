@@ -8,6 +8,7 @@ export default defineConfig({
     commonjsOptions: {
       include: ["tailwind.config.js", "node_modules/**"],
     },
+    chunkSizeWarningLimit: 1500,
   },
   optimizeDeps: {
     include: ["tailwind-config"],
