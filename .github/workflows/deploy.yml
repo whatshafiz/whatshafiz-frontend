@@ -21,12 +21,12 @@ jobs:
         run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
 
       # Install dependencies
-      - name: Yarn Install
-        run: yarn install
+      - name: NPM Install
+        run: npm install
 
       # Build codes for production
-      - name: Yarn Build for Production
-        run: yarn build
+      - name: NPM Build for Production
+        run: npm run build
 
       # Bump latest release version by the default_bump and push the new tag
       - name: Bump version and push tag
