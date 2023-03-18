@@ -3,11 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="application-name" content="WhatsHafız">
+    <link rel="icon" sizes="16x16 32x32 48x48" href="/favicon.ico">
+    <link rel="icon" sizes="512x512" href="/android/android-launchericon-512-512.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WhatsHafız Panel</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script type="text/javascript">
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+      }
+    </script>
   </body>
 </html>
