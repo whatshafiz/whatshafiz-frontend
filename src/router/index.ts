@@ -1,12 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainLayout from "@/layouts/MainLayout/MainLayout.vue";
-import Page1 from "@/pages/Page1.vue";
-import Page2 from "@/pages/Page2.vue";
-import Dashboard from "@/pages/Dashboard.vue";
-import Login from "@/pages/Login.vue";
-import Logout from "@/pages/Logout.vue";
-import Register from "@/pages/Register.vue";
-import VerifyPhoneNumber from "@/pages/VerifyPhoneNumber.vue";
+import { useUserStore } from "@/stores/user";
 
 const routes = [
   {
@@ -16,35 +10,62 @@ const routes = [
       {
         path: "/",
         name: "dashboard",
-        component: Dashboard,
+        component: async () => import("@/pages/Dashboard.vue"),
       },
       {
-        path: "page-2",
-        name: "side-menu-page-2",
-        component: Page2,
+        path: "/regulations",
+        component: async () => import("@/layouts/Regulations.vue"),
+        children: [
+          {
+            path: '',
+            name: "regulations.list",
+            component: async () => import("@/pages/regulations/List.vue"),
+          },
+          {
+            path: ":slug",
+            name: "regulations.view",
+            component: async () =>
+              import("@/pages/regulations/View.vue"),
+          },
+          {
+            path: ":slug/update",
+            name: "regulations.update",
+            component: async () => import("@/pages/regulations/Update.vue"),
+            meta: {
+              permission: {
+                resource: 'regulation',
+                action: 'update'
+              }
+            }
+          },
+        ],
       },
     ],
   },
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: async () => import("@/pages/Login.vue"),
   },
   {
     path: "/register",
     name: "register",
-    component: Login,
+    component: async () => import("@/pages/Login.vue"),
   },
   {
     path: "/verify-phone-number",
     name: "verify-phone-number",
-    component: VerifyPhoneNumber,
+    component: async () => import("@/pages/VerifyPhoneNumber.vue"),
   },
   {
     path: "/logout",
     name: "logout",
-    component: Logout
-    ,
+    component: async () => import("@/pages/Logout.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "404",
+    component: async () => import("@/pages/404.vue"),
   },
 ];
 
@@ -55,5 +76,4 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 };
   },
 });
-
 export default router;
