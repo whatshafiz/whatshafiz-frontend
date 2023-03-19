@@ -12,7 +12,7 @@ export const useRegulationsStore = defineStore('regulations', {
     getters: {
         getRegulation(state: any) {
             return (slug: string) => {
-                return state.regulations.filter((regulation: any) => regulation.slug = slug)
+                return state.regulations.filter((regulation: any) => regulation.slug === slug)
             }
         },
         getRegulations(state) {
