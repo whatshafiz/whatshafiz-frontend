@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import Button from "@/base-components/Button";
+import LoadingIcon from "@/base-components/LoadingIcon/LoadingIcon.vue";
+import { useRegulationsStore } from "@/stores/regulations"
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute()
+const loaded = ref(false)
+
+const regulationsStore = useRegulationsStore()
+const regulation = ref({})
+
+onBeforeMount(async () => {
+    const regulationData = await regulationsStore.fetchRegulation(route.params.slug)
+    regulation.value = regulationData
+    loaded.value = true
+})
+</script>
+
 <template>
     <template v-if="loaded">
         <div class="flex items-center" v-if="regulation.summary">
@@ -18,21 +38,8 @@
             </RouterLink>
         </div>
     </template>
-</template>
 
-<script setup lang="ts">
-import Button from "@/base-components/Button";
-import { useRegulationsStore } from "@/stores/regulations"
-import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
-const route = useRoute()
-const loaded = ref(false)
-const regulationsStore = useRegulationsStore()
-const regulation = ref({})
-onBeforeMount(async () => {
-    const regulationData = await regulationsStore.fetchRegulation(route.params.slug)
-    console.log('regulationData', regulationData)
-    regulation.value = regulationData
-    loaded.value = true
-})
-</script>
+    <div v-else class="flex items-center justify-end">
+        <LoadingIcon icon="oval" color="black" class="w-16 h-16" />
+    </div>
+</template>x

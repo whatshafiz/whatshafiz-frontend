@@ -25,23 +25,22 @@ export const useRegulationsStore = defineStore('regulations', {
                 const regulations: { data: Array<regulation> } = await api().get('/regulations')
                 this.regulations = regulations.data
             } catch (err) {
-                console.log('err regs', err)
+                console.log('err', err)
                 throw err
             }
         },
         async fetchRegulation(slug: string) {
             try {
-                const regulation: { data: Array<regulation> } = await api().get('/regulations/' + slug)
-                return regulation.data
+                return (await api().get('/regulations/' + slug)).data
             } catch (err) {
-                console.log('err hafizol', err)
+                console.log('err', err)
             }
         },
         async updateRegulation(slug: string, dataToUpdate: { summary: string, text: string }) {
             try {
-                return api().post('/regulations/' + slug, dataToUpdate)
+                return (await api().post('/regulations/' + slug, dataToUpdate)).data
             } catch (err: any) {
-                console.log('err hafizol', err)
+                console.log('err', err)
                 throw err.message as string
             }
         }

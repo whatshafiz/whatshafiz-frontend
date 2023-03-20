@@ -1,5 +1,43 @@
+<script setup lang="ts">
+import Alert from '@/base-components/Alert/Alert.vue';
+import Button from '@/base-components/Button/Button.vue';
+import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
+import LoadingIcon from '@/base-components/LoadingIcon/LoadingIcon.vue';
+import Lucide from '@/base-components/Lucide/Lucide.vue';
+import { useRegulationsStore } from '@/stores/regulations';
+import { onBeforeMount, reactive, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+
+const loaded = ref(false)
+const route = useRoute()
+const router = useRouter()
+const regulationSummary = ref('')
+const regulationStore = useRegulationsStore()
+const regulation = ref({})
+const errorMessage = ref('')
+
+onBeforeMount(async () => {
+    const regulationData = await regulationStore.fetchRegulation(route.params.slug)
+    regulation.value = regulationData
+    regulationSummary.value = regulation.summary ?? ''
+    loaded.value = true
+})
+
+const update = () => {
+    try {
+        const dataToUpdate = new FormData()
+        dataToUpdate.append('summary', regulationSummary.value)
+        dataToUpdate.append('text', regulation.value.text)
+        regulationStore.updateRegulation(route.params.slug, dataToUpdate)
+    } catch (err: string) {
+        errorMessage.value = err
+    }
+}
+</script>
+
 <template>
     <template v-if="loaded">
+
         <div class="flex items-center mt-5">
             <div class="text-lg font-medium">Özet</div>
         </div>
@@ -25,42 +63,7 @@
             </Alert>
         </div>
     </template>
-
-    {{}}
+    <div v-else class="flex items-center justify-end">
+        <LoadingIcon icon="oval" color="black" class="w-16 h-16" />
+    </div>
 </template>
-
-<script setup lang="ts">
-import Alert from '@/base-components/Alert/Alert.vue';
-import Button from '@/base-components/Button/Button.vue';
-import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
-import Lucide from '@/base-components/Lucide/Lucide.vue';
-import { useRegulationsStore } from '@/stores/regulations';
-import { onBeforeMount, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
-const loaded = ref(false)
-const route = useRoute()
-const router = useRouter()
-const regulationSummary = ref('')
-const regulationStore = useRegulationsStore()
-const regulation = ref({})
-const errorMessage = ref('')
-onBeforeMount(async () => {
-    const regulationData = await regulationStore.fetchRegulation(route.params.slug)
-    console.log('regulationData', regulationData)
-    regulation.value = regulationData
-    regulationSummary.value = regulation.summary ?? ''
-    loaded.value = true
-})
-
-const update = () => {
-    try {
-        const dataToUpdate = new FormData()
-        dataToUpdate.append('summary', regulationSummary.value)
-        dataToUpdate.append('text', regulation.value.text)
-        regulationStore.updateRegulation(route.params.slug, dataToUpdate)
-    } catch (err: string) {
-        errorMessage.value = err
-    }
-}
-</script>
