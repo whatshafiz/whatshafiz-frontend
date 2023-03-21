@@ -5,8 +5,8 @@ export const useUserStore = defineStore('user', {
     return {
       token: null,
       profile: {},
-      permissions: {},
-      roles: {}
+      permissions: [],
+      roles: [],
     }
   },
   getters: {
@@ -18,6 +18,30 @@ export const useUserStore = defineStore('user', {
       }
 
       return true
+    },
+    hasRole(role = null) {
+      return role !== null && this.roles.includes(role)
+    },
+    can(permission = null) {
+      if (permission === null) {
+        return true
+      }
+
+      if(this.roles.includes('Admin')) {
+        return true
+      }
+
+      if (this.permissions.includes(permission)) {
+        return true
+      }
+
+      var [resource , action] = permission.split('.')
+
+      if (this.permissions.includes(resource + '.*')) {
+        return true
+      }
+
+      return false
     },
     setProfile(userData) {
       this.token = localStorage.getItem('token')

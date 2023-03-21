@@ -7,6 +7,7 @@ export interface Menu {
   pageName?: string;
   subMenu?: Menu[];
   ignore?: boolean;
+  permission?: string;
 }
 
 export interface SideMenuState {
@@ -25,6 +26,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
         icon: "Book",
         pageName: "level-history",
         title: "Okuma Geçmişim",
+        permission: "levelHistory.list",
       },
       "divider",
       {
@@ -52,46 +54,56 @@ export const useSideMenuStore = defineStore("sideMenu", {
         icon: "Users",
         pageName: "whatsapp-groups",
         title: "Whatsapp Grupları",
+        permission: "whatsappGroups.list",
       },
       {
         icon: "CalendarDays",
         pageName: "courses",
         title: "Kurslar",
+        permission: "courses.list",
       },
       {
         icon: "BookOpenCheck",
         pageName: "quran-questions",
         title: "Meal Soruları",
+        permission: "quranQuestions.list",
       },
       {
         icon: "MailWarning",
         pageName: "complaints",
         title: "Şikayetler",
+        permission: "complaints.list",
       },
       {
         icon: "MessageSquare",
         pageName: "comments",
         title: "Öğrenci Yorumları",
+        permission: "comments.list",
       },
       {
         icon: "GraduationCap",
-        pageName: "comments",
+        pageName: "universities",
         title: "Üniversiteler/Fakülteler",
+        permission: "universities.update",
       },
       {
         icon: "Globe2",
         pageName: "countries",
         title: "Ülkeler/Şehirler",
+        permission: "countries.update",
       },
       {
         icon: "UserCog",
         pageName: "roles",
         title: "Rol/Yetki Yönetimi",
+        permission: "roles.update",
       },
       {
         icon: "Settings",
         pageName: "settings",
         title: "Sistem Ayarları",
+        permission: "settings.update",
+        ignore: true,
       },
       "divider",
       {
