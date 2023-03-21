@@ -83,7 +83,7 @@ onMounted(() => {
               ]"
               :key="'divider-' + menuKey"
             ></Divider>
-            <li v-else :key="menuKey">
+            <li v-else-if="!menu.ignore && user.can(menu.permission)" :key="menuKey">
               <Menu
                 :class="{
                   // Animation
