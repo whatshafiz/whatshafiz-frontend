@@ -14,8 +14,10 @@ import {
 } from "../../layouts/MainLayout/side-menu";
 import { watch, reactive, computed, onMounted, ref } from "vue";
 import SimpleBar from "simplebar";
+import { useUserStore } from "@/stores/user";
 
 const route = useRoute();
+const user = useUserStore()
 let formattedMenu = reactive<Array<FormattedMenu | "divider">>([]);
 const setFormattedMenu = (
   computedFormattedMenu: Array<FormattedMenu | "divider">
@@ -117,7 +119,7 @@ onMounted(() => {
             class="my-6"
             :key="'divider-' + menuKey"
           ></Divider>
-          <li v-else :key="menuKey">
+          <li v-else-if="!menu.ignore && user.can(menu.permission)" :key="menuKey">
             <Menu
               :menu="menu"
               :formattedMenuState="[formattedMenu, setFormattedMenu]"
