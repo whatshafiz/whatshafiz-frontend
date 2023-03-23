@@ -65,13 +65,13 @@ const userProfileImage = computed(() => {
               <Lucide icon="Activity" class="w-4 h-4 mr-2" /> Eğitim Bilgileri
             </span>
             <span class="flex items-center mt-5" href="">
-              <Lucide icon="Box" class="w-4 h-4 mr-2" /> {{ profile.university?.name }}
+              <Lucide icon="GraduationCap" class="w-4 h-4 mr-2" /> {{ profile.university?.name }}
             </span>
             <span class="flex items-center mt-5" href="">
-              <Lucide icon="Lock" class="w-4 h-4 mr-2" /> {{ profile.university_faculty?.name }}
+              <Lucide icon="Boxes" class="w-4 h-4 mr-2" /> {{ profile.university_faculty?.name }}
             </span>
             <span class="flex items-center mt-5" href="">
-              <Lucide icon="Settings" class="w-4 h-4 mr-2" /> {{ profile.university_department?.name }}
+              <Lucide icon="Box" class="w-4 h-4 mr-2" /> {{ profile.university_department?.name }}
             </span>
           </div>
           <div
