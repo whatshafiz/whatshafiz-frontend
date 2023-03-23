@@ -8,9 +8,15 @@ import MobileMenu from "../../components/MobileMenu";
 import { useSideMenuStore } from "../../stores/side-menu";
 import { useUserStore } from "@/stores/user";
 import { useSettingStore } from "@/stores/setting";
-import { isLoggedIn } from '@/services/AuthService'
 import { FormattedMenu, nestedMenu, enter, leave } from "./side-menu";
-import { watch, reactive, computed, onMounted, onBeforeMount } from "vue";
+import {
+  watch,
+  reactive,
+  computed,
+  onMounted,
+  onBeforeMount,
+  provide
+} from "vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -26,15 +32,13 @@ const setFormattedMenu = (
 const sideMenuStore = useSideMenuStore();
 const sideMenu = computed(() => nestedMenu(sideMenuStore.menu, route));
 
+provide('user', user)
+
 watch(sideMenu, () => {
   setFormattedMenu(sideMenu.value)
 });
 
 onBeforeMount(async () => {
-  if (!(await isLoggedIn())) {
-    return user.logout()
-  }
-
   await settingStore.fetchSettings()
 
   if (user.profile.phone_number_verified_at === null &&
@@ -77,9 +81,7 @@ onMounted(() => {
                 'my-6',
 
                 // Animation
-                `opacity-0 animate-[0.4s_ease-in-out_0.1s_intro-divider] animate-fill-mode-forwards animate-delay-${
-                  (menuKey + 1) * 10
-                }`,
+                `opacity-0 animate-[0.4s_ease-in-out_0.1s_intro-divider] animate-fill-mode-forwards`,
               ]"
               :key="'divider-' + menuKey"
             ></Divider>
@@ -87,9 +89,7 @@ onMounted(() => {
               <Menu
                 :class="{
                   // Animation
-                  [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                    (menuKey + 1) * 10
-                  }`]: !menu.active,
+                  [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !menu.active,
                 }"
                 :menu="menu"
                 :formattedMenuState="[formattedMenu, setFormattedMenu]"
@@ -113,9 +113,7 @@ onMounted(() => {
                     <Menu
                       :class="{
                         // Animation
-                        [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                          (subMenuKey + 1) * 10
-                        }`]: !subMenu.active,
+                        [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !subMenu.active,
                       }"
                       :menu="subMenu"
                       :formattedMenuState="[formattedMenu, setFormattedMenu]"
@@ -145,9 +143,7 @@ onMounted(() => {
                           <Menu
                             :class="{
                               // Animation
-                              [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                                (lastSubMenuKey + 1) * 10
-                              }`]: !lastSubMenu.active,
+                              [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !lastSubMenu.active,
                             }"
                             :menu="lastSubMenu"
                             :formattedMenuState="[

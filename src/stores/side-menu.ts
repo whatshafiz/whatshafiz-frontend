@@ -103,7 +103,6 @@ export const useSideMenuStore = defineStore("sideMenu", {
         pageName: "settings",
         title: "Sistem Ayarları",
         permission: "settings.update",
-        ignore: true,
       },
       "divider",
       {

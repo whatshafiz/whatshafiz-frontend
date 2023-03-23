@@ -1,49 +1,48 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MainLayout from "@/layouts/MainLayout/MainLayout.vue";
-import Page1 from "@/pages/Page1.vue";
-import Page2 from "@/pages/Page2.vue";
-import Dashboard from "@/pages/Dashboard.vue";
-import Login from "@/pages/Login.vue";
-import Logout from "@/pages/Logout.vue";
-import Register from "@/pages/Register.vue";
-import VerifyPhoneNumber from "@/pages/VerifyPhoneNumber.vue";
+import { isLoggedIn, userLogout } from '@/services/AuthService'
+import { useUserStore } from '@/stores/user'
 
 const routes = [
   {
     path: "/",
-    component: MainLayout,
+    component: async () => import("@/layouts/MainLayout/MainLayout.vue"),
     children: [
       {
         path: "/",
         name: "dashboard",
-        component: Dashboard,
+        component: async () => import("@/pages/Dashboard.vue"),
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        component: async () => import("@/pages/users/Profile.vue"),
       },
       {
         path: "page-2",
-        name: "side-menu-page-2",
-        component: Page2,
+        name: "courses",
+        component: async () => import("@/pages/Page2.vue"),
       },
     ],
   },
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: async () => import("@/pages/Login.vue"),
   },
   {
     path: "/register",
     name: "register",
-    component: Login,
+    component: async () => import("@/pages/Login.vue"),
   },
   {
     path: "/verify-phone-number",
     name: "verify-phone-number",
-    component: VerifyPhoneNumber,
+    component: async () => import("@/pages/VerifyPhoneNumber.vue"),
   },
   {
     path: "/logout",
     name: "logout",
-    component: Logout,
+    component: async () => import("@/pages/Logout.vue"),
   },
 ];
 
@@ -54,5 +53,25 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 };
   },
 });
+
+router.beforeEach(async (to, from) => {
+  const guestRoutes = ['login', 'logout', 'register']
+  
+  if (guestRoutes.includes(to.name)) {
+    return true
+  }
+
+  const user = useUserStore()
+
+  if (!user.isLoggedIn()) {
+    return user.logout()
+  }
+
+  if (Object.keys(user.profile).length === 0) {
+    await user.fetchProfile()
+  }
+
+  return true
+})
 
 export default router;

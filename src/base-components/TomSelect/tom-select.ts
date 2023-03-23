@@ -8,24 +8,22 @@ import TomSelect from "tom-select";
 import _ from "lodash";
 
 const setValue = (el: TomSelectElement, props: TomSelectProps) => {
-  if (props.modelValue.length) {
-    if (Array.isArray(props.modelValue)) {
-      for (const value of props.modelValue) {
-        const selectedOption = Array.from(el).find(
-          (option) =>
-            option instanceof HTMLOptionElement && option.value == value
-        );
+  if (Array.isArray(props.modelValue)) {
+    for (const value of props.modelValue) {
+      const selectedOption = Array.from(el).find(
+        (option) =>
+          option instanceof HTMLOptionElement && option.value == value
+      );
 
-        if (
-          selectedOption !== undefined &&
-          selectedOption instanceof HTMLOptionElement
-        ) {
-          selectedOption.selected = true;
-        }
+      if (
+        selectedOption !== undefined &&
+        selectedOption instanceof HTMLOptionElement
+      ) {
+        selectedOption.selected = true;
       }
-    } else {
-      el.value = props.modelValue;
     }
+  } else {
+    el.value = props.modelValue;
   }
 };
 
@@ -84,7 +82,7 @@ const getOptions = (
 const updateValue = (
   originalEl: TomSelectElement,
   clonedEl: TomSelectElement,
-  value: string | string[],
+  value: null | number | string | string[],
   props: TomSelectProps,
   computedOptions: RecursivePartial<TomSettings>,
   emit: TomSelectEmit
