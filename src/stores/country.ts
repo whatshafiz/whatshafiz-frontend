@@ -22,9 +22,18 @@ export const useCountryStore = defineStore('country', {
                 console.log('fetchCountries error', response)
             }
         },
-        async fetchCities(countryId) {
+        async fetchCountryCities(countryId) {
             try {
                 return (await api().get('/countries/' + countryId + '/cities')).data.cities
+            } catch (response) {
+                console.log('fetchCountries error', response)
+
+                return []
+            }
+        },
+        async createCity(countryId, cityName) {
+            try {
+                return (await api().post('/countries/' + countryId + '/cities', { name: cityName })).data
             } catch (response) {
                 console.log('fetchCountries error', response)
 

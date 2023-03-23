@@ -10,6 +10,7 @@ import {
   onMounted,
   inject,
   ref,
+  watch
 } from "vue";
 
 export interface TomSelectElement extends HTMLSelectElement {
@@ -17,10 +18,30 @@ export interface TomSelectElement extends HTMLSelectElement {
 }
 
 export interface TomSelectProps extends SelectHTMLAttributes {
+  isDisabled?: boolean;
   modelValue: null | number | string | string[];
   options?: RecursivePartial<TomSettings>;
   refKey?: string;
 }
+
+watch(() => props.isDisabled, (newValue) => {
+  
+  vSelectDirective.updated(tomSelectRef.value);
+
+  if (newValue) {
+    tomSelectRef.value.disabled = true
+  } else {
+    tomSelectRef.value.disabled = false
+  }
+
+
+    
+  console.log(
+    "Watch props.isdisabled function called with args:",
+    newValue
+  );
+});
+
 
 export interface TomSelectEmit {
   (e: "update:modelValue", value: null | number | string | string[]): void;
@@ -120,6 +141,7 @@ onMounted(() => {
   <select
     ref="tomSelectRef"
     :value="props.modelValue"
+    :disabled="props.isDisabled"
     @change="
       (event) => {
         emit('update:modelValue', (event.target as HTMLSelectElement).value);

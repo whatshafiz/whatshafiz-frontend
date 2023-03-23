@@ -18,6 +18,11 @@ const routes = [
         component: async () => import("@/pages/users/Profile.vue"),
       },
       {
+        path: "/profile/edit",
+        name: "profile.edit",
+        component: async () => import("@/pages/users/ProfileEdit.vue"),
+      },
+      {
         path: "page-2",
         name: "courses",
         component: async () => import("@/pages/Page2.vue"),

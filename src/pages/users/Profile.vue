@@ -1,77 +1,22 @@
 <script setup lang="ts">
-import {
-  FormSwitch,
-  FormLabel,
-  FormInput,
-  FormTextarea,
-} from "@/base-components/Form";
 import Button from "@/base-components/Button";
-import Notification from "@/base-components/Notification";
 import Lucide from "@/base-components/Lucide";
-import LoadingIcon from '@/base-components/LoadingIcon'
-import TomSelect from "@/base-components/TomSelect";
-import Toastify from "toastify-js";
-import { reactive, toRefs, ref, onBeforeMount, watch } from "vue";
+import { computed } from "vue";
 import { useUserStore } from "@/stores/user";
-import { useCountryStore } from "@/stores/country";
 import { storeToRefs } from "pinia"
+import userProfile from "@/assets/images/placeholders/user.png"
+import maleProfile from "@/assets/images/placeholders/male.jpg"
+import femaleProfile from "@/assets/images/placeholders/female.jpg"
 
-const isLoading = ref(false)
 const userStore = useUserStore()
 const { profile } = storeToRefs(userStore)
-const countryStore = useCountryStore()
 
-const isEditForm = ref(false)
-const countries = ref([])
-const cities = ref([])
-const genderField = ref(null)
+const userProfileImage = computed(() => {
+  return profile.value.gender === 'male' ?
+    maleProfile :
+    (profile.value.gender === 'female' ? femaleProfile : userProfile)
+});
 
-const fetchCountries = async () => {
-  if (countries.value.length > 1) {
-
-    return
-  }
-
-  await countryStore.fetchCountries()
-  countries.value = countryStore.getCountries
-}
-
-const fetchCities = async (newCountryId) => {
-  cities.value = await countryStore.fetchCities(newCountryId)
-}
-
-const makeFormEditable = () => {
-  isEditForm.value = true
-  fetchCountries()
-  fetchCities(profile.value.country_id)
-
-
-}
-
-const onSubmit = async () => {
-  isLoading.value = true
-
-  try {
-    await userStore.saveProfile()
-    isLoading.value = false
-    isEditForm.value = false
-  } catch (response) {
-    console.log(response)
-    isLoading.value = false
-  }
-};
-
-if (isEditForm.value || !profile.value.gender) {
-  makeFormEditable()
-} else {
-  if (profile.value.country) {
-    countries.value.push(profile.value.country)
-  }
-
-  if (profile.value.city) {
-    cities.value.push(profile.value.city)
-  }
-}
 </script>
 
 <template>
@@ -79,209 +24,68 @@ if (isEditForm.value || !profile.value.gender) {
     <h2 class="mr-auto text-lg font-medium">Profil Bilgileri</h2>
   </div>
   <!-- BEGIN: Page Layout -->
-  <div class="grid grid-cols-12 gap-6 mt-5">
-    <div class="col-span-12 intro-y lg:col-span-6">
-      <!-- BEGIN: Form Validation -->
-      <div class="intro-y box">
-        <div
-          class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400"
-        >
-          <h2 class="mr-auto text-base font-medium">Profil</h2>
-          <FormSwitch v-if="!isEditForm" class="w-full mt-3 sm:w-auto sm:ml-auto sm:mt-0">
-            <FormLabel htmlFor="is_edit">
-              Düzenle
-            </FormLabel>
-            <FormSwitch.Input
-              id="is_edit"
-              @click="makeFormEditable()"
-              class="ml-3 mr-0"
-              type="checkbox"
-            />
-          </FormSwitch>
-        </div>
-        <div class="p-5">
-            <!-- BEGIN: Validation Form -->
-            <form class="validate-form" @submit.prevent="onSubmit">
-              <div class="input-form">
-                <FormLabel
-                  htmlFor="name"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Ad
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput
-                  id="name"
-                  v-model="profile.name"
-                  :disabled="!isEditForm"
-                  type="text"
-                  name="name"
-                  placeholder="Adınız"
-                />
+  <div class="grid md:w-1/2 gap-6 mt-5">
+      <div
+        class="flex flex-col-reverse col-span-12 lg:col-span-4 2xl:col-span-3 lg:block"
+      >
+        <div class="mt-5 intro-y box lg:mt-0">
+          <div class="relative flex items-center p-5">
+            <div class="w-24 h-24 image-fit">
+              <img
+                alt="WhatsHafız Panel Kullanıcısı"
+                class="rounded-full"
+                :src="userProfileImage"
+              />
+            </div>
+            <div class="ml-4 mr-auto">
+              <div class="text-base font-medium">
+                {{ profile.name }} {{ profile.surname }}
               </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="surname"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Soyad
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput
-                  id="surname"
-                  v-model="profile.surname"
-                  :disabled="!isEditForm"
-                  type="text"
-                  name="surname"
-                  placeholder="Soyadınız"
-                />
-              </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="phone_number"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Telefon No
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Değiştirilemez
-                  </span>
-                </FormLabel>
-                <FormInput
-                  id="phone_number"
-                  v-model="profile.phone_number"
-                  type="text"
-                  name="phone_number"
-                  readonly
-                  placeholder="Telefon No"
-                />
-              </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="gender"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Cinsiyet
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect
-                  id="gender"
-                  ref="genderField"
-                  :disabled="!isEditForm"
-                  v-model="profile.gender"
-                  :options="{ placeholder: 'Cinsiyet Seçin' }"
-                  class="w-full"
-                >
-                  <option value="">Seçim Yapın</option>
-                  <option value="male">Erkek</option>
-                  <option value="female">Kadın</option>
-                </TomSelect>
-              </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="email"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  E-posta
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    İsteğe Bağlı
-                  </span>
-                </FormLabel>
-                <FormInput
-                  id="email"
-                  v-model="profile.email"
-                  type="email"
-                  name="email"
-                  placeholder="ornek@gmail.com"
-                />
-              </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="country_id"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Ülke
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect
-                  id="country_id"
-                  v-model="profile.country_id"
-                  :options="{
-                    placeholder: 'Ülke Seçin',
-                    onChange: (newCountryId) => { fetchCities(newCountryId) },
-                  }"
-                  class="w-full"
-                >
-                    <option v-for="country in countries" :key="country.id" :value="country.id">
-                      {{ country.name }}
-                    </option>
-                </TomSelect>
-              </div>
-              <div class="mt-3 input-form">
-                <FormLabel
-                  htmlFor="city_id"
-                  class="flex flex-col w-full sm:flex-row"
-                >
-                  Şehir
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect
-                  id="city_id"
-                  name="city_id"
-                  required
-                  v-model="profile.city_id"
-                  :options="{ placeholder: 'Şehir Seçin' }"
-                  class="w-full"
-                >
-                    <option v-for="city in cities" :key="city.id" :value="city.id">
-                      {{ city.name }}
-                    </option>
-                </TomSelect>
-              </div>
-              <Button
-                v-if="isEditForm"
-                variant="primary"
-                type="submit"
-                class="mt-5"
-                :disabled="isLoading"
-              >
-                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-2" />
-                Kaydet
+              <span class="text-slate-500" v-if="profile.phone_number_verified_at === null">
+                <i>(Telefon Doğrulanmamış)</i>
+              </span>
+            </div>
+          </div>
+          <div class="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+            <span class="flex items-center font-medium text-primary" href="">
+              <Lucide icon="Mail" class="w-4 h-4 mr-2" /> İletişim Bilgileri
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Phone" class="w-4 h-4 mr-2" /> {{ profile.phone_number }} 
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Navigation" class="w-4 h-4 mr-2" /> {{ profile.city?.name }}
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Map" class="w-4 h-4 mr-2" /> {{ profile.country?.name }}
+            </span>
+          </div>
+          <div class="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+            <span class="flex items-center font-medium text-primary" href="">
+              <Lucide icon="Activity" class="w-4 h-4 mr-2" /> Eğitim Bilgileri
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Box" class="w-4 h-4 mr-2" /> {{ profile.university?.name }}
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Lock" class="w-4 h-4 mr-2" /> {{ profile.university_faculty?.name }}
+            </span>
+            <span class="flex items-center mt-5" href="">
+              <Lucide icon="Settings" class="w-4 h-4 mr-2" /> {{ profile.university_department?.name }}
+            </span>
+          </div>
+          <div
+            class="flex p-5 border-t border-slate-200/60 dark:border-darkmode-400"
+          >
+            <RouterLink :to="{ name: 'profile.edit' }">
+              <Button variant="outline-secondary" class="flex">
+                <Lucide icon="Edit" class="w-4 h-4 mr-2" /> Düzenle
               </Button>
-            </form>
-        </div>
-      </div>
-      <!-- END: Form Validation -->
-      <!-- BEGIN: Success Notification Content -->
-      <Notification id="success-notification-content" class="flex hidden">
-        <Lucide icon="CheckCircle" class="text-success" />
-        <div class="ml-4 mr-4">
-          <div class="font-medium">Registration success!</div>
-          <div class="mt-1 text-slate-500">
-            Please check your e-mail for further info!
+            </RouterLink>
           </div>
         </div>
-      </Notification>
-      <!-- END: Success Notification Content -->
-      <!-- BEGIN: Failed Notification Content -->
-      <Notification id="failed-notification-content" class="flex hidden">
-        <Lucide icon="XCircle" class="text-danger" />
-        <div class="ml-4 mr-4">
-          <div class="font-medium">Registration failed!</div>
-          <div class="mt-1 text-slate-500">Please check the fileld form.</div>
-        </div>
-      </Notification>
-      <!-- END: Failed Notification Content -->
-    </div>
+      </div>
+
   </div>
   <!-- END: Page Layout -->
 </template>
