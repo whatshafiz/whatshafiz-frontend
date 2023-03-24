@@ -3,13 +3,18 @@ import { useRoute, useRouter } from "vue-router";
 import Divider from "./Divider.vue";
 import Menu from "./Menu.vue";
 import TopBar from "../../components/TopBar";
+import Alert from "@/base-components/Alert";
+import Lucide from "@/base-components/Lucide";
 import DarkModeSwitcher from "../../components/DarkModeSwitcher";
 import MobileMenu from "../../components/MobileMenu";
 import { useSideMenuStore } from "../../stores/side-menu";
 import { useUserStore } from "@/stores/user";
-import { useSettingStore } from "@/stores/setting";
+import { useAlertStore } from "@/stores/alert";
 import { FormattedMenu, nestedMenu, enter, leave } from "./side-menu";
+import Notification from "@/base-components/Notification";
+import { NotificationElement } from "@/base-components/Notification";
 import {
+  ref,
   watch,
   reactive,
   computed,
@@ -18,11 +23,23 @@ import {
   provide
 } from "vue";
 
+const successNotificationTitle = ref<string | null>('')
+const successNotificationMessage = ref<string | null>('')
+const successNotification = ref<NotificationElement>();
+const successNotificationToggle = (title: null | string, message: null | string) => {
+  successNotificationTitle.value = title
+  successNotificationMessage.value = message
+  successNotification.value?.showToast();
+};
+provide("bind[successNotification]", (el: NotificationElement) => {
+  successNotification.value = el;
+});
+provide('successNotificationToggle', successNotificationToggle)
+
 const route = useRoute()
 const router = useRouter()
 const user = useUserStore()
-const settingStore = useSettingStore()
-const settings = computed(() => settingStore.getSettings);
+const alert = useAlertStore()
 let formattedMenu = reactive<Array<FormattedMenu | "divider">>([]);
 const setFormattedMenu = (
   computedFormattedMenu: Array<FormattedMenu | "divider">
@@ -39,18 +56,6 @@ watch(sideMenu, () => {
 });
 
 onBeforeMount(async () => {
-  await settingStore.fetchSettings()
-
-  if (user.profile.phone_number_verified_at === null &&
-    settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')
-  ) {
-    return router.push({ name: 'verify-phone-number' })
-  }
-
-  if (!user.profile.gender) {
-    console.log('cinsiyet boş, profil doğrulamaya gidecek, burası içerde çalışacak.')
-  }
-
   if (localStorage.getItem('newCourseRegisterType')) {
     console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
   }
@@ -173,9 +178,38 @@ onMounted(() => {
           'before:content-[\'\'] before:w-full before:h-px before:block',
         ]"
       >
+        <div v-if="alert.hasAlertMessage" class="mt-6">
+          <Alert v-if="alert.hasSuccessMessage" variant="soft-success" class="items-center mb-2">
+            <div v-for="message in alert.getSuccessMessages" class="flex items-center">
+              <Lucide icon="AlertTriangle" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+
+          <Alert v-if="alert.hasWarningMessage" variant="soft-warning" class="items-center mb-2">
+            <div v-for="message in alert.getWarningMessages" class="flex items-center">
+              <Lucide icon="AlertCircle" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+
+          <Alert v-if="alert.hasErrorMessage" variant="soft-danger" class="items-center mb-2">
+            <div v-for="message in alert.getErrorMessages" class="flex items-center">
+              <Lucide icon="AlertOctagon" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+        </div>
         <RouterView />
       </div>
       <!-- END: Content -->
     </div>
   </div>
+  <Notification refKey="successNotification" :options="{ duration: 3000 }" class="flex">
+      <Lucide icon="CheckCircle" class="text-success" />
+      <div class="ml-4 mr-4">
+          <div class="font-medium">{{ successNotificationTitle }}</div>
+          <div class="mt-1 text-slate-500">{{ successNotificationMessage }}</div>
+      </div>
+  </Notification>
 </template>

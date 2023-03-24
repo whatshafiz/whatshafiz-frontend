@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { isLoggedIn, userLogout } from '@/services/AuthService'
 import { useUserStore } from '@/stores/user'
+import { useAlertStore } from "@/stores/alert";
+import { useSettingStore } from "@/stores/setting";
 
 const routes = [
   {
@@ -74,6 +75,22 @@ router.beforeEach(async (to, from) => {
 
   if (Object.keys(user.profile).length === 0) {
     await user.fetchProfile()
+  }
+
+  if (user.profile.phone_number_verified_at === null) {
+    const settingStore = useSettingStore()
+    await settingStore.fetchSettings()
+    settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')
+
+    return router.push({ name: 'verify-phone-number' })
+  }
+
+  if (to.name !== 'profile.edit' && !user.profile.gender) {
+    const alert = useAlertStore()
+    alert.flushMessages()
+    alert.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
+
+    return router.push({ name: 'profile.edit' })
   }
 
   return true

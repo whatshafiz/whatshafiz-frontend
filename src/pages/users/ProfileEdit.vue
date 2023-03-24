@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import {
-    FormSwitch,
-    FormLabel,
-    FormInput,
-    FormTextarea,
-} from "@/base-components/Form";
+import { FormLabel, FormInput } from "@/base-components/Form";
 import Button from "@/base-components/Button";
-import Notification from "@/base-components/Notification";
-import Lucide from "@/base-components/Lucide";
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from "@/base-components/TomSelect";
-import Toastify from "toastify-js";
-import { reactive, toRefs, ref, onMounted, watch } from "vue";
+import { ref, onMounted, inject } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useCountryStore } from "@/stores/country";
 import { useUniversityStore } from "@/stores/university";
 import { storeToRefs } from "pinia"
 
+const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
 const userStore = useUserStore()
 const { profile } = storeToRefs(userStore)
@@ -42,7 +35,6 @@ const fetchUniversityFacultyDepartments = async (universityId, facultyId) => {
         departments.value = await universityStore.fetchUniversityFacultyDepartments(universityId, facultyId)
     }
 }
-
 
 onMounted(async () => {
     await countryStore.fetchCountries()
@@ -71,8 +63,8 @@ const onSubmit = async () => {
         await userStore.saveProfile()
         await userStore.fetchProfile()
         isLoading.value = false
+        successNotificationToggle('İşlem Başarılı', 'Profil bilgileriniz kaydedildi.')
     } catch (response) {
-        console.log(response)
         isLoading.value = false
     }
 };
@@ -83,17 +75,14 @@ const onSubmit = async () => {
     <div class="flex items-center mt-8 intro-y">
         <h2 class="mr-auto text-lg font-medium">Profil Bilgileri</h2>
     </div>
-    <!-- BEGIN: Page Layout -->
     <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="col-span-12 intro-y lg:col-span-6">
-            <!-- BEGIN: Form Validation -->
             <div class="intro-y box">
                 <div
                     class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
                     <h2 class="mr-auto text-base font-medium">Profil</h2>
                 </div>
                 <div class="p-5">
-                    <!-- BEGIN: Validation Form -->
                     <form class="validate-form" @submit.prevent="onSubmit">
                         <div class="input-form">
                             <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
@@ -294,28 +283,6 @@ const onSubmit = async () => {
                     </form>
                 </div>
             </div>
-            <!-- END: Form Validation -->
-            <!-- BEGIN: Success Notification Content -->
-            <Notification id="success-notification-content" class="flex hidden">
-                <Lucide icon="CheckCircle" class="text-success" />
-                <div class="ml-4 mr-4">
-                    <div class="font-medium">Registration success!</div>
-                    <div class="mt-1 text-slate-500">
-                        Please check your e-mail for further info!
-                    </div>
-                </div>
-            </Notification>
-            <!-- END: Success Notification Content -->
-            <!-- BEGIN: Failed Notification Content -->
-            <Notification id="failed-notification-content" class="flex hidden">
-                <Lucide icon="XCircle" class="text-danger" />
-                <div class="ml-4 mr-4">
-                    <div class="font-medium">Registration failed!</div>
-                    <div class="mt-1 text-slate-500">Please check the fileld form.</div>
-                </div>
-            </Notification>
-            <!-- END: Failed Notification Content -->
         </div>
     </div>
-    <!-- END: Page Layout -->
 </template>
