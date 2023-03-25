@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useDarkModeStore } from "../../stores/dark-mode";
 import { computed } from "vue";
+import Lucide from "@/base-components/Lucide";
 
 const darkMode = computed(() => useDarkModeStore().darkMode);
 
@@ -20,10 +21,10 @@ setDarkModeClass();
 <template>
   <!-- BEGIN: Dark Mode Switcher -->
   <div
-    class="fixed bottom-0 right-0 z-50 flex items-center justify-center w-40 h-12 mb-10 mr-10 border rounded-full shadow-md cursor-pointer box"
+    class="fixed bottom-0 right-0 z-50 flex items-center justify-center w-20 h-12 mb-1 mr-1 border rounded-full shadow-md cursor-pointer box"
     @click="switchMode"
   >
-    <div class="mr-4 text-slate-600 dark:text-slate-200">Koyu Mod</div>
+    <Lucide icon="Moon" class="w-4 h-4 mr-2" />
     <div
       :class="[
         'border w-[38px] h-[24px] p-px outline-none rounded-full relative cursor-pointer',

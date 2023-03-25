@@ -80,7 +80,9 @@ const hideSearchDropdown = () => {
           </Menu.Header>
           <Menu.Divider class="bg-white/[0.08]" />
           <Menu.Item class="hover:bg-white/5">
-            <Lucide icon="User" class="w-4 h-4 mr-2" /> Profile
+            <RouterLink :to="{ name: 'profile' }" class="flex">
+                <Lucide icon="User" class="w-4 h-4 mr-2" /> Profile
+            </RouterLink>
           </Menu.Item>
           <Menu.Divider class="bg-white/[0.08]" />
           <Menu.Item @click="user.logout()" class="hover:bg-white/5">

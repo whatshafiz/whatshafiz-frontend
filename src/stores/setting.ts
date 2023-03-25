@@ -1,6 +1,4 @@
-import { defineStore, getActivePinia } from 'pinia'
-import { getProfile } from '@/services/AuthService'
-import router from '@/router/index'
+import { defineStore } from 'pinia'
 import api from '@/utils/api'
 
 export const useSettingStore = defineStore('setting', {

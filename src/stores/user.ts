@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import api from '@/utils/api'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -43,11 +44,22 @@ export const useUserStore = defineStore('user', {
 
       return false
     },
-    setProfile(userData) {
+    async fetchProfile() {
+      let userData = []
+
+      try {
+        userData = (await api().get('/profile')).data
+      } catch (error) {
+        console.log('erkan', error)
+      }
+
       this.token = localStorage.getItem('token')
       this.profile = userData.user
       this.permissions = userData.permissions
       this.roles = userData.roles
+    },
+    async saveProfile() {
+      return api().put('/profile', this.profile)
     },
     logout() {
       localStorage.removeItem('token')

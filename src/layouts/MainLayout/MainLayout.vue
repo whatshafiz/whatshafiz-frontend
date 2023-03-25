@@ -3,20 +3,43 @@ import { useRoute, useRouter } from "vue-router";
 import Divider from "./Divider.vue";
 import Menu from "./Menu.vue";
 import TopBar from "../../components/TopBar";
+import Alert from "@/base-components/Alert";
+import Lucide from "@/base-components/Lucide";
 import DarkModeSwitcher from "../../components/DarkModeSwitcher";
 import MobileMenu from "../../components/MobileMenu";
 import { useSideMenuStore } from "../../stores/side-menu";
 import { useUserStore } from "@/stores/user";
-import { useSettingStore } from "@/stores/setting";
-import { isLoggedIn } from '@/services/AuthService'
+import { useAlertStore } from "@/stores/alert";
 import { FormattedMenu, nestedMenu, enter, leave } from "./side-menu";
-import { watch, reactive, computed, onMounted, onBeforeMount } from "vue";
+import Notification from "@/base-components/Notification";
+import { NotificationElement } from "@/base-components/Notification";
+import {
+  ref,
+  watch,
+  reactive,
+  computed,
+  onMounted,
+  onBeforeMount,
+  provide
+} from "vue";
+
+const successNotificationTitle = ref<string | null>('')
+const successNotificationMessage = ref<string | null>('')
+const successNotification = ref<NotificationElement>();
+const successNotificationToggle = (title: null | string, message: null | string) => {
+  successNotificationTitle.value = title
+  successNotificationMessage.value = message
+  successNotification.value?.showToast();
+};
+provide("bind[successNotification]", (el: NotificationElement) => {
+  successNotification.value = el;
+});
+provide('successNotificationToggle', successNotificationToggle)
 
 const route = useRoute()
 const router = useRouter()
 const user = useUserStore()
-const settingStore = useSettingStore()
-const settings = computed(() => settingStore.getSettings);
+const alert = useAlertStore()
 let formattedMenu = reactive<Array<FormattedMenu | "divider">>([]);
 const setFormattedMenu = (
   computedFormattedMenu: Array<FormattedMenu | "divider">
@@ -26,27 +49,13 @@ const setFormattedMenu = (
 const sideMenuStore = useSideMenuStore();
 const sideMenu = computed(() => nestedMenu(sideMenuStore.menu, route));
 
+provide('user', user)
+
 watch(sideMenu, () => {
   setFormattedMenu(sideMenu.value)
 });
 
 onBeforeMount(async () => {
-  if (!(await isLoggedIn())) {
-    return user.logout()
-  }
-
-  await settingStore.fetchSettings()
-
-  if (user.profile.phone_number_verified_at === null &&
-    settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')
-  ) {
-    return router.push({ name: 'verify-phone-number' })
-  }
-
-  if (!user.profile.gender) {
-    console.log('cinsiyet boş, profil doğrulamaya gidecek, burası içerde çalışacak.')
-  }
-
   if (localStorage.getItem('newCourseRegisterType')) {
     console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
   }
@@ -77,9 +86,7 @@ onMounted(() => {
                 'my-6',
 
                 // Animation
-                `opacity-0 animate-[0.4s_ease-in-out_0.1s_intro-divider] animate-fill-mode-forwards animate-delay-${
-                  (menuKey + 1) * 10
-                }`,
+                `opacity-0 animate-[0.4s_ease-in-out_0.1s_intro-divider] animate-fill-mode-forwards`,
               ]"
               :key="'divider-' + menuKey"
             ></Divider>
@@ -87,9 +94,7 @@ onMounted(() => {
               <Menu
                 :class="{
                   // Animation
-                  [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                    (menuKey + 1) * 10
-                  }`]: !menu.active,
+                  [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !menu.active,
                 }"
                 :menu="menu"
                 :formattedMenuState="[formattedMenu, setFormattedMenu]"
@@ -113,9 +118,7 @@ onMounted(() => {
                     <Menu
                       :class="{
                         // Animation
-                        [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                          (subMenuKey + 1) * 10
-                        }`]: !subMenu.active,
+                        [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !subMenu.active,
                       }"
                       :menu="subMenu"
                       :formattedMenuState="[formattedMenu, setFormattedMenu]"
@@ -145,9 +148,7 @@ onMounted(() => {
                           <Menu
                             :class="{
                               // Animation
-                              [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards animate-delay-${
-                                (lastSubMenuKey + 1) * 10
-                              }`]: !lastSubMenu.active,
+                              [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !lastSubMenu.active,
                             }"
                             :menu="lastSubMenu"
                             :formattedMenuState="[
@@ -177,9 +178,38 @@ onMounted(() => {
           'before:content-[\'\'] before:w-full before:h-px before:block',
         ]"
       >
+        <div v-if="alert.hasAlertMessage" class="mt-6">
+          <Alert v-if="alert.hasSuccessMessage" variant="soft-success" class="items-center mb-2">
+            <div v-for="message in alert.getSuccessMessages" class="flex items-center">
+              <Lucide icon="AlertTriangle" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+
+          <Alert v-if="alert.hasWarningMessage" variant="soft-warning" class="items-center mb-2">
+            <div v-for="message in alert.getWarningMessages" class="flex items-center">
+              <Lucide icon="AlertCircle" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+
+          <Alert v-if="alert.hasErrorMessage" variant="soft-danger" class="items-center mb-2">
+            <div v-for="message in alert.getErrorMessages" class="flex items-center">
+              <Lucide icon="AlertOctagon" class="w-6 h-6 mr-2" />
+              <div class="w-full">{{ message }}</div>
+            </div>
+          </Alert>
+        </div>
         <RouterView />
       </div>
       <!-- END: Content -->
     </div>
   </div>
+  <Notification refKey="successNotification" :options="{ duration: 3000 }" class="flex">
+      <Lucide icon="CheckCircle" class="text-success" />
+      <div class="ml-4 mr-4">
+          <div class="font-medium">{{ successNotificationTitle }}</div>
+          <div class="mt-1 text-slate-500">{{ successNotificationMessage }}</div>
+      </div>
+  </Notification>
 </template>

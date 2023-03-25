@@ -32,27 +32,3 @@ export async function registerUser(registerFormData) {
 export async function getProfile() {
     return (await api().get('/profile')).data
 }
-
-export async function isLoggedIn() {
-    const user = useUserStore()
-
-    if (!user.isLoggedIn()) {
-        return false
-    }
-
-    let userData = null
-
-    try {
-        userData = (await getProfile())
-    } catch (e) {
-        return false
-    }
-
-    if (!userData.user) {
-        return false
-    }
-
-    user.setProfile(userData)
-
-    return true
-}
