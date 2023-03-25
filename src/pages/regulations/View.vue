@@ -4,8 +4,10 @@ import { useRegulationsStore } from "@/stores/regulations"
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useAlertStore } from "@/stores/alert";
+import { useUserStore } from "@/stores/user";
 
 const route = useRoute()
+const user = useUserStore()
 const regulationsStore = useRegulationsStore()
 const alert = useAlertStore()
 
@@ -25,7 +27,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div class="w-1/2 h-screen" v-if="!isLoading">
+    <div class="w-1/2 h-screen" v-if="!isLoading && user.can('regulations.view')">
         <div class="flex items-center" v-if="regulation.summary">
             <div class="text-lg font-medium">Özet </div>
         </div>

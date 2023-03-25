@@ -5,11 +5,13 @@ import { useRegulationsStore } from '@/stores/regulations';
 import { inject, onBeforeMount, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAlertStore } from '@/stores/alert';
+import { useUserStore } from '@/stores/user';
 
 const successNotificationToggle: any = inject('successNotificationToggle')
 const route = useRoute()
 const alert = useAlertStore()
 
+const user = useUserStore()
 const isLoading = ref(true)
 const regulationSummary = ref('')
 const regulationStore = useRegulationsStore()
@@ -44,7 +46,7 @@ const update = async () => {
 </script>
 
 <template>
-    <div class="w-1/2 h-screen" v-if="!isLoading">
+    <div class="w-1/2 h-screen" v-if="!isLoading && user.can('regulations.update')">
 
         <div class="flex items-center mt-5">
             <div class="text-lg font-medium">Özet</div>
