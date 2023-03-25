@@ -28,6 +28,21 @@ const routes = [
         name: "courses",
         component: async () => import("@/pages/Page2.vue"),
       },
+      {
+        path: '/regulations',
+        name: "regulations.list",
+        component: async () => import("@/pages/regulations/List.vue"),
+      },
+      {
+        path: "/regulations/:slug",
+        name: "regulations.view",
+        component: async () => import("@/pages/regulations/View.vue"),
+      },
+      {
+        path: "/regulations/:slug/update",
+        name: "regulations.update",
+        component: async () => import("@/pages/regulations/Update.vue"),
+      },
     ],
   },
   {
@@ -62,7 +77,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const guestRoutes = ['login', 'logout', 'register']
-  
+
   if (guestRoutes.includes(to.name)) {
     return true
   }
