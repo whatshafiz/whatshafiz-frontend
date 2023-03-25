@@ -80,9 +80,10 @@ router.beforeEach(async (to, from) => {
   if (user.profile.phone_number_verified_at === null) {
     const settingStore = useSettingStore()
     await settingStore.fetchSettings()
-    settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')
 
-    return router.push({ name: 'verify-phone-number' })
+    if (settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')) {
+      return router.push({ name: 'verify-phone-number' })
+    }
   }
 
   if (to.name !== 'profile.edit' && !user.profile.gender) {
