@@ -25,21 +25,9 @@ export interface TomSelectProps extends SelectHTMLAttributes {
 }
 
 watch(() => props.isDisabled, (newValue) => {
-  
   vSelectDirective.updated(tomSelectRef.value);
 
-  if (newValue) {
-    tomSelectRef.value.disabled = true
-  } else {
-    tomSelectRef.value.disabled = false
-  }
-
-
-    
-  console.log(
-    "Watch props.isdisabled function called with args:",
-    newValue
-  );
+  tomSelectRef.value.disabled = newValue
 });
 
 

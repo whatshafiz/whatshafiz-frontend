@@ -16,7 +16,6 @@ const userProfileImage = computed(() => {
     maleProfile :
     (profile.value.gender === 'female' ? femaleProfile : userProfile)
 });
-
 </script>
 
 <template>
