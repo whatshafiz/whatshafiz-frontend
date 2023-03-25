@@ -10,6 +10,7 @@ import {
   onMounted,
   inject,
   ref,
+  watch
 } from "vue";
 
 export interface TomSelectElement extends HTMLSelectElement {
@@ -17,13 +18,21 @@ export interface TomSelectElement extends HTMLSelectElement {
 }
 
 export interface TomSelectProps extends SelectHTMLAttributes {
-  modelValue: string | string[];
+  isDisabled?: boolean;
+  modelValue: null | number | string | string[];
   options?: RecursivePartial<TomSettings>;
   refKey?: string;
 }
 
+watch(() => props.isDisabled, (newValue) => {
+  vSelectDirective.updated(tomSelectRef.value);
+
+  tomSelectRef.value.disabled = newValue
+});
+
+
 export interface TomSelectEmit {
-  (e: "update:modelValue", value: string | string[]): void;
+  (e: "update:modelValue", value: null | number | string | string[]): void;
   (e: "optionAdd", value: string | number): void;
 }
 
@@ -120,6 +129,7 @@ onMounted(() => {
   <select
     ref="tomSelectRef"
     :value="props.modelValue"
+    :disabled="props.isDisabled"
     @change="
       (event) => {
         emit('update:modelValue', (event.target as HTMLSelectElement).value);
