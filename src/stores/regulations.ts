@@ -16,26 +16,18 @@ export const useRegulationsStore = defineStore('regulations', {
     },
     actions: {
         async fetchRegulations() {
-            try {
-                const regulations: { data: Array<regulation> } = await api().get('/regulations')
+            const regulations: { data: Array<regulation> } = await api().get('/regulations')
+            if (regulations.data) {
                 this.regulations = regulations.data
-            } catch (error) {
-                throw error
             }
         },
+
         async fetchRegulation(slug: string) {
-            try {
-                return (await api().get('/regulations/' + slug)).data
-            } catch (error) {
-                throw error
-            }
+            return (await api().get('/regulations/' + slug)).data
         },
+
         async updateRegulation(slug: string, dataToUpdate: FormData) {
-            try {
-                return (await api().post('/regulations/' + slug, dataToUpdate)).data
-            } catch (error) {
-                throw error
-            }
+            return (await api().post('/regulations/' + slug, dataToUpdate)).data
         }
     }
 
