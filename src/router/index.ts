@@ -39,9 +39,9 @@ const routes = [
         component: async () => import("@/pages/regulations/View.vue"),
       },
       {
-        path: "/regulations/:slug/update",
+        path: "/regulations/:slug/edit",
         name: "regulations.update",
-        component: async () => import("@/pages/regulations/Update.vue"),
+        component: async () => import("@/pages/regulations/Edit.vue"),
       },
     ],
   },
