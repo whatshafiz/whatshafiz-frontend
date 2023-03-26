@@ -41,6 +41,7 @@ export const useUserStore = defineStore('user', {
       if (this.permissions.includes(resource + ".*")) {
         return true
       }
+
       return false
     },
     async fetchProfile() {
