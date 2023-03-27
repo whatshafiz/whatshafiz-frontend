@@ -64,4 +64,7 @@ onBeforeMount(async () => {
             </div>
         </Preview>
     </div>
+    <div v-else class="text-center m-auto w-1/12">
+        <LoadingIcon icon="oval" color="white" class="w-full" />
+    </div>
 </template>

@@ -53,7 +53,7 @@ const update = async () => {
   <div class="flex items-center mt-8 intro-y">
     <h2 class="mr-auto text-lg font-medium">Yönetmelikler</h2>
   </div>
-  <div v-if="!isLoading && user.can('regulations.update')" class="overflow-x-auto">
+  <div v-if="!isLoading" class="overflow-x-auto">
     <Preview class="mt-5 intro-y box h-min sm:w-full md:w-2/3">
       <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60">
         <h2 class="mr-auto text-base font-medium">{{ regulation.name }}</h2>
@@ -84,5 +84,8 @@ const update = async () => {
         </Preview.Panel>
       </div>
     </Preview>
+  </div>
+  <div v-else class="text-center m-auto w-1/12">
+    <LoadingIcon icon="oval" color="white" class="w-full" />
   </div>
 </template>
