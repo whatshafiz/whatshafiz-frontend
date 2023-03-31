@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Table from "@/base-components/Table"
-import { useRegulationsStore } from '@/stores/regulations'
+import { useRegulationStore } from '@/stores/regulations'
 import Preview from "@/base-components/Preview"
 import { computed, onBeforeMount, ref } from 'vue';
 import { useAlertStore } from "@/stores/alert";
 import Lucide from "@/base-components/Lucide/Lucide.vue";
 import { useUserStore } from "@/stores/user";
 
-const regulationsStore = useRegulationsStore()
+const regulationStore = useRegulationStore()
 const alert = useAlertStore()
 const user = useUserStore()
 
@@ -15,7 +15,7 @@ const isLoading = ref(true)
 
 onBeforeMount(async () => {
   try {
-    await regulationsStore.fetchRegulations()
+    await regulationStore.fetchRegulations()
     isLoading.value = false
   }
   catch (error) {
@@ -26,7 +26,7 @@ onBeforeMount(async () => {
 })
 
 const regulations = computed(() => {
-  return regulationsStore.getRegulations
+  return regulationStore.getRegulations
 })
 </script>
 

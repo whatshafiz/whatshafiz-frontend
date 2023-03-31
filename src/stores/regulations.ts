@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 type regulation = { id: string, name: string, slug: string, summary: string | null, text: string, created_at: Date, updated_at: Date }
 
-export const useRegulationsStore = defineStore('regulations', {
+export const useRegulationStore = defineStore('regulations', {
     state: () => {
         return {
             regulations: [] as regulation[]

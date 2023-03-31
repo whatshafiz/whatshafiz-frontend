@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from "@/base-components/Button";
-import { useRegulationsStore } from "@/stores/regulations"
+import { useRegulationStore } from "@/stores/regulations"
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useAlertStore } from "@/stores/alert";
@@ -9,14 +9,14 @@ import Preview from "@/base-components/Preview";
 
 const route = useRoute()
 const user = useUserStore()
-const regulationsStore = useRegulationsStore()
+const regulationStore = useRegulationStore()
 const alert = useAlertStore()
 
 const regulation = ref({})
 const isLoading = ref(true)
 onBeforeMount(async () => {
     try {
-        const regulationData = await regulationsStore.fetchRegulation(route.params.slug as string)
+        const regulationData = await regulationStore.fetchRegulation(route.params.slug as string)
         regulation.value = regulationData
         isLoading.value = false
     }

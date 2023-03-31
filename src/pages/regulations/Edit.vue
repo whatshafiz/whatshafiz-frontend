@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from '@/base-components/Button/Button.vue';
 import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
-import { useRegulationsStore } from '@/stores/regulations';
+import { useRegulationStore } from '@/stores/regulations';
 import { inject, onBeforeMount, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAlertStore } from '@/stores/alert';
@@ -17,7 +17,7 @@ const user = useUserStore()
 const isLoading = ref(true)
 const isLoadingSubmit = ref(false)
 const regulationSummary = ref('')
-const regulationStore = useRegulationsStore()
+const regulationStore = useRegulationStore()
 const regulation = ref()
 
 onBeforeMount(async () => {
