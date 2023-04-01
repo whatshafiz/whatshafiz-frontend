@@ -29,6 +29,22 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
+        path: "settings",
+        name: "settings",
+        children: [
+          {
+            path: "",
+            name: "settings.index",
+            component: async () => import("@/pages/settings/Index.vue"),
+          },
+          {
+            path: ":settingId",
+            name: "settings.edit",
+            component: async () => import("@/pages/settings/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "roles",
         name: "roles",
         children: [

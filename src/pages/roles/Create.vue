@@ -51,7 +51,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="user.hasRole('Admin')">
+  <div v-if="user.can('roles.create')">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Yeni Rol Ekle</h2>
     </div>

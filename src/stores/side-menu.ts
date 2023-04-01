@@ -100,7 +100,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
       },
       {
         icon: "Settings",
-        pageName: "settings",
+        pageName: "settings.index",
         title: "Sistem Ayarları",
         permission: "settings.update",
       },
