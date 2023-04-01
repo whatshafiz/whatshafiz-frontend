@@ -6,6 +6,8 @@ export const useAlertStore = defineStore('alert', {
             successMessages: [],
             warningMessages: [],
             errorMessages: [],
+            deleteModalPreview: false,
+            deleteModalAction: () => {},
         }
     },
     getters: {
@@ -32,6 +34,9 @@ export const useAlertStore = defineStore('alert', {
         hasErrorMessage(state) {
             return state.errorMessages.length > 0
         },
+        getDeleteModalAction(state) {
+            return state.deleteModalAction
+        }
     },
     actions: {
         addSuccessMessage(message: string) {
@@ -47,6 +52,12 @@ export const useAlertStore = defineStore('alert', {
             this.successMessages = []
             this.warningMessages = []
             this.errorMessages = []
-        }
+        },
+        setDeleteModalPreview(newValue) {
+            this.deleteModalPreview = newValue
+        },
+        setDeleteModalAction(action) {
+            this.deleteModalAction = action
+        },
     },
 })
