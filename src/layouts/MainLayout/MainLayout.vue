@@ -138,8 +138,8 @@ onMounted(() => {
                         { hidden: !subMenu.activeDropdown },
                       ]">
                         <li v-for="(
-                              lastSubMenu, lastSubMenuKey
-                            ) in subMenu.subMenu" :key="lastSubMenuKey">
+                                  lastSubMenu, lastSubMenuKey
+                                ) in subMenu.subMenu" :key="lastSubMenuKey">
                           <Menu :class="{
                             // Animation
                             [`opacity-0 translate-x-[50px] animate-[0.4s_ease-in-out_0.1s_intro-menu] animate-fill-mode-forwards`]: !lastSubMenu.active,
@@ -225,23 +225,15 @@ onMounted(() => {
         </div>
       </div>
       <div class="px-5 pb-8 text-center">
-        <Button
-          type="button"
-          variant="outline-secondary"
-          class="w-24 mr-4"
-          @click="() => alertStore.setDeleteModalPreview(false)"
-        >
+        <Button type="button" variant="outline-secondary" class="w-24 mr-4"
+          @click="() => alertStore.setDeleteModalPreview(false)">
           İptal
         </Button>
-        <Button
-          type="button"
-          variant="danger"
-          class="w-24"
-          @click="() => {
-            alertStore.getDeleteModalAction()
-            alertStore.setDeleteModalPreview(false)
-            alertStore.setDeleteModalAction(() => {})
-          }
+        <Button type="button" variant="danger" class="w-24" @click="() => {
+          alertStore.getDeleteModalAction()
+          alertStore.setDeleteModalPreview(false)
+          alertStore.setDeleteModalAction(() => { })
+        }
         ">
           Sil
         </Button>

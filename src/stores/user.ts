@@ -50,8 +50,7 @@ export const useUserStore = defineStore('user', {
       try {
         userData = (await api().get('/profile')).data
       } catch (error) {
-        console.log('erkan', error)
-        // this.logout()
+        this.logout()
       }
 
       this.token = localStorage.getItem('token')
