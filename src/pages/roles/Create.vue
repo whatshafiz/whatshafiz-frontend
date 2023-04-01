@@ -48,7 +48,6 @@ const onSubmit = async () => {
     window.scrollTo(0, 0)
   }
 };
-
 </script>
 
 <template>
