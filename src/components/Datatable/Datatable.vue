@@ -6,7 +6,6 @@ import { TabulatorFull as Tabulator } from "tabulator-tables";
 const props = defineProps({
   columns: Array,
   indexUrl: String,
-
 })
 
 const tableRef = ref<HTMLDivElement>();
