@@ -28,6 +28,27 @@ const routes = [
         name: "courses",
         component: async () => import("@/pages/Page2.vue"),
       },
+      {
+        path: "roles",
+        name: "roles",
+        children: [
+          {
+            path: "",
+            name: "roles.index",
+            component: async () => import("@/pages/roles/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "roles.create",
+            component: async () => import("@/pages/roles/Create.vue"),
+          },
+          {
+            path: ":roleId",
+            name: "roles.edit",
+            component: async () => import("@/pages/roles/Edit.vue"),
+          },
+        ],
+      },
     ],
   },
   {
