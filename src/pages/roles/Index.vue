@@ -46,14 +46,14 @@ const tableColumns = [
   // For HTML table
   {
     title: "ID",
-    width: 100,
+    width: 70,
     responsive: 0,
     field: "id",
     vertAlign: "middle",
   },
   {
     title: "ROL ADI",
-    minWidth: 200,
+    minWidth: 100,
     responsive: 1,
     field: "name",
     vertAlign: "middle",
@@ -67,7 +67,7 @@ const tableColumns = [
   },
   {
     title: "İŞLEMLER",
-    minWidth: 200,
+    width: 200,
     field: "actions",
     responsive: 2,
     hozAlign: "center",
