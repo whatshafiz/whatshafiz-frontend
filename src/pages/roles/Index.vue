@@ -75,10 +75,6 @@ const tableColumns = [
     vertAlign: "middle",
     headerSort: false,
     formatter(cell) {
-      if (!user.hasRole('Admin')) {
-        return ''
-      }
-
       const rowData = cell.getData()
       const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
       const editButton =
@@ -98,8 +94,13 @@ const tableColumns = [
         alertStore.setDeleteModalAction(() => deleteRole(rowData.id))
       });
 
-      buttonsHolder.append(editButton)
-      buttonsHolder.append(deleteButton)
+      if (user.can('roles.update')) {
+        buttonsHolder.append(editButton)
+      }
+
+      if (user.can('roles.delete')) {
+        buttonsHolder.append(deleteButton)
+      }
 
       return buttonsHolder
     },
@@ -108,11 +109,11 @@ const tableColumns = [
 </script>
 
 <template>
-  <div>
+  <div v-if="user.can('roles.update')">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
       <h2 class="mr-auto text-lg font-medium">Rol ve Yetki Yönetimi</h2>
-      <div class="flex w-full mt-4 sm:w-auto sm:mt-0">
-        <RouterLink v-if="user.hasRole('Admin')" :to="{ name: 'roles.create' }">
+      <div v-if="user.can('roles.create')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+        <RouterLink :to="{ name: 'roles.create' }">
           <Button variant="primary" class="mr-2 shadow-md">
             Yeni Rol Ekle
           </Button>
@@ -120,6 +121,6 @@ const tableColumns = [
       </div>
     </div>
 
-    <datatable v-if="user.hasRole('Admin')" ref="tableRef" :index-url="roleStore.getIndexURL" :columns="tableColumns" />
+    <datatable ref="tableRef" :index-url="roleStore.getIndexURL" :columns="tableColumns" />
   </div>
 </template>

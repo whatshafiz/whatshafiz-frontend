@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/utils/api'
+import { getBaseUrl } from '@/utils/api'
 
 export const useSettingStore = defineStore('setting', {
   state: () => {
@@ -10,6 +11,9 @@ export const useSettingStore = defineStore('setting', {
   getters: {
     getSettings(state) {
       return state.settings
+    },
+    getIndexURL() {
+      return getBaseUrl('/settings')
     }
   },
   actions: {
@@ -23,8 +27,20 @@ export const useSettingStore = defineStore('setting', {
     getSetting(name) {
       return this.settings.find((setting) => setting.name === name)
     },
+    async fetchSetting(settingId) {
+      return (await api().get('/settings/' + settingId)).data.setting
+    },
     isSettingOpen(name) {
       return this.getSetting(name).value == 1
-    }
+    },
+    async updateSetting(settingId, settingData) {
+      try {
+        return (await api().put('/settings/' + settingId, settingData)).data
+      } catch (response) {
+        console.log('updateSetting error', response)
+
+        throw response
+      }
+    },
   },
 })
