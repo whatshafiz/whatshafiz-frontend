@@ -94,7 +94,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
       },
       {
         icon: "UserCog",
-        pageName: "roles",
+        pageName: "roles.index",
         title: "Rol/Yetki Yönetimi",
         permission: "roles.update",
       },
