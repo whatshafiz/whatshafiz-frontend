@@ -66,7 +66,7 @@ const tableColumns = [
   },
   {
     title: "Kullanıcı Sayısı",
-    minWidth: 50,
+    minWidth: 70,
     responsive: 2,
     field: "users_count",
     vertAlign: "middle",
@@ -75,7 +75,7 @@ const tableColumns = [
     title: "İŞLEMLER",
     width: 150,
     field: "actions",
-    responsive: 2,
+    responsive: 3,
     hozAlign: "center",
     headerHozAlign: "center",
     vertAlign: "middle",
