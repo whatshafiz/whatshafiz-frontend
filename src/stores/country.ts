@@ -53,7 +53,6 @@ export const useCountryStore = defineStore('country', {
             }
         },
         async createCity(countryId, cityName) {
-            console.log(countryId, cityName)
             try {
                 return (await api().post('/countries/' + countryId + '/cities', { name: cityName })).data
             } catch (response) {

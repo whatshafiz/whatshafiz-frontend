@@ -29,7 +29,6 @@ onBeforeMount(async () => {
 
 const onSubmit = async () => {
   isLoading.value = true
-  console.log('erkan')
 
   try {
     await countryStore.createCity(city.country_id, city.name)
@@ -40,7 +39,7 @@ const onSubmit = async () => {
     isLoading.value = false
     window.scrollTo(0, 0)
   }
-};
+}
 </script>
 
 <template>
