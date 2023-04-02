@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/utils/api'
+import { getBaseUrl } from '@/utils/api'
 
 export const useUniversityStore = defineStore('university', {
     state: () => {
@@ -10,7 +11,13 @@ export const useUniversityStore = defineStore('university', {
     getters: {
         getUniversities(state) {
             return state.universities
-        }
+        },
+        getIndexURL() {
+            return getBaseUrl('/universities/paginate')
+        },
+        getFacultiesIndexURL() {
+            return getBaseUrl('/faculties/paginate')
+        },
     },
     actions: {
         async fetchUniversities() {
@@ -18,6 +25,13 @@ export const useUniversityStore = defineStore('university', {
                 this.universities = (await api().get('/universities')).data.universities
 
                 return this.universities
+            } catch (response) {
+                console.log('fetchUniversities error', response)
+            }
+        },
+        async fetchUniversity(universityId) {
+            try {
+                return (await api().get('/universities/' + universityId)).data
             } catch (response) {
                 console.log('fetchUniversities error', response)
             }
@@ -31,11 +45,18 @@ export const useUniversityStore = defineStore('university', {
                 return []
             }
         },
+        async fetchUniversityFaculty(facultyId) {
+            try {
+                return (await api().get('/faculties/' + facultyId)).data
+            } catch (response) {
+                console.log('fetchFaculty error', response)
+            }
+        },
         async fetchUniversityFacultyDepartments(universityId, facultyId) {
             try {
                 return (await api().get('/universities/' + universityId + '/faculties/' + facultyId + '/departments')).data.departments
             } catch (response) {
-                console.log('fetchFaculties error', response)
+                console.log('fetchFacultyDepartments error', response)
 
                 return []
             }
@@ -46,7 +67,7 @@ export const useUniversityStore = defineStore('university', {
             } catch (response) {
                 console.log('create university error', response)
 
-                return []
+                return false
             }
         },
         async createUniversityFaculty(universityId, facultyName) {
@@ -55,7 +76,7 @@ export const useUniversityStore = defineStore('university', {
             } catch (response) {
                 console.log('create university error', response)
 
-                return []
+                return false
             }
         },
         async createUniversityFacultyDepartment(universityId, facultyId, departmentName) {
@@ -65,6 +86,46 @@ export const useUniversityStore = defineStore('university', {
                 console.log('create university error', response)
 
                 return []
+            }
+        },
+        async updateUniversity(universityId, universityName) {
+            try {
+                return (await api().put('/universities/' + universityId, { name: universityName })).data
+            } catch (response) {
+                console.log('update university error', response)
+
+                return false
+            }
+        },
+        async updateUniversityFaculty(facultyId, facultyData) {
+            try {
+                return (await api().put('/faculties/' + facultyId, facultyData)).data
+            } catch (response) {
+                console.log('update faculty error', response)
+
+                return false
+            }
+        },
+        async deleteUniversity(universityId) {
+            try {
+                await api().delete('/universities/' + universityId)
+
+                return true
+            } catch (response) {
+                console.log('deleteUniversity error', response)
+
+                return false
+            }
+        },
+        async deleteFaculty(facultyId) {
+            try {
+                await api().delete('/faculties/' + facultyId)
+
+                return true
+            } catch (response) {
+                console.log('deleteFaculty error', response)
+
+                return false
             }
         },
     },
