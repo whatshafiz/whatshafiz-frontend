@@ -29,18 +29,39 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
-        path: "settings",
-        name: "settings",
+        path: "countries",
+        name: "countries",
         children: [
           {
             path: "",
-            name: "settings.index",
-            component: async () => import("@/pages/settings/Index.vue"),
+            name: "countries.index",
+            component: async () => import("@/pages/countries/Index.vue"),
           },
           {
-            path: ":settingId",
-            name: "settings.edit",
-            component: async () => import("@/pages/settings/Edit.vue"),
+            path: ":countryId",
+            name: "countries.edit",
+            component: async () => import("@/pages/countries/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "cities",
+        name: "cities",
+        children: [
+          {
+            path: "",
+            name: "cities.index",
+            component: async () => import("@/pages/cities/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "cities.create",
+            component: async () => import("@/pages/cities/Create.vue"),
+          },
+          {
+            path: ":cityId",
+            name: "cities.edit",
+            component: async () => import("@/pages/cities/Edit.vue"),
           },
         ],
       },
@@ -62,6 +83,22 @@ const routes = [
             path: ":roleId",
             name: "roles.edit",
             component: async () => import("@/pages/roles/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "settings",
+        name: "settings",
+        children: [
+          {
+            path: "",
+            name: "settings.index",
+            component: async () => import("@/pages/settings/Index.vue"),
+          },
+          {
+            path: ":settingId",
+            name: "settings.edit",
+            component: async () => import("@/pages/settings/Edit.vue"),
           },
         ],
       },
