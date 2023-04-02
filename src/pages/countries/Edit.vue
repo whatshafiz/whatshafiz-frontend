@@ -7,11 +7,14 @@ import { ref, reactive, onMounted, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useCountryStore } from "@/stores/country"
+import { useAlertStore } from "@/stores/alert";
 import Table from "@/base-components/Table";
 import _ from "lodash";
 
 const successNotificationToggle = inject('successNotificationToggle')
+const errorNotificationToggle = inject('errorNotificationToggle')
 const isLoading = ref(false)
+const alertStore = useAlertStore()
 const router = useRouter()
 const route = useRoute()
 const user = useUserStore()
@@ -24,6 +27,20 @@ onMounted(async () => {
   country.value = await countryStore.fetchCountry(countryId)
   cities.value = await countryStore.fetchCountryCities(countryId)
 })
+
+const deleteCity = async (cityId) => {
+  if (await countryStore.deleteCity(cityId)) {
+    successNotificationToggle('İşlem Başarılı', 'Şehir Silindi!')
+    cities.value = await countryStore.fetchCountryCities(countryId)
+  } else {
+    errorNotificationToggle('HATA', 'Şehir Silinemedi!')
+  }
+}
+
+const deleteCityWithModal = (cityId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => deleteCity(cityId))
+}
 
 const onSubmit = async () => {
   isLoading.value = true
@@ -46,7 +63,7 @@ const onSubmit = async () => {
       <h2 class="mr-auto text-lg font-medium">Ülke Bilgilerini Düzenle</h2>
     </div>
     <div class="grid grid-cols-12 gap-6 mt-5">
-      <div class="col-span-12 intro-y lg:col-span-6">
+      <div class="col-span-12 intro-y lg:col-span-5">
         <div class="intro-y box">
           <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
             <h2 class="mr-auto text-base font-medium">Ülke Bilgileri</h2>
@@ -97,7 +114,7 @@ const onSubmit = async () => {
           </div>
         </div>
       </div>
-      <div class="col-span-12 intro-y lg:col-span-6">
+      <div class="col-span-12 intro-y lg:col-span-7">
         <div class="intro-y box">
           <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
             <h2 class="mr-auto text-base font-medium">Şehirler</h2>
@@ -128,22 +145,18 @@ const onSubmit = async () => {
                       class="first:rounded-l-md last:rounded-r-md w-40 bg-white border-b-0 dark:bg-darkmode-600 shadow-[20px_3px_20px_#0000000b] py-0 relative before:block before:w-px before:h-8 before:bg-slate-200 before:absolute before:left-0 before:inset-y-0 before:my-auto before:dark:bg-darkmode-400"
                     >
                       <div class="flex items-center justify-center">
-                        <a class="flex items-center mr-3" href="">
-                          <Lucide icon="CheckSquare" class="w-4 h-4 mr-1" />
-                          Edit
-                        </a>
-                        <a
-                          class="flex items-center text-danger"
-                          href="#"
-                          @click="
-                            (event) => {
-                              event.preventDefault();
-                              setDeleteConfirmationModal(true);
-                            }
-                          "
+                        <span
+                          class="flex items-center mr-3 w-20 cursor-pointer"
+                          @click="() => router.push({ name: 'cities.edit', params: { cityId: city.id } })"
                         >
-                          <Lucide icon="Trash2" class="w-4 h-4 mr-1" /> Delete
-                        </a>
+                          <Lucide icon="CheckSquare" class="w-4 h-4 mr-1" /> Düzenle
+                        </span>
+                        <span
+                          class="flex items-center text-danger cursor-pointer"
+                          @click="() => deleteCityWithModal(city.id)"
+                        >
+                          <Lucide icon="Trash2" class="w-4 h-4 mr-1" /> Sil
+                        </span>
                       </div>
                     </Table.Td>
                   </Table.Tr>

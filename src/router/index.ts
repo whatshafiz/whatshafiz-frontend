@@ -38,14 +38,30 @@ const routes = [
             component: async () => import("@/pages/countries/Index.vue"),
           },
           {
-            path: "new",
-            name: "countries.create",
-            component: async () => import("@/pages/countries/Create.vue"),
-          },
-          {
             path: ":countryId",
             name: "countries.edit",
             component: async () => import("@/pages/countries/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "cities",
+        name: "cities",
+        children: [
+          {
+            path: "",
+            name: "cities.index",
+            component: async () => import("@/pages/cities/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "cities.create",
+            component: async () => import("@/pages/cities/Create.vue"),
+          },
+          {
+            path: ":cityId",
+            name: "cities.edit",
+            component: async () => import("@/pages/cities/Edit.vue"),
           },
         ],
       },

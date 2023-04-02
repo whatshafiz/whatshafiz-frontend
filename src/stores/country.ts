@@ -14,6 +14,9 @@ export const useCountryStore = defineStore('country', {
         },
         getIndexURL() {
             return getBaseUrl('/countries/paginate')
+        },
+        getCitiesIndexURL() {
+            return getBaseUrl('/cities/paginate')
         }
     },
     actions: {
@@ -42,13 +45,30 @@ export const useCountryStore = defineStore('country', {
                 console.log('fetchCountry error', response)
             }
         },
+        async fetchCity(cityId) {
+            try {
+                return (await api().get('/cities/' + cityId)).data.city
+            } catch (response) {
+                console.log('fetchCountry error', response)
+            }
+        },
         async createCity(countryId, cityName) {
+            console.log(countryId, cityName)
             try {
                 return (await api().post('/countries/' + countryId + '/cities', { name: cityName })).data
             } catch (response) {
                 console.log('fetchCountries error', response)
 
                 return []
+            }
+        },
+        async updateCity(cityId, cityData) {
+            try {
+                return (await api().put('/cities/' + cityId, cityData)).data
+            } catch (response) {
+                console.log('createCity error', response)
+
+                throw response
             }
         },
         async updateCountry(countryId, countryData) {
@@ -67,6 +87,17 @@ export const useCountryStore = defineStore('country', {
                 return true
             } catch (response) {
                 console.log('deleteCountry error', response)
+
+                return false
+            }
+        },
+        async deleteCity(cityId) {
+            try {
+                await api().delete('/cities/' + cityId)
+
+                return true
+            } catch (response) {
+                console.log('deleteCity error', response)
 
                 return false
             }
