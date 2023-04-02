@@ -29,18 +29,23 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
-        path: "settings",
-        name: "settings",
+        path: "countries",
+        name: "countries",
         children: [
           {
             path: "",
-            name: "settings.index",
-            component: async () => import("@/pages/settings/Index.vue"),
+            name: "countries.index",
+            component: async () => import("@/pages/countries/Index.vue"),
           },
           {
-            path: ":settingId",
-            name: "settings.edit",
-            component: async () => import("@/pages/settings/Edit.vue"),
+            path: "new",
+            name: "countries.create",
+            component: async () => import("@/pages/countries/Create.vue"),
+          },
+          {
+            path: ":countryId",
+            name: "countries.edit",
+            component: async () => import("@/pages/countries/Edit.vue"),
           },
         ],
       },
@@ -62,6 +67,22 @@ const routes = [
             path: ":roleId",
             name: "roles.edit",
             component: async () => import("@/pages/roles/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "settings",
+        name: "settings",
+        children: [
+          {
+            path: "",
+            name: "settings.index",
+            component: async () => import("@/pages/settings/Index.vue"),
+          },
+          {
+            path: ":settingId",
+            name: "settings.edit",
+            component: async () => import("@/pages/settings/Edit.vue"),
           },
         ],
       },

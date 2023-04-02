@@ -17,7 +17,7 @@ const settingId = route.params.settingId
 const setting = ref({})
 
 onMounted(async () => {  
-  setting.value = (await settingStore.fetchSetting(settingId))
+  setting.value = await settingStore.fetchSetting(settingId)
 })
 
 const onSubmit = async () => {
