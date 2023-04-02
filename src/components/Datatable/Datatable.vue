@@ -6,6 +6,7 @@ import { TabulatorFull as Tabulator } from "tabulator-tables";
 const props = defineProps({
   columns: Array,
   indexUrl: String,
+  initialSort: { type: Object, required: false, default: { column: "id", dir: "desc" } }
 })
 
 const tableRef = ref<HTMLDivElement>();
@@ -34,7 +35,7 @@ const initTabulator = () => {
       responsiveLayoutCollapseStartOpen: false,
       selectable: false,
       initialSort: [
-        { column: "id", dir: "desc" },
+        props.initialSort,
       ],
       columns: props.columns,
     });
