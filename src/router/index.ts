@@ -29,6 +29,69 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
+        path: "universities",
+        name: "universities",
+        children: [
+          {
+            path: "",
+            name: "universities.index",
+            component: async () => import("@/pages/universities/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "universities.create",
+            component: async () => import("@/pages/universities/Create.vue"),
+          },
+          {
+            path: ":universityId",
+            name: "universities.edit",
+            component: async () => import("@/pages/universities/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "faculties",
+        name: "faculties",
+        children: [
+          {
+            path: "",
+            name: "faculties.index",
+            component: async () => import("@/pages/faculties/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "faculties.create",
+            component: async () => import("@/pages/faculties/Create.vue"),
+          },
+          {
+            path: ":facultyId",
+            name: "faculties.edit",
+            component: async () => import("@/pages/faculties/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "departments",
+        name: "departments",
+        children: [
+          {
+            path: "",
+            name: "departments.index",
+            component: async () => import("@/pages/departments/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "departments.create",
+            component: async () => import("@/pages/departments/Create.vue"),
+          },
+          {
+            path: ":departmentId",
+            name: "departments.edit",
+            component: async () => import("@/pages/departments/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "countries",
         name: "countries",
         children: [
