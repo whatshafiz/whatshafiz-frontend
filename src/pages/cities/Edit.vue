@@ -88,11 +88,14 @@ const onSubmit = async () => {
                 <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
                 Kaydet
               </Button>
-              <RouterLink :to="{ name: 'countries.index' }">
-                <Button variant="outline-secondary" type="button" class="mt-5 mr-5">
-                  İptal
-                </Button>
-              </RouterLink>
+              <Button
+                variant="outline-secondary"
+                type="button"
+                class="mt-5 mr-5"
+                @click="() => router.go(-1)"
+              >
+                İptal
+              </Button>
             </form>
           </div>
         </div>

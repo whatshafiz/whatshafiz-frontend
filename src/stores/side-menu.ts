@@ -85,6 +85,26 @@ export const useSideMenuStore = defineStore("sideMenu", {
         pageName: "universities.index",
         title: "Üniversiteler/Fakülteler",
         permission: "universities.update",
+        subMenu: [
+          {
+            icon: "GraduationCap",
+            pageName: "universities.index",
+            title: "Üniversiteler",
+            permission: "universities.update",
+          },
+          {
+            icon: "Building",
+            pageName: "faculties.index",
+            title: "Fakülteler",
+            permission: "universities.update",
+          },
+          {
+            icon: "Landmark",
+            pageName: "departments.index",
+            title: "Bölümler",
+            permission: "universities.update",
+          },
+        ],
       },
       {
         icon: "Globe2",
