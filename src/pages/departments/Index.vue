@@ -22,12 +22,12 @@ const router = useRouter()
 const user = useUserStore()
 const universityStore = useUniversityStore()
 
-const deleteUniversity = async (universityId) => {
-  if (await universityStore.deleteUniversity(universityId)) {
-    successNotificationToggle('İşlem Başarılı', 'Üniversite Silindi!')
+const deleteDepartment = async (departmentId) => {
+  if (await universityStore.deleteDepartment(departmentId)) {
+    successNotificationToggle('İşlem Başarılı', 'Bölüm Silindi!')
     tableRef.value.refreshData()
   } else {
-    errorNotificationToggle('HATA', 'Üniversite Silinemedi!')
+    errorNotificationToggle('HATA', 'Bölüm Silinemedi!')
   }
 }
 
@@ -51,11 +51,18 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
-    title: "Üniversite",
+    title: "Bölüm",
     minWidth: 200,
     responsive: 1,
     field: "name",
     vertAlign: "middle",
+    formatter(cell) {
+      const response: Response = cell.getData();
+      return `<div>
+        <div class="font-medium whitespace-nowrap">${response.name}</div>
+        <div class="text-xs text-slate-500 whitespace-nowrap">${response.university.name} - ${response.faculty.name}</div>
+      </div>`;
+    },
   },
   {
     title: "Kullanıcı Sayısı",
@@ -65,24 +72,10 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
-    title: "Fakülte Sayısı",
-    minWidth: 50,
-    responsive: 3,
-    field: "faculties_count",
-    vertAlign: "middle",
-  },
-  {
-    title: "Toplam Bölüm Sayısı",
-    minWidth: 50,
-    responsive: 4,
-    field: "departments_count",
-    vertAlign: "middle",
-  },
-  {
     title: "İŞLEMLER",
     width: 150,
     field: "actions",
-    responsive: 5,
+    responsive: 4,
     hozAlign: "center",
     headerHozAlign: "center",
     vertAlign: "middle",
@@ -100,11 +93,11 @@ const tableColumns = [
                             </a>`);
 
       editButton.addEventListener("click", function () {
-        router.push({ name: 'universities.edit', params: { universityId: rowData.id } })
+        router.push({ name: 'departments.edit', params: { departmentId: rowData.id } })
       });
       deleteButton.addEventListener("click", function (event) {
         alertStore.setDeleteModalPreview(true)
-        alertStore.setDeleteModalAction(() => deleteUniversity(rowData.id))
+        alertStore.setDeleteModalAction(() => deleteDepartment(rowData.id))
       });
 
       if (user.can('universities.update')) {
@@ -124,16 +117,16 @@ const tableColumns = [
 <template>
   <div v-if="user.can('universities.update')">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 class="mr-auto text-lg font-medium">Üniversiteler</h2>
+      <h2 class="mr-auto text-lg font-medium">Tüm Bölümler</h2>
       <div class="flex w-full mt-4 sm:w-auto sm:mt-0">
-        <RouterLink :to="{ name: 'universities.create' }">
+        <RouterLink :to="{ name: 'departments.create' }">
           <Button variant="primary" class="mr-2 shadow-md">
-            Yeni Üniversite Ekle
+            Yeni Üniversite Bölümü Ekle
           </Button>
         </RouterLink>
       </div>
     </div>
 
-    <datatable ref="tableRef" :index-url="universityStore.getIndexURL" :columns="tableColumns" />
+    <datatable ref="tableRef" :index-url="universityStore.getDepartmentsIndexURL" :columns="tableColumns" />
   </div>
 </template>

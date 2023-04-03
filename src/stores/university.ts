@@ -18,6 +18,9 @@ export const useUniversityStore = defineStore('university', {
         getFacultiesIndexURL() {
             return getBaseUrl('/faculties/paginate')
         },
+        getDepartmentsIndexURL() {
+            return getBaseUrl('/departments/paginate')
+        },
     },
     actions: {
         async fetchUniversities() {
@@ -61,6 +64,15 @@ export const useUniversityStore = defineStore('university', {
                 return []
             }
         },
+        async fetchUniversityFacultyDepartment(departmentId) {
+            try {
+                return (await api().get('/departments/' + departmentId)).data
+            } catch (response) {
+                console.log('fetchFacultyDepartments error', response)
+
+                return []
+            }
+        },
         async createUniversity(universityName) {
             try {
                 return (await api().post('/universities', { name: universityName })).data
@@ -74,7 +86,7 @@ export const useUniversityStore = defineStore('university', {
             try {
                 return (await api().post('/universities/' + universityId + '/faculties', { name: facultyName })).data
             } catch (response) {
-                console.log('create university error', response)
+                console.log('create university faculty error', response)
 
                 return false
             }
@@ -83,9 +95,9 @@ export const useUniversityStore = defineStore('university', {
             try {
                 return (await api().post('/universities/' + universityId + '/faculties/' + facultyId + '/departments', { name: departmentName })).data
             } catch (response) {
-                console.log('create university error', response)
+                console.log('create university department error', response)
 
-                return []
+                return false
             }
         },
         async updateUniversity(universityId, universityName) {
@@ -102,6 +114,15 @@ export const useUniversityStore = defineStore('university', {
                 return (await api().put('/faculties/' + facultyId, facultyData)).data
             } catch (response) {
                 console.log('update faculty error', response)
+
+                return false
+            }
+        },
+        async updateUniversityFacultyDepartment(departmentId, departmentData) {
+            try {
+                return (await api().put('/departments/' + departmentId, departmentData)).data
+            } catch (response) {
+                console.log('update department error', response)
 
                 return false
             }
@@ -124,6 +145,17 @@ export const useUniversityStore = defineStore('university', {
                 return true
             } catch (response) {
                 console.log('deleteFaculty error', response)
+
+                return false
+            }
+        },
+        async deleteDepartment(departmentId) {
+            try {
+                await api().delete('/departments/' + departmentId)
+
+                return true
+            } catch (response) {
+                console.log('deleteDepartment error', response)
 
                 return false
             }

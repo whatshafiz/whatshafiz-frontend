@@ -8,10 +8,12 @@ import { ref, reactive, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useUniversityStore } from "@/stores/university"
+import { useAlertStore } from "@/stores/alert";
 import _ from "lodash";
 
 const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
+const alertStore = useAlertStore()
 const router = useRouter()
 const route = useRoute()
 const user = useUserStore()
@@ -21,8 +23,22 @@ const universityId = route.params.universityId
 
 onBeforeMount(async () => {
   university.value = await universityStore.fetchUniversity(universityId)
-  console.log(university.value.name)
 })
+
+const deleteFaculty = async (facultyId) => {
+  if (await universityStore.deleteFaculty(facultyId)) {
+    successNotificationToggle('İşlem Başarılı', 'Fakülte Silindi!')
+    university.value.faculties = []
+    university.value.faculties = await universityStore.fetchUniversityFaculties(universityId)
+  } else {
+    errorNotificationToggle('HATA', 'Fakülte Silinemedi!')
+  }
+}
+
+const deleteFacultyWithModal = (facultyId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => deleteFaculty(facultyId))
+}
 
 const onSubmit = async () => {
   isLoading.value = true
@@ -42,6 +58,13 @@ const onSubmit = async () => {
   <div v-if="user.can('universities.update')">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Üniversite Düzenleme</h2>
+      <div class="flex w-full mt-4 sm:w-auto sm:mt-0" v-if="universityId">
+        <RouterLink :to="{ name: 'faculties.create', query: { universityId: universityId }}">
+          <Button variant="primary" class="mr-2 shadow-md">
+            Yeni Fakülte Ekle
+          </Button>
+        </RouterLink>
+      </div>
     </div>
     <div class="grid grid-cols-12 gap-6 mt-5">
       <div class="col-span-12 intro-y lg:col-span-5">
@@ -66,11 +89,14 @@ const onSubmit = async () => {
                 <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
                 Kaydet
               </Button>
-              <RouterLink :to="{ name: 'universities.index' }">
-                <Button variant="outline-secondary" type="button" class="mt-5 mr-5">
-                  İptal
-                </Button>
-              </RouterLink>
+              <Button
+                variant="outline-secondary"
+                type="button"
+                class="mt-5 mr-5"
+                @click="() => router.go(-1)"
+              >
+                İptal
+              </Button>
             </form>
           </div>
         </div>

@@ -56,6 +56,20 @@ const tableColumns = [
     responsive: 1,
     field: "name",
     vertAlign: "middle",
+    formatter(cell) {
+      const response: Response = cell.getData();
+      return `<div>
+        <div class="font-medium whitespace-nowrap">${response.name}</div>
+        <div class="text-xs text-slate-500 whitespace-nowrap">${response.university.name}</div>
+      </div>`;
+    },
+  },
+  {
+    title: "Kullanıcı Sayısı",
+    minWidth: 50,
+    responsive: 2,
+    field: "users_count",
+    vertAlign: "middle",
   },
   {
     title: "Bölüm Sayısı",
