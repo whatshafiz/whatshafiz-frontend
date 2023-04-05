@@ -84,9 +84,9 @@ watch(sideMenu, () => {
 });
 
 onBeforeMount(async () => {
-  if (localStorage.getItem('newCourseRegisterType')) {
-    console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
-  }
+  // if (localStorage.getItem('newCourseRegisterType')) {
+  //   console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
+  // }
 });
 
 onMounted(() => {
