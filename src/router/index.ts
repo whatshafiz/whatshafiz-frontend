@@ -14,6 +14,169 @@ const routes = [
         component: async () => import("@/pages/Dashboard.vue"),
       },
       {
+        path: "page-2",
+        name: "courses",
+        component: async () => import("@/pages/Page2.vue"),
+      },
+      {
+        path: "universities",
+        name: "universities",
+        children: [
+          {
+            path: "",
+            name: "universities.index",
+            component: async () => import("@/pages/universities/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "universities.create",
+            component: async () => import("@/pages/universities/Create.vue"),
+          },
+          {
+            path: ":universityId",
+            name: "universities.edit",
+            component: async () => import("@/pages/universities/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "faculties",
+        name: "faculties",
+        children: [
+          {
+            path: "",
+            name: "faculties.index",
+            component: async () => import("@/pages/faculties/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "faculties.create",
+            component: async () => import("@/pages/faculties/Create.vue"),
+          },
+          {
+            path: ":facultyId",
+            name: "faculties.edit",
+            component: async () => import("@/pages/faculties/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "departments",
+        name: "departments",
+        children: [
+          {
+            path: "",
+            name: "departments.index",
+            component: async () => import("@/pages/departments/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "departments.create",
+            component: async () => import("@/pages/departments/Create.vue"),
+          },
+          {
+            path: ":departmentId",
+            name: "departments.edit",
+            component: async () => import("@/pages/departments/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "countries",
+        name: "countries",
+        children: [
+          {
+            path: "",
+            name: "countries.index",
+            component: async () => import("@/pages/countries/Index.vue"),
+          },
+          {
+            path: ":countryId",
+            name: "countries.edit",
+            component: async () => import("@/pages/countries/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "cities",
+        name: "cities",
+        children: [
+          {
+            path: "",
+            name: "cities.index",
+            component: async () => import("@/pages/cities/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "cities.create",
+            component: async () => import("@/pages/cities/Create.vue"),
+          },
+          {
+            path: ":cityId",
+            name: "cities.edit",
+            component: async () => import("@/pages/cities/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "roles",
+        name: "roles",
+        children: [
+          {
+            path: "",
+            name: "roles.index",
+            component: async () => import("@/pages/roles/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "roles.create",
+            component: async () => import("@/pages/roles/Create.vue"),
+          },
+          {
+            path: ":roleId",
+            name: "roles.edit",
+            component: async () => import("@/pages/roles/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "settings",
+        name: "settings",
+        children: [
+          {
+            path: "",
+            name: "settings.index",
+            component: async () => import("@/pages/settings/Index.vue"),
+          },
+          {
+            path: ":settingId",
+            name: "settings.edit",
+            component: async () => import("@/pages/settings/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "regulations",
+        name: "regulations",
+        children: [
+          {
+            path: "",
+            name: "regulations.index",
+            component: async () => import("@/pages/regulations/Index.vue"),
+          },
+          {
+            path: ":regulation",
+            name: "regulations.view",
+            component: async () => import("@/pages/regulations/View.vue"),
+          },
+          {
+            path: ":regulation/edit",
+            name: "regulations.edit",
+            component: async () => import("@/pages/regulations/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "/profile",
         name: "profile",
         component: async () => import("@/pages/users/Profile.vue"),
@@ -22,26 +185,6 @@ const routes = [
         path: "/profile/edit",
         name: "profile.edit",
         component: async () => import("@/pages/users/ProfileEdit.vue"),
-      },
-      {
-        path: "page-2",
-        name: "courses",
-        component: async () => import("@/pages/Page2.vue"),
-      },
-      {
-        path: '/regulations',
-        name: "regulations.list",
-        component: async () => import("@/pages/regulations/List.vue"),
-      },
-      {
-        path: "/regulations/:slug",
-        name: "regulations.view",
-        component: async () => import("@/pages/regulations/View.vue"),
-      },
-      {
-        path: "/regulations/:slug/edit",
-        name: "regulations.update",
-        component: async () => import("@/pages/regulations/Edit.vue"),
       },
     ],
   },
