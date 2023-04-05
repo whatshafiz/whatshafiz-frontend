@@ -34,7 +34,6 @@
    | Import 3rd party library CSS files.
    |
    */
-@import "simplebar/src/simplebar.css";
 @import "dropzone/dist/dropzone.css";
 @import "tabulator-tables/dist/css/tabulator.css";
 @import "tom-select/dist/css/tom-select.css";
@@ -71,5 +70,6 @@
 @import "./components/_litepicker.css";
 @import "./components/_full-calendar.css";
 @import "./components/_tabulator.css";
+@import "./components/_sidebar.css";
 
 @import "./custom.css";
