@@ -3,27 +3,14 @@ import Button from "@/base-components/Button";
 import { useRegulationStore } from "@/stores/regulation"
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useAlertStore } from "@/stores/alert";
-import { useUserStore } from "@/stores/user";
 import Preview from "@/base-components/Preview";
 
 const route = useRoute()
-const user = useUserStore()
 const regulationStore = useRegulationStore()
-const alert = useAlertStore()
-
 const regulation = ref({})
-const isLoading = ref(true)
+
 onBeforeMount(async () => {
-  try {
-    const regulationData = await regulationStore.fetchRegulation(route.params.slug as string)
-    regulation.value = regulationData
-    isLoading.value = false
-  }
-  catch (error) {
-    isLoading.value = false
-    alert.addErrorMessage('Yönetmelik görüntülenemedi')
-  }
+  regulation.value = await regulationStore.fetchRegulation(route.params.regulation as string)
 })
 </script>
 
@@ -32,9 +19,9 @@ onBeforeMount(async () => {
     <h2 class="mr-auto text-lg font-medium">Yönetmelikler</h2>
   </div>
   <div class="overflow-x-auto">
-    <Preview class="mt-5 box h-1/2 sm:w-full md:w-1/2">
+    <Preview class="mt-5 intro-y box h-min sm:w-full md:w-2/3"> 
       <div class="p-5 border-b sm:flex-row border-slate-200/60">
-        <h2 class="mr-auto text-base font-medium">{{ regulation.name }}</h2>
+        <h2 class="mr-auto text-base font-medium">{{ regulation.name }} Yönetmeliği</h2>
       </div>
       <div class="p-5">
         <Preview.Panel>
@@ -54,7 +41,7 @@ onBeforeMount(async () => {
             </div>
             <div class="flex gap-3 m-5 justify-end">
               <RouterLink :to="{ name: 'regulations.index' }">
-                <Button variant="primary" class="w-24 mb-2 mr-1">
+                <Button variant="outline-primary" class="w-24 mb-2 mr-1">
                   Geri
                 </Button>
               </RouterLink>

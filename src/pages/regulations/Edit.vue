@@ -3,7 +3,7 @@ import Button from '@/base-components/Button/Button.vue';
 import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
 import { useRegulationStore } from '@/stores/regulation';
 import { inject, onBeforeMount, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAlertStore } from '@/stores/alert';
 import { useUserStore } from '@/stores/user';
 import LoadingIcon from '@/base-components/LoadingIcon';
@@ -12,69 +12,60 @@ import Preview from '@/base-components/Preview';
 const successNotificationToggle: any = inject('successNotificationToggle')
 const route = useRoute()
 const alert = useAlertStore()
-
+const router = useRouter()
 const user = useUserStore()
-const isLoading = ref(true)
-const isLoadingSubmit = ref(false)
-const regulationSummary = ref('')
+const isLoading = ref(false)
 const regulationStore = useRegulationStore()
-const regulation = ref()
+const regulationSlug = ref('')
+const regulation = ref({})
 
 onBeforeMount(async () => {
-  try {
-    const regulationData = await regulationStore.fetchRegulation(route.params.slug as string)
-    regulation.value = regulationData
-    regulationSummary.value = regulation.value.summary ?? ''
-    isLoading.value = false
-  }
-  catch (error) {
-    isLoading.value = false
-    alert.addErrorMessage("Yönetmelik alınamadı")
-  }
+  regulationSlug.value = route.params.regulation
+  regulation.value = await regulationStore.fetchRegulation(regulationSlug.value)
 })
 
-const update = async () => {
-  isLoadingSubmit.value = true
-  const dataToUpdate = new FormData()
-  dataToUpdate.append('summary', regulationSummary.value)
-  dataToUpdate.append('text', regulation.value.text)
+const onSubmit = async () => {
+  isLoading.value = true
+
   try {
-    await regulationStore.updateRegulation(route.params.slug as string, dataToUpdate)
-    successNotificationToggle('İşlem Başarılı', 'Yönetmelik güncellendi')
+    await regulationStore.updateRegulation(regulationSlug.value, regulation.value)
+    successNotificationToggle('İşlem Başarılı', regulation.value.name + ' Yönetmeliği Güncellendi')
+    isLoading.value = false
+    router.push({ name: 'regulations.index' })
   }
   catch (error) {
     alert.addErrorMessage("Yönetmelik güncellenemedi")
+    isLoading.value = false
   }
-  isLoadingSubmit.value = false
 }
 </script>
 
 <template>
   <div class="flex items-center mt-8 intro-y">
-    <h2 class="mr-auto text-lg font-medium">Yönetmelikler</h2>
+    <h2 class="mr-auto text-lg font-medium">Yönetmelik Güncelleme</h2>
   </div>
-  <div v-if="!isLoading" class="overflow-x-auto">
+  <div v-if="user.can('regulations.update')" class="overflow-x-auto">
     <Preview class="mt-5 intro-y box h-min sm:w-full md:w-2/3">
       <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60">
-        <h2 class="mr-auto text-base font-medium">{{ regulation.name }}</h2>
+        <h2 class="mr-auto text-base font-medium">{{ regulation.name }} Yönetmeliği Güncelle</h2>
       </div>
-      <div class="p-5">
+      <div class="p-5" v-if="regulation.id">
         <Preview.Panel>
           <div class="overflow-x-auto">
             <div class="flex items-center mb-4">
               <div class="text-lg font-medium">Özet</div>
             </div>
-            <ClassicEditor v-model="regulationSummary" />
+            <ClassicEditor v-model="regulation.summary" :value="regulation.summary" />
             <div class="flex items-center mt-5 mb-4">
               <div class="text-lg font-medium">Yönetmelik</div>
             </div>
-            <ClassicEditor v-model="regulation.text" />
+            <ClassicEditor v-model="regulation.text" :value="regulation.text" />
             <div class="flex gap-3 m-5 justify-end">
-              <Button variant="primary" class="w-24 mb-2 mr-1 " @click="() => update()" :disabled="isLoadingSubmit">
-                <LoadingIcon v-show="isLoadingSubmit" icon="oval" color="white" class="w-4 h-4 mr-1 " />
+              <Button variant="primary" class="w-24 mb-2 mr-1 " @click="() => onSubmit()" :disabled="isLoading">
+                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-1 " />
                 Güncelle
               </Button>
-              <RouterLink :to="{ name: 'regulations.list' }">
+              <RouterLink :to="{ name: 'regulations.index' }">
                 <Button variant="outline-primary" class="w-24 mb-2 mr-1">
                   Geri
                 </Button>
@@ -84,8 +75,5 @@ const update = async () => {
         </Preview.Panel>
       </div>
     </Preview>
-  </div>
-  <div v-else class="text-center m-auto w-1/12">
-    <LoadingIcon icon="oval" color="white" class="w-full" />
   </div>
 </template>
