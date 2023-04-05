@@ -82,9 +82,110 @@ onMounted(() => {
       </a>
     </div>
     <div
-      ref="scrollableRef"
+      :class="
+        twMerge([
+          'h-screen z-20 top-0 left-0 w-[270px] -ml-[100%] bg-primary transition-all duration-300 ease-in-out dark:bg-darkmode-800',
+          '[&[data-simplebar]]:fixed [&_.simplebar-scrollbar]:before:bg-black/50',
+          activeMobileMenu && 'ml-0',
+        ])
+      "
     >
-      ERKANNNN
+      <a
+        href="#"
+        @click="(e) => e.preventDefault()"
+        :class="[
+          'fixed top-0 right-0 mt-4 mr-4 transition-opacity duration-200 ease-in-out',
+          !activeMobileMenu && 'invisible opacity-0',
+          activeMobileMenu && 'visible opacity-100',
+        ]"
+      >
+        <Lucide
+          icon="XCircle"
+          class="w-8 h-8 text-white transform -rotate-90"
+          @click="
+            () => {
+              setActiveMobileMenu(!activeMobileMenu);
+            }
+          "
+        />
+      </a>
+      <ul class="py-2">
+        <!-- BEGIN: First Child -->
+        <template v-for="(menu, menuKey) in formattedMenu">
+          <Divider
+            v-if="menu == 'divider'"
+            as="li"
+            class="my-6"
+            :key="'divider-' + menuKey"
+          ></Divider>
+          <li v-else-if="!menu.ignore && user.can(menu.permission)" :key="menuKey">
+            <Menu
+              :menu="menu"
+              :formattedMenuState="[formattedMenu, setFormattedMenu]"
+              level="first"
+              :setActiveMobileMenu="setActiveMobileMenu"
+            ></Menu>
+            <!-- BEGIN: Second Child -->
+            <Transition @enter="enter" @leave="leave" v-if="menu.subMenu">
+              <ul
+                v-if="menu.subMenu && menu.activeDropdown"
+                :class="[
+                  'bg-black/10 rounded-lg mx-4 my-1 dark:bg-darkmode-700',
+                  !menu.activeDropdown && 'hidden',
+                  menu.activeDropdown && 'block',
+                ]"
+              >
+                <li
+                  v-for="(subMenu, subMenuKey) in menu.subMenu"
+                  class="max-w-[1280px] w-full mx-auto"
+                  :key="subMenuKey"
+                >
+                  <Menu
+                    :menu="subMenu"
+                    :formattedMenuState="[formattedMenu, setFormattedMenu]"
+                    level="second"
+                    :setActiveMobileMenu="setActiveMobileMenu"
+                  ></Menu>
+                  <!-- BEGIN: Third Child -->
+                  <Transition
+                    @enter="enter"
+                    @leave="leave"
+                    v-if="subMenu.subMenu"
+                  >
+                    <ul
+                      v-if="subMenu.subMenu && subMenu.activeDropdown"
+                      :class="[
+                        'bg-black/10 rounded-lg my-1 dark:bg-darkmode-600',
+                        !subMenu.activeDropdown && 'hidden',
+                        subMenu.activeDropdown && 'block',
+                      ]"
+                    >
+                      <li
+                        v-for="(lastSubMenu, lastSubMenuKey) in subMenu.subMenu"
+                        class="max-w-[1280px] w-full mx-auto"
+                        :key="lastSubMenuKey"
+                      >
+                        <Menu
+                          :menu="lastSubMenu"
+                          :formattedMenuState="[
+                            formattedMenu,
+                            setFormattedMenu,
+                          ]"
+                          level="third"
+                          :setActiveMobileMenu="setActiveMobileMenu"
+                        ></Menu>
+                      </li>
+                    </ul>
+                  </Transition>
+                  <!-- END: Third Child -->
+                </li>
+              </ul>
+            </Transition>
+            <!-- END: Second Child -->
+          </li>
+        </template>
+        <!-- END: First Child -->
+      </ul>
     </div>
   </div>
   <!-- END: Mobile Menu -->
