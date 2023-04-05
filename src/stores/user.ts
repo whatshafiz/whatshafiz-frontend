@@ -38,7 +38,7 @@ export const useUserStore = defineStore('user', {
 
       var [resource, action] = permission.split('.')
 
-      if (this.permissions.includes(resource + ".*")) {
+      if (this.permissions.includes(resource + '.*')) {
         return true
       }
 

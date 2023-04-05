@@ -2,7 +2,7 @@
 import Button from '@/base-components/Button/Button.vue';
 import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
 import { useRegulationStore } from '@/stores/regulation';
-import { inject, onBeforeMount, reactive, ref } from 'vue';
+import { inject, onBeforeMount, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAlertStore } from '@/stores/alert';
 import { useUserStore } from '@/stores/user';

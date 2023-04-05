@@ -32,7 +32,6 @@ onBeforeMount(async () => {
                 <div class="" v-html="regulation.summary"></div>
               </div>
             </div>
-
             <div class="flex flex-col gap-4">
               <div class="text-lg font-medium">Yönetmelik</div>
               <div class="box border-2 border-primary h-min p-6 dark:border-white">
