@@ -83,13 +83,6 @@ onMounted(() => {
     </div>
     <div
       ref="scrollableRef"
-      :class="
-        twMerge([
-          'h-screen z-20 top-0 left-0 w-[270px] -ml-[100%] bg-primary transition-all duration-300 ease-in-out dark:bg-darkmode-800',
-          '[&[data-simplebar]]:fixed [&_.simplebar-scrollbar]:before:bg-black/50',
-          activeMobileMenu && 'ml-0',
-        ])
-      "
     >
       ERKANNNN
     </div>
