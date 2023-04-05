@@ -77,16 +77,14 @@ const setFormattedMenu = (
 const sideMenuStore = useSideMenuStore();
 const sideMenu = computed(() => nestedMenu(sideMenuStore.menu, route));
 
-provide('user', user)
-
 watch(sideMenu, () => {
   setFormattedMenu(sideMenu.value)
 });
 
 onBeforeMount(async () => {
-  // if (localStorage.getItem('newCourseRegisterType')) {
-  //   console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
-  // }
+  if (localStorage.getItem('newCourseRegisterType')) {
+    console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
+  }
 });
 
 onMounted(() => {
