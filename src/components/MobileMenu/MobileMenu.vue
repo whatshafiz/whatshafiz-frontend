@@ -40,7 +40,7 @@ watch(sideMenu, () => {
 
 onMounted(() => {
   if (scrollableRef.value) {
-    new SimpleBar(scrollableRef.value);
+
   }
 
   setFormattedMenu(sideMenu.value);
@@ -82,6 +82,7 @@ onMounted(() => {
       </a>
     </div>
     <div
+      ref="scrollableRef"
       :class="
         twMerge([
           'h-screen z-20 top-0 left-0 w-[270px] -ml-[100%] bg-primary transition-all duration-300 ease-in-out dark:bg-darkmode-800',
