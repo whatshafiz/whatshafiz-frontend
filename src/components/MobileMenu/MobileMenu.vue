@@ -23,19 +23,6 @@ const setActiveMobileMenu = (active: boolean) => {
   activeMobileMenu.value = active;
 };
 
-const scrollableRef = ref<HTMLDivElement>();
-
-watch(sideMenu, () => {
-  setFormattedMenu(sideMenu.value);
-});
-
-onMounted(() => {
-  if (scrollableRef.value) {
-    new SimpleBar(scrollableRef.value);
-  }
-
-  setFormattedMenu(sideMenu.value);
-});
 </script>
 
 <template>
