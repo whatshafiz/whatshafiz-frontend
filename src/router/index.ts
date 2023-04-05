@@ -14,16 +14,6 @@ const routes = [
         component: async () => import("@/pages/Dashboard.vue"),
       },
       {
-        path: "/profile",
-        name: "profile",
-        component: async () => import("@/pages/users/Profile.vue"),
-      },
-      {
-        path: "/profile/edit",
-        name: "profile.edit",
-        component: async () => import("@/pages/users/ProfileEdit.vue"),
-      },
-      {
         path: "page-2",
         name: "courses",
         component: async () => import("@/pages/Page2.vue"),
@@ -165,6 +155,37 @@ const routes = [
           },
         ],
       },
+      {
+        path: "regulations",
+        name: "regulations",
+        children: [
+          {
+            path: "",
+            name: "regulations.index",
+            component: async () => import("@/pages/regulations/Index.vue"),
+          },
+          {
+            path: ":regulation",
+            name: "regulations.view",
+            component: async () => import("@/pages/regulations/View.vue"),
+          },
+          {
+            path: ":regulation/edit",
+            name: "regulations.edit",
+            component: async () => import("@/pages/regulations/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        component: async () => import("@/pages/users/Profile.vue"),
+      },
+      {
+        path: "/profile/edit",
+        name: "profile.edit",
+        component: async () => import("@/pages/users/ProfileEdit.vue"),
+      },
     ],
   },
   {
@@ -199,7 +220,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const guestRoutes = ['login', 'logout', 'register']
-  
+
   if (guestRoutes.includes(to.name)) {
     return true
   }

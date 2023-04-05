@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', {
         return true
       }
 
-      if(this.roles.includes('Admin')) {
+      if (this.roles.includes('Admin')) {
         return true
       }
 
@@ -36,7 +36,7 @@ export const useUserStore = defineStore('user', {
         return true
       }
 
-      var [resource , action] = permission.split('.')
+      var [resource, action] = permission.split('.')
 
       if (this.permissions.includes(resource + '.*')) {
         return true

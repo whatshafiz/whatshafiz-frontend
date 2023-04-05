@@ -141,7 +141,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
       "divider",
       {
         icon: "Scroll",
-        pageName: "regulations",
+        pageName: "regulations.index",
         title: "Yönetmelikler",
       },
       {
