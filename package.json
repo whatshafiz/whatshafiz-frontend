@@ -36,7 +36,7 @@
     "lucide": "^0.90.0",
     "lucide-vue-next": "^0.95.0",
     "pinia": "^2.0.33",
-    "simplebar": "^5.3.9",
+    "simplebar": "^6.2.4",
     "tabulator-tables": "^5.3.4",
     "tiny-slider": "^2.9.4",
     "tippy.js": "^6.3.7",
