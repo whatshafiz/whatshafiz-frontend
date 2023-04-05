@@ -4,7 +4,7 @@ import api from '@/utils/api'
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      token: '568|bcj0X4Un3JWMPccqY98leRimhuQCZKmW7AQRKT9I',
+      token: null,
       profile: {},
       permissions: [],
       roles: [],
@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     isLoggedIn() {
-      if (false) {
+      if (!localStorage.getItem('token')) {
         return false
       }
 
@@ -53,7 +53,7 @@ export const useUserStore = defineStore('user', {
         this.logout()
       }
 
-      this.token = '568|bcj0X4Un3JWMPccqY98leRimhuQCZKmW7AQRKT9I'
+      this.token = localStorage.getItem('token')
       this.profile = userData.user
       this.permissions = userData.permissions
       this.roles = userData.roles
