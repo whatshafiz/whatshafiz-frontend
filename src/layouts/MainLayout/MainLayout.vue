@@ -6,7 +6,6 @@ import TopBar from "../../components/TopBar";
 import Alert from "@/base-components/Alert";
 import Lucide from "@/base-components/Lucide";
 import DarkModeSwitcher from "../../components/DarkModeSwitcher";
-import MobileMenu from "../../components/MobileMenu";
 import { useSideMenuStore } from "../../stores/side-menu";
 import { useUserStore } from "@/stores/user";
 import { useAlertStore } from "@/stores/alert";
@@ -97,7 +96,6 @@ onMounted(() => {
 <template>
   <div class="py-5 md:py-0">
     <DarkModeSwitcher />
-    <MobileMenu />
     <TopBar layout="side-menu" />
     <div class="flex overflow-hidden">
       <!-- BEGIN: Side Menu -->
