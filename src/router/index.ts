@@ -235,19 +235,16 @@ router.beforeEach(async (to, from) => {
     await user.fetchProfile()
   }
 
-  if (user.profile.phone_number_verified_at === null) {
+  if (user.profile.phone_number_verified_at === null && to.name !== 'verify-phone-number') {
     const settingStore = useSettingStore()
     await settingStore.fetchSettings()
 
-    if (
-      settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration') &&
-      to.name !== 'verify-phone-number'
-    ) {
+    if (settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')) {
       return router.push({ name: 'verify-phone-number' })
     }
   }
 
-  if (to.name !== 'profile.edit' && !user.profile.gender) {
+  if (to.name !== 'verify-phone-number' && to.name !== 'profile.edit' && !user.profile.gender) {
     const alert = useAlertStore()
     alert.flushMessages()
     alert.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
