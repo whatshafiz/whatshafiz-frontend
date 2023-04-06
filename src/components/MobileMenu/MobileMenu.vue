@@ -13,7 +13,6 @@ import {
   leave,
 } from "../../layouts/MainLayout/side-menu";
 import { watch, reactive, computed, onMounted, ref } from "vue";
-import SimpleBar from "simplebar";
 import { useUserStore } from "@/stores/user";
 
 const route = useRoute();
@@ -40,7 +39,6 @@ watch(sideMenu, () => {
 
 onMounted(() => {
   if (scrollableRef.value) {
-    // new SimpleBar(scrollableRef.value);
   }
 
   setFormattedMenu(sideMenu.value);
