@@ -40,7 +40,7 @@ watch(sideMenu, () => {
 
 onMounted(() => {
   if (scrollableRef.value) {
-    new SimpleBar(scrollableRef.value);
+    // new SimpleBar(scrollableRef.value);
   }
 
   setFormattedMenu(sideMenu.value);

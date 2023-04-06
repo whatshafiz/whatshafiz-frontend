@@ -13,7 +13,7 @@ export const useSettingStore = defineStore('setting', {
       return state.settings
     },
     getIndexURL() {
-      return getBaseUrl('/settings')
+      return getBaseUrl('/settings/paginate')
     }
   },
   actions: {

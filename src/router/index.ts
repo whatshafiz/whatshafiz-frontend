@@ -239,7 +239,10 @@ router.beforeEach(async (to, from) => {
     const settingStore = useSettingStore()
     await settingStore.fetchSettings()
 
-    if (settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration')) {
+    if (
+      settingStore.isSettingOpen('whatsapp-verification-is-active-on-user-registration') &&
+      to.name !== 'verify-phone-number'
+    ) {
       return router.push({ name: 'verify-phone-number' })
     }
   }
