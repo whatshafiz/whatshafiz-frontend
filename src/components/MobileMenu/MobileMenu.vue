@@ -13,6 +13,7 @@ import {
   leave,
 } from "../../layouts/MainLayout/side-menu";
 import { watch, reactive, computed, onMounted, ref } from "vue";
+import SimpleBar from "simplebar";
 import { useUserStore } from "@/stores/user";
 
 const route = useRoute();
@@ -38,7 +39,11 @@ watch(sideMenu, () => {
 });
 
 onMounted(() => {
+  console.log('erkan0', scrollableRef.value)
   if (scrollableRef.value) {
+    console.log('erkan1', scrollableRef.value)
+    new SimpleBar(scrollableRef.value);
+    console.log('erkan2', scrollableRef.value)
   }
 
   setFormattedMenu(sideMenu.value);
