@@ -34,7 +34,7 @@ const api  = () => {
         alert.addErrorMessage(error.response.data.message)
       }
 
-      throw new Error()
+      throw error
     });
 
   return instance
