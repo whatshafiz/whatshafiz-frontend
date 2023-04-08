@@ -3,8 +3,8 @@ import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from '@/base-components/TomSelect'
-import { ref, reactive, inject } from "vue"
-import { useRouter } from "vue-router"
+import { ref, inject, onBeforeMount } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useQuranQuestionStore } from "@/stores/quranQuestion"
 import _ from "lodash";
@@ -12,25 +12,22 @@ import _ from "lodash";
 const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
 const router = useRouter()
+const route = useRoute()
 const user = useUserStore()
+const quranQuestionId = route.params.quranQuestionId
 const quranQuestionStore = useQuranQuestionStore()
-const quranQuestion = reactive({
-  'page_number': '',
-  'question': '',
-  'option_1': '',
-  'option_2': '',
-  'option_3': '',
-  'option_4': '',
-  'option_5': '',
-  'correct_option': '',
+const quranQuestion = ref({})
+
+onBeforeMount(async () => {
+  quranQuestion.value = await quranQuestionStore.fetchQuranQuestion(quranQuestionId)
 })
 
 const onSubmit = async () => {
   isLoading.value = true
 
-  if (await quranQuestionStore.createQuranQuestion(quranQuestion)) {
+  if (await quranQuestionStore.updateQuranQuestion(quranQuestionId, quranQuestion.value)) {
     isLoading.value = false
-    successNotificationToggle('İşlem Başarılı', 'Yeni Meal Sorusu Oluşturuldu.')
+    successNotificationToggle('İşlem Başarılı', 'Meal Sorusu Güncellendi.')
     router.push({ name: 'quranQuestions.index' })
   } else {
     isLoading.value = false
@@ -42,7 +39,7 @@ const onSubmit = async () => {
 <template>
   <div v-if="user.can('universities.update')">
     <div class="flex items-center mt-8 intro-y">
-      <h2 class="mr-auto text-lg font-medium">Yeni Meal Sorusu Oluştur</h2>
+      <h2 class="mr-auto text-lg font-medium">Meal Sorusu Güncelleme</h2>
     </div>
     <div class="grid grid-cols-10 gap-6 mt-5">
       <div class="col-span-12 intro-y lg:col-span-6">
@@ -59,9 +56,15 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="page_number" v-model="quranQuestion.page_number" :value="quranQuestion.page_number"
-                  type="number" name="page_number" required
-                  placeholder="Hangi sayfanın sorusu olduğunu yazın, Örn: 143" />
+                <FormInput
+                  id="page_number"
+                  v-model="quranQuestion.page_number"
+                  :value="quranQuestion.page_number"
+                  type="number"
+                  name="page_number"
+                  required
+                  placeholder="Hangi sayfanın sorusu olduğunu yazın, Örn: 143"
+                />
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="question" class="flex flex-col w-full sm:flex-row">
@@ -70,8 +73,33 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormTextarea id="question" v-model="quranQuestion.question" :value="quranQuestion.question" type="text"
-                  name="question" required placeholder="Soruyu Yazın" />
+                <FormTextarea
+                  id="question"
+                  v-model="quranQuestion.question"
+                  :value="quranQuestion.question"
+                  type="text"
+                  name="question"
+                  required
+                  placeholder="Soruyu Yazın"
+                />
+              </div>
+              <div class="input-form mt-4" v-if="quranQuestion.id">
+                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                  Sorunun Cevabını Seçin.
+                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
+                    Zorunlu
+                  </span>
+                </FormLabel>
+                <TomSelect
+                  v-model="quranQuestion.correct_option"
+                  :options="{ placeholder: 'Doğru Şıkkı Seçin.' }"
+                  class="w-full"
+                  required
+                >
+                  <option v-for="option in [1, 2, 3, 4, 5]" :key="option" :value="option">
+                    {{ option }}. Şık
+                  </option>
+                </TomSelect>
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="option_1" class="flex flex-col w-full sm:flex-row">
@@ -80,8 +108,15 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="option_1" v-model="quranQuestion.option_1" :value="quranQuestion.option_1" type="text"
-                  name="option_1" required placeholder="1. Şıkkı Yazın" />
+                <FormInput
+                  id="option_1"
+                  v-model="quranQuestion.option_1"
+                  :value="quranQuestion.option_1"
+                  type="text"
+                  name="option_1"
+                  required
+                  placeholder="1. Şıkkı Yazın"
+                />
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="option_2" class="flex flex-col w-full sm:flex-row">
@@ -90,8 +125,15 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="option_2" v-model="quranQuestion.option_2" :value="quranQuestion.option_2" type="text"
-                  name="option_2" required placeholder="2. Şıkkı Yazın" />
+                <FormInput
+                  id="option_2"
+                  v-model="quranQuestion.option_2"
+                  :value="quranQuestion.option_2"
+                  type="text"
+                  name="option_2"
+                  required
+                  placeholder="2. Şıkkı Yazın"
+                />
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="option_3" class="flex flex-col w-full sm:flex-row">
@@ -100,8 +142,15 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="option_3" v-model="quranQuestion.option_3" :value="quranQuestion.option_3" type="text"
-                  name="option_3" required placeholder="3. Şıkkı Yazın" />
+                <FormInput
+                  id="option_3"
+                  v-model="quranQuestion.option_3"
+                  :value="quranQuestion.option_3"
+                  type="text"
+                  name="option_3"
+                  required
+                  placeholder="3. Şıkkı Yazın"
+                />
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="option_4" class="flex flex-col w-full sm:flex-row">
@@ -110,8 +159,15 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="option_4" v-model="quranQuestion.option_4" :value="quranQuestion.option_4" type="text"
-                  name="option_4" required placeholder="4. Şıkkı Yazın" />
+                <FormInput
+                  id="option_4"
+                  v-model="quranQuestion.option_4"
+                  :value="quranQuestion.option_4"
+                  type="text"
+                  name="option_4"
+                  required
+                  placeholder="4. Şıkkı Yazın"
+                />
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="option_5" class="flex flex-col w-full sm:flex-row">
@@ -120,24 +176,17 @@ const onSubmit = async () => {
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="option_5" v-model="quranQuestion.option_5" :value="quranQuestion.option_5" type="text"
-                  name="option_5" required placeholder="5. Şıkkı Yazın" />
+                <FormInput
+                  id="option_5"
+                  v-model="quranQuestion.option_5"
+                  :value="quranQuestion.option_5"
+                  type="text"
+                  name="option_5"
+                  required
+                  placeholder="5. Şıkkı Yazın"
+                />
               </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                  Sorunun Cevabını Seçin.
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect v-model="quranQuestion.correct_option" :options="{ placeholder: 'Doğru Şıkkı Seçin.' }"
-                  class="w-full">
-                  <option v-for="option in [1, 2, 3, 4, 5]" :key="option" :value="option">
-                    {{ option }}. Şık
-                  </option>
-                </TomSelect>
-              </div>
-              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
+              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :required="isLoading">
                 <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
                 Kaydet
               </Button>
