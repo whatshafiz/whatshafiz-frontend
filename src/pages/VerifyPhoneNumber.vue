@@ -68,7 +68,7 @@ const checkVerificationCode = () => {
     .then(response => {
       if (response.message) {
         successMessage.value = response.message
-        router.push({ name: 'dashboard' })
+        window.location.href = '/'
       }
     })
     .catch(response => {
