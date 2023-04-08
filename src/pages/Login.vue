@@ -200,7 +200,7 @@ const sendForgotPasswordCodeToWhatsapp = () => {
   errorMessage.value = ''
   warningMessage.value = ''
 
-  if (countryPhoneCode.value === '90' && (isNaN(phoneNumber.value) || phoneNumber.value.length !== 10)) {
+  if (countryPhoneCode.value === '90' && (isNaN(phoneNumber.value) || phoneNumber.value.toString().length !== 10)) {
     warningMessage.value = 'Telefon numarası hatalı!'
 
     return
@@ -241,7 +241,7 @@ const updateForgotPassword = () => {
   errorMessage.value = ''
   warningMessage.value = ''
 
-  if (countryPhoneCode.value === '90' && (isNaN(phoneNumber.value) || phoneNumber.value.length !== 10)) {
+  if (countryPhoneCode.value === '90' && (isNaN(phoneNumber.value) || phoneNumber.value.toString().length !== 10)) {
     warningMessage.value = 'Telefon numarası hatalı!'
 
     return
