@@ -22,6 +22,7 @@ interface FormTextareaProps extends InputHTMLAttributes {
   modelValue?: InputHTMLAttributes["value"];
   formTextareaSize?: "sm" | "lg";
   rounded?: boolean;
+  rows?: number;
 }
 
 interface FormTextareaEmit {
@@ -62,6 +63,7 @@ watch(localValue, () => {
 <template>
   <textarea
     :type="props.type"
+    :rows="(props.rows? props.rows : 4)"
     :class="computedClass"
     v-bind="_.omit(attrs, 'class')"
     v-model="localValue"

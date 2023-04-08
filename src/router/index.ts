@@ -19,6 +19,32 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
+        path: "quranQuestions",
+        name: "quranQuestions",
+        children: [
+          {
+            path: "",
+            name: "quranQuestions.index",
+            component: async () => import("@/pages/quranQuestions/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "quranQuestions.create",
+            component: async () => import("@/pages/quranQuestions/Create.vue"),
+          },
+          {
+            path: ":quranQuestionId",
+            name: "quranQuestions.view",
+            component: async () => import("@/pages/quranQuestions/View.vue"),
+          },
+          {
+            path: ":quranQuestionId",
+            name: "quranQuestions.edit",
+            component: async () => import("@/pages/quranQuestions/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "universities",
         name: "universities",
         children: [

@@ -64,7 +64,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
       },
       {
         icon: "BookOpenCheck",
-        pageName: "quran-questions.index",
+        pageName: "quranQuestions.index",
         title: "Meal Soruları",
         permission: "quranQuestions.list",
       },
