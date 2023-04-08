@@ -1,153 +1,83 @@
 <script setup lang="ts">
-import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
-import Button from "@/base-components/Button"
-import LoadingIcon from '@/base-components/LoadingIcon'
-import TomSelect from '@/base-components/TomSelect'
-import { ref, reactive, inject } from "vue"
-import { useRouter } from "vue-router"
-import { useUserStore } from "@/stores/user"
-import { useQuranQuestionStore } from "@/stores/quranQuestion"
-import _ from "lodash";
+import Button from '@/base-components/Button/Button.vue';
+import ClassicEditor from '@/base-components/Ckeditor/ClassicEditor.vue';
+import { useRegulationStore } from '@/stores/regulation';
+import { inject, onBeforeMount, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useAlertStore } from '@/stores/alert';
+import { useUserStore } from '@/stores/user';
+import LoadingIcon from '@/base-components/LoadingIcon';
+import Preview from '@/base-components/Preview';
 
-const successNotificationToggle = inject('successNotificationToggle')
-const isLoading = ref(false)
+const successNotificationToggle: any = inject('successNotificationToggle')
+const route = useRoute()
+const alert = useAlertStore()
 const router = useRouter()
 const user = useUserStore()
-const quranQuestionStore = useQuranQuestionStore()
-const quranQuestion = reactive({
-  'page_number': '',
-  'question': '',
-  'option_1': '',
-  'option_2': '',
-  'option_3': '',
-  'option_4': '',
-  'option_5': '',
-  'correct_option': '',
+const isLoading = ref(false)
+const regulationStore = useRegulationStore()
+const regulationSlug = ref('')
+const regulation = ref({})
+
+onBeforeMount(async () => {
+  regulationSlug.value = route.params.regulation
+  regulation.value = await regulationStore.fetchRegulation(regulationSlug.value)
+
+  if (regulation.value.summary === null) {
+    regulation.value.summary = ''
+  }
 })
 
 const onSubmit = async () => {
   isLoading.value = true
 
-  if (await quranQuestionStore.createQuranQuestion(quranQuestion)) {
+  try {
+    await regulationStore.updateRegulation(regulationSlug.value, regulation.value)
+    successNotificationToggle('İşlem Başarılı', regulation.value.name + ' Yönetmeliği Güncellendi')
     isLoading.value = false
-    successNotificationToggle('İşlem Başarılı', 'Yeni Meal Sorusu Oluşturuldu.')
-    router.push({ name: 'quranQuestions.index' })
-  } else {
+    router.push({ name: 'regulations.index' })
+  }
+  catch (error) {
+    alert.addErrorMessage("Yönetmelik güncellenemedi")
     isLoading.value = false
-    window.scrollTo(0, 0)
   }
 }
 </script>
 
 <template>
-  <div v-if="user.can('universities.update')">
-    <div class="flex items-center mt-8 intro-y">
-      <h2 class="mr-auto text-lg font-medium">Yeni Meal Sorusu Oluştur</h2>
-    </div>
-    <div class="grid grid-cols-10 gap-6 mt-5">
-      <div class="col-span-12 intro-y lg:col-span-6">
-        <div class="intro-y box">
-          <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
-            <h2 class="mr-auto text-base font-medium">Meal Sorusu</h2>
-          </div>
-          <div class="p-5">
-            <form class="validate-form" @submit.prevent="onSubmit">
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="page_number" class="flex flex-col w-full sm:flex-row">
-                  Soru Sayfası
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="page_number" v-model="quranQuestion.page_number" :value="quranQuestion.page_number"
-                  type="number" name="page_number" required
-                  placeholder="Hangi sayfanın sorusu olduğunu yazın, Örn: 143" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="question" class="flex flex-col w-full sm:flex-row">
-                  Soru
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormTextarea id="question" v-model="quranQuestion.question" :value="quranQuestion.question" type="text"
-                  name="question" required placeholder="Soruyu Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="option_1" class="flex flex-col w-full sm:flex-row">
-                  1. Şık
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="option_1" v-model="quranQuestion.option_1" :value="quranQuestion.option_1" type="text"
-                  name="option_1" required placeholder="1. Şıkkı Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="option_2" class="flex flex-col w-full sm:flex-row">
-                  2. Şık
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="option_2" v-model="quranQuestion.option_2" :value="quranQuestion.option_2" type="text"
-                  name="option_2" required placeholder="2. Şıkkı Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="option_3" class="flex flex-col w-full sm:flex-row">
-                  3. Şık
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="option_3" v-model="quranQuestion.option_3" :value="quranQuestion.option_3" type="text"
-                  name="option_3" required placeholder="3. Şıkkı Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="option_4" class="flex flex-col w-full sm:flex-row">
-                  4. Şık
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="option_4" v-model="quranQuestion.option_4" :value="quranQuestion.option_4" type="text"
-                  name="option_4" required placeholder="4. Şıkkı Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="option_5" class="flex flex-col w-full sm:flex-row">
-                  5. Şık
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormInput id="option_5" v-model="quranQuestion.option_5" :value="quranQuestion.option_5" type="text"
-                  name="option_5" required placeholder="5. Şıkkı Yazın" />
-              </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                  Sorunun Cevabını Seçin.
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect v-model="quranQuestion.correct_option" :options="{ placeholder: 'Doğru Şıkkı Seçin.' }"
-                  class="w-full">
-                  <option v-for="option in [1, 2, 3, 4, 5]" :key="option" :value="option">
-                    {{ option }}. Şık
-                  </option>
-                </TomSelect>
-              </div>
-              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
-                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-                Kaydet
-              </Button>
-              <Button variant="outline-secondary" type="button" class="mt-5 mr-5" @click="() => router.go(-1)">
-                İptal
-              </Button>
-            </form>
-          </div>
-        </div>
+  <div class="flex items-center mt-8 intro-y">
+    <h2 class="mr-auto text-lg font-medium">Yönetmelik Güncelleme</h2>
+  </div>
+  <div v-if="user.can('regulations.update')" class="overflow-x-auto">
+    <Preview class="mt-5 intro-y box h-min sm:w-full md:w-2/3">
+      <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60">
+        <h2 class="mr-auto text-base font-medium">{{ regulation.name }} Yönetmeliği Güncelle</h2>
       </div>
-    </div>
+      <div class="p-5" v-if="regulation.id">
+        <Preview.Panel>
+          <div class="overflow-x-auto">
+            <div class="flex items-center mb-4">
+              <div class="text-lg font-medium">Özet</div>
+            </div>
+            <ClassicEditor v-model="regulation.summary" />
+            <div class="flex items-center mt-5 mb-4">
+              <div class="text-lg font-medium">Yönetmelik</div>
+            </div>
+            <ClassicEditor v-model="regulation.text" :value="regulation.text" />
+            <div class="flex gap-3 m-5 justify-end">
+              <Button variant="primary" class="w-24 mb-2 mr-1 " @click="() => onSubmit()" :disabled="isLoading">
+                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-1 " />
+                Güncelle
+              </Button>
+              <RouterLink :to="{ name: 'regulations.index' }">
+                <Button variant="outline-primary" class="w-24 mb-2 mr-1">
+                  Geri
+                </Button>
+              </RouterLink>
+            </div>
+          </div>
+        </Preview.Panel>
+      </div>
+    </Preview>
   </div>
 </template>
