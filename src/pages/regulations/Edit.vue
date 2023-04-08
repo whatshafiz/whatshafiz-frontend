@@ -22,6 +22,10 @@ const regulation = ref({})
 onBeforeMount(async () => {
   regulationSlug.value = route.params.regulation
   regulation.value = await regulationStore.fetchRegulation(regulationSlug.value)
+
+  if (regulation.value.summary === null) {
+    regulation.value.summary = ''
+  }
 })
 
 const onSubmit = async () => {
@@ -55,7 +59,7 @@ const onSubmit = async () => {
             <div class="flex items-center mb-4">
               <div class="text-lg font-medium">Özet</div>
             </div>
-            <ClassicEditor v-model="regulation.summary" :value="regulation.summary" />
+            <ClassicEditor v-model="regulation.summary" />
             <div class="flex items-center mt-5 mb-4">
               <div class="text-lg font-medium">Yönetmelik</div>
             </div>
