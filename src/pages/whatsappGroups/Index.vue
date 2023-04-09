@@ -89,6 +89,7 @@ const tableColumns = [
     width: 150,
     field: "course.name",
     vertAlign: "middle",
+    headerSort: false,
   },
   {
     title: "Kullanıcı Sayısı",
