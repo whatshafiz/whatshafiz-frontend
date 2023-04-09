@@ -43,6 +43,7 @@
     "toastify-js": "^1.12.0",
     "tom-select": "^2.2.0",
     "vue": "^3.2.41",
+    "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.1.6",
     "xlsx": "^0.18.5",
     "zoom-vanilla.js": "^2.0.6"
