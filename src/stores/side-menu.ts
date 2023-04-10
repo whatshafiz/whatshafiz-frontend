@@ -52,7 +52,7 @@ export const useSideMenuStore = defineStore("sideMenu", {
       "divider",
       {
         icon: "Users",
-        pageName: "whatsapp-groups.index",
+        pageName: "whatsappGroups.index",
         title: "Whatsapp Grupları",
         permission: "whatsappGroups.list",
       },

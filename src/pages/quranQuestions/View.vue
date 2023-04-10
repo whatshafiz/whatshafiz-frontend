@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
-import LoadingIcon from '@/base-components/LoadingIcon'
-import TomSelect from '@/base-components/TomSelect'
-import { ref, inject, onBeforeMount } from "vue"
+import { ref, onBeforeMount } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useQuranQuestionStore } from "@/stores/quranQuestion"
 import _ from "lodash";
 
-const successNotificationToggle = inject('successNotificationToggle')
-const isLoading = ref(false)
 const router = useRouter()
 const route = useRoute()
 const user = useUserStore()

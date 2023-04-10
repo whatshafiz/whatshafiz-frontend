@@ -29,13 +29,19 @@ export const useCourseStore = defineStore('course', {
     async fetchCourses() {
       try {
         this.courses = (await api().get('/courses')).data.courses
+
+        return this.courses
       } catch (response) {
         console.log('fetchSettings error', response)
+
+        return []
       }
     },
     async fetchAvailableCourses() {
       try {
         this.availableCourses = (await api().get('/courses/available')).data
+
+        return this.availableCourses
       } catch (response) {
         console.log('fetchSettings error', response)
       }
