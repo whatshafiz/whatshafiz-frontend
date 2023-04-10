@@ -38,7 +38,7 @@ const routes = [
             component: async () => import("@/pages/whatsappGroups/View.vue"),
           },
           {
-            path: ":whatsappGroupId",
+            path: ":whatsappGroupId/edit",
             name: "whatsappGroups.edit",
             component: async () => import("@/pages/whatsappGroups/Edit.vue"),
           },
@@ -64,7 +64,7 @@ const routes = [
             component: async () => import("@/pages/quranQuestions/View.vue"),
           },
           {
-            path: ":quranQuestionId",
+            path: ":quranQuestionId/edit",
             name: "quranQuestions.edit",
             component: async () => import("@/pages/quranQuestions/Edit.vue"),
           },
