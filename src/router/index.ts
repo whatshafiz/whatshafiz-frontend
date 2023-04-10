@@ -19,6 +19,32 @@ const routes = [
         component: async () => import("@/pages/Page2.vue"),
       },
       {
+        path: "whatsappGroups",
+        name: "whatsappGroups",
+        children: [
+          {
+            path: "",
+            name: "whatsappGroups.index",
+            component: async () => import("@/pages/whatsappGroups/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "whatsappGroups.create",
+            component: async () => import("@/pages/whatsappGroups/Create.vue"),
+          },
+          {
+            path: ":whatsappGroupId",
+            name: "whatsappGroups.view",
+            component: async () => import("@/pages/whatsappGroups/View.vue"),
+          },
+          {
+            path: ":whatsappGroupId/edit",
+            name: "whatsappGroups.edit",
+            component: async () => import("@/pages/whatsappGroups/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "quranQuestions",
         name: "quranQuestions",
         children: [
@@ -38,7 +64,7 @@ const routes = [
             component: async () => import("@/pages/quranQuestions/View.vue"),
           },
           {
-            path: ":quranQuestionId",
+            path: ":quranQuestionId/edit",
             name: "quranQuestions.edit",
             component: async () => import("@/pages/quranQuestions/Edit.vue"),
           },
