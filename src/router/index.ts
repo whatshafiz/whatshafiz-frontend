@@ -45,6 +45,38 @@ const routes = [
         ],
       },
       {
+        path: "complaints",
+        name: "complaints",
+        children: [
+          {
+            path: "",
+            name: "complaints.index",
+            component: async () => import("@/pages/complaints/Index.vue"),
+          },
+          {
+            path: "unresolved",
+            name: "complaints.index.unresolved",
+            component: async () => import("@/pages/complaints/Index.vue"),
+            meta: { unresolved: true },
+          },
+          {
+            path: "new",
+            name: "complaints.create",
+            component: async () => import("@/pages/complaints/Create.vue"),
+          },
+          {
+            path: ":complaintId",
+            name: "complaints.view",
+            component: async () => import("@/pages/complaints/View.vue"),
+          },
+          {
+            path: ":complaintId/edit",
+            name: "complaints.edit",
+            component: async () => import("@/pages/complaints/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "quranQuestions",
         name: "quranQuestions",
         children: [

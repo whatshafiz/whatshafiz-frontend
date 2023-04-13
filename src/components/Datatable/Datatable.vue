@@ -94,7 +94,7 @@ const refreshData = () => {
   }
 }
 
-defineExpose({ refreshData })
+defineExpose({ refreshData, initTabulator })
 
 onMounted(() => {
   initTabulator();
