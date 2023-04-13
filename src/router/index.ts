@@ -14,9 +14,30 @@ const routes = [
         component: async () => import("@/pages/Dashboard.vue"),
       },
       {
-        path: "page-2",
+        path: "courses",
         name: "courses",
-        component: async () => import("@/pages/Page2.vue"),
+        children: [
+          {
+            path: "",
+            name: "courses.index",
+            component: async () => import("@/pages/courses/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "courses.create",
+            component: async () => import("@/pages/courses/Create.vue"),
+          },
+          {
+            path: ":courseId",
+            name: "courses.view",
+            component: async () => import("@/pages/courses/View.vue"),
+          },
+          {
+            path: ":courseId/edit",
+            name: "courses.edit",
+            component: async () => import("@/pages/courses/Edit.vue"),
+          },
+        ],
       },
       {
         path: "whatsappGroups",
