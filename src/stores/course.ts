@@ -1,6 +1,7 @@
 import { defineStore, getActivePinia } from 'pinia'
 import router from '@/router/index'
 import api from '@/utils/api'
+import { getBaseUrl } from '@/utils/api'
 
 export const useCourseStore = defineStore('course', {
   state: () => {
@@ -23,7 +24,10 @@ export const useCourseStore = defineStore('course', {
     },
     getAvailableCourses(state) {
       return state.availableCourses
-    }
+    },
+    getIndexURL() {
+      return getBaseUrl('/courses/paginate')
+    },
   },
   actions: {
     async fetchCourses() {
@@ -56,6 +60,46 @@ export const useCourseStore = defineStore('course', {
       }
 
       return this.availableCourses.find((course) => course.type === courseType)
-    }
+    },
+    async fetchCourse(courseId) {
+      try {
+        return (await api().get('/courses/' + courseId)).data.course
+      } catch (response) {
+        console.log('fetchCourse error', response)
+      }
+    },
+    async createCourse(courseData) {
+      try {
+        await api().post('/courses', courseData)
+
+        return true
+      } catch (response) {
+        console.log('create course error', response)
+
+        return false
+      }
+    },
+    async updateCourse(courseId, courseData) {
+      try {
+        await api().put('/courses/' + courseId, courseData)
+
+        return true
+      } catch (response) {
+        console.log('update course error', response)
+
+        return false
+      }
+    },
+    async deleteCourse(courseId) {
+      try {
+        await api().delete('/courses/' + courseId)
+
+        return true
+      } catch (response) {
+        console.log('deleteCourse error', response)
+
+        return false
+      }
+    },
   },
 })
