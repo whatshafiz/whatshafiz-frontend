@@ -19,7 +19,7 @@ export interface TomSelectElement extends HTMLSelectElement {
 
 export interface TomSelectProps extends SelectHTMLAttributes {
   isDisabled?: boolean;
-  modelValue: null | number | string | string[];
+  modelValue: null | boolean | number | string | string[];
   options?: RecursivePartial<TomSettings>;
   refKey?: string;
 }
@@ -32,7 +32,7 @@ watch(() => props.isDisabled, (newValue) => {
 
 
 export interface TomSelectEmit {
-  (e: "update:modelValue", value: null | number | string | string[]): void;
+  (e: "update:modelValue", value: null | boolean | number | string | string[]): void;
   (e: "optionAdd", value: string | number): void;
 }
 

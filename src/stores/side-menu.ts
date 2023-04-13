@@ -63,22 +63,36 @@ export const useSideMenuStore = defineStore("sideMenu", {
         permission: "courses.list",
       },
       {
-        icon: "BookOpenCheck",
-        pageName: "quranQuestions.index",
-        title: "Meal Soruları",
-        permission: "quranQuestions.list",
-      },
-      {
         icon: "MailWarning",
         pageName: "complaints.index",
         title: "Şikayetler",
         permission: "complaints.list",
+        subMenu: [
+          {
+            icon: "MailSearch",
+            pageName: "complaints.index.unresolved",
+            title: "Çözüm Bekleyenler",
+            permission: "complaints.list",
+          },
+          {
+            icon: "Mails",
+            pageName: "complaints.index",
+            title: "Tüm Şikayetler",
+            permission: "complaints.list",
+          },
+        ],
       },
       {
         icon: "MessageSquare",
         pageName: "comments.index",
         title: "Öğrenci Yorumları",
         permission: "comments.list",
+      },
+      {
+        icon: "BookOpenCheck",
+        pageName: "quranQuestions.index",
+        title: "Meal Soruları",
+        permission: "quranQuestions.list",
       },
       {
         icon: "GraduationCap",
