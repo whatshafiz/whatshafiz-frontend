@@ -77,6 +77,38 @@ const routes = [
         ],
       },
       {
+        path: "comments",
+        name: "comments",
+        children: [
+          {
+            path: "",
+            name: "comments.index",
+            component: async () => import("@/pages/comments/Index.vue"),
+          },
+          {
+            path: "unapproved",
+            name: "comments.index.unapproved",
+            component: async () => import("@/pages/comments/Index.vue"),
+            meta: { unapproved: true },
+          },
+          {
+            path: "new",
+            name: "comments.create",
+            component: async () => import("@/pages/comments/Create.vue"),
+          },
+          {
+            path: ":commentId",
+            name: "comments.view",
+            component: async () => import("@/pages/comments/View.vue"),
+          },
+          {
+            path: ":commentId/edit",
+            name: "comments.edit",
+            component: async () => import("@/pages/comments/Edit.vue"),
+          },
+        ],
+      },
+      {
         path: "quranQuestions",
         name: "quranQuestions",
         children: [

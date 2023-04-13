@@ -83,10 +83,24 @@ export const useSideMenuStore = defineStore("sideMenu", {
         ],
       },
       {
-        icon: "MessageSquare",
+        icon: "MessageCircle",
         pageName: "comments.index",
-        title: "Öğrenci Yorumları",
+        title: "Kullanıcı Yorumları",
         permission: "comments.list",
+        subMenu: [
+          {
+            icon: "MailQuestion",
+            pageName: "comments.index.unapproved",
+            title: "Onay Bekleyenler",
+            permission: "comments.list",
+          },
+          {
+            icon: "MessageSquare",
+            pageName: "comments.index",
+            title: "Tüm Yorumlar",
+            permission: "comments.list",
+          },
+        ],
       },
       {
         icon: "BookOpenCheck",
