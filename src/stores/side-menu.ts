@@ -31,22 +31,22 @@ export const useSideMenuStore = defineStore("sideMenu", {
       "divider",
       {
         icon: "Users",
-        pageName: "my-whatsapp-groups",
+        pageName: "my.whatsappGroups",
         title: "Whatsapp Gruplarım",
       },
       {
         icon: "CalendarDays",
-        pageName: "my-courses",
+        pageName: "my.courses",
         title: "Kurslarım",
       },
       {
         icon: "MailWarning",
-        pageName: "my-complaints",
+        pageName: "my.complaints",
         title: "Şikayetlerim",
       },
       {
         icon: "MessageSquare",
-        pageName: "my-comments",
+        pageName: "my.comments",
         title: "Yorumlarım",
       },
       "divider",

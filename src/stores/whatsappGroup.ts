@@ -15,6 +15,9 @@ export const useWhatsappGroupStore = defineStore('whatsappGroup', {
     getIndexURL() {
       return getBaseUrl('/whatsapp-groups')
     },
+    getMyIndexURL() {
+      return getBaseUrl('/my/whatsapp-groups')
+    },
   },
   actions: {
     async fetchWhatsappGroups() {
