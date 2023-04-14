@@ -70,6 +70,24 @@ onBeforeMount(async () => {
                 </div>
               </div>
               <div class="input-form mt-5">
+                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                  Yorum Yapılan Kurs Türü
+                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
+                    Zorunlu
+                  </span>
+                </FormLabel>
+                <TomSelect
+                  v-model="comment.type"
+                  :options="{ placeholder: 'Kurs türünü seçin.' }"
+                  class="w-full"
+                  disabled
+                >
+                  <option key="whatshafiz" value="whatshafiz"> WhatsHafız </option>
+                  <option key="whatsenglish" value="whatsenglish"> WhatsEnglish </option>
+                  <option key="whatsarapp" value="whatsarapp"> WhatsArapp </option>
+                </TomSelect>
+              </div>
+              <div class="input-form mt-5">
                 <FormLabel htmlFor="title" class="flex flex-col w-full sm:flex-row">
                   Yorum Başlığı
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
