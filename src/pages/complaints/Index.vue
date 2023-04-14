@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Datatable from "@/components/Datatable";
+import Button from "@/base-components/Button";
 import { ref, onBeforeMount, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { stringToHTML } from "@/utils/helper";
@@ -198,6 +199,13 @@ const tableColumns = [
       <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Şikayetlerim</h2>
       <h2 v-else-if="isUnresolvedIndex" class="mr-auto text-lg font-medium">Çözüm Bekleyen Şikayetler</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Şikayetler</h2>
+      <div v-if="isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+        <RouterLink :to="{ name: 'complaints.create' }">
+          <Button variant="primary" class="mr-2 shadow-md">
+            Yeni Şikayet Kaydı Oluştur
+          </Button>
+        </RouterLink>
+      </div>
     </div>
     <datatable ref="tableRef" :index-url="complaintIndexUrl" :columns="tableColumns" />
   </div>
