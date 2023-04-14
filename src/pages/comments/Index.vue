@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Datatable from "@/components/Datatable";
+import Button from "@/base-components/Button";
 import { ref, onBeforeMount, watch, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { stringToHTML } from "@/utils/helper";
@@ -187,6 +188,13 @@ const tableColumns = [
       <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Yorumlarım</h2>
       <h2 v-else-if="isUnapprovedIndex" class="mr-auto text-lg font-medium">Onay Bekleyen Yorumlar</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Yorumlar</h2>
+      <div v-if="user.can('comments.create') && isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+        <RouterLink :to="{ name: 'comments.create' }">
+          <Button variant="primary" class="mr-2 shadow-md">
+            Yeni Yorum Ekle
+          </Button>
+        </RouterLink>
+      </div>
     </div>
     <datatable ref="tableRef" :index-url="commentIndexUrl" :columns="tableColumns" />
   </div>
