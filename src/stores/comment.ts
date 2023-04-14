@@ -15,6 +15,9 @@ export const useCommentsStore = defineStore('comment', {
     getIndexURL() {
       return getBaseUrl('/comments')
     },
+    getMyIndexURL() {
+      return getBaseUrl('/my/comments')
+    },
     getUnapprovedIndexURL() {
       return getBaseUrl('/comments?is_approved=0')
     },

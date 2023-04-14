@@ -16,27 +16,31 @@ const user = useUserStore()
 const complaintStore = useComplaintsStore()
 const complaintIndexUrl = ref('')
 const isUnresolvedIndex = ref(false)
+const isMyIndex = ref(false)
 
 onBeforeMount(() => {
-  isUnresolvedIndex.value = !!route.meta?.unresolved
-  complaintIndexUrl.value = isUnresolvedIndex.value ?
-    complaintStore.getUnresolvedIndexURL :
-    complaintStore.getIndexURL
+  setIndexUrl()
 })
 
-watch(() => route.meta.unresolved, (newValue) => {
-  if (!tableRef.value) {
-    return
-  }
+watch(() => route.meta, (newValue) => {
+    setIndexUrl()
+    setTimeout(() => {
+      if (tableRef.value) {
+        tableRef.value.initTabulator()
+      }
+    }, 100);
+})
 
-  isUnresolvedIndex.value = !!newValue
-  complaintIndexUrl.value = newValue ? complaintStore.getUnresolvedIndexURL : complaintStore.getIndexURL
-  setTimeout(() => {
-    if (tableRef.value) {
-      tableRef.value.initTabulator()
-    }
-  }, 100);
-});
+const setIndexUrl = () => {
+  isUnresolvedIndex.value = !!route.meta?.unresolved
+  isMyIndex.value = !!route.meta?.isMyIndex
+
+  if (isMyIndex.value) {
+    complaintIndexUrl.value = complaintStore.getMyIndexURL
+  } else {
+    complaintIndexUrl.value = isUnresolvedIndex.value ? complaintStore.getUnresolvedIndexURL : complaintStore.getIndexURL
+  }
+}
 
 const tableColumns = [
   {
@@ -191,7 +195,8 @@ const tableColumns = [
 <template>
   <div v-if="user.can('complaints.list')">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 v-if="isUnresolvedIndex" class="mr-auto text-lg font-medium">Çözüm Bekleyen Şikayetler</h2>
+      <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Şikayetlerim</h2>
+      <h2 v-else-if="isUnresolvedIndex" class="mr-auto text-lg font-medium">Çözüm Bekleyen Şikayetler</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Şikayetler</h2>
     </div>
     <datatable ref="tableRef" :index-url="complaintIndexUrl" :columns="tableColumns" />

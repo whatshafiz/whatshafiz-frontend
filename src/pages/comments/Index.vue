@@ -21,27 +21,31 @@ const user = useUserStore()
 const commentStore = useCommentsStore()
 const commentIndexUrl = ref('')
 const isUnapprovedIndex = ref(false)
+const isMyIndex = ref(false)
 
 onBeforeMount(() => {
-  isUnapprovedIndex.value = !!route.meta?.unapproved
-  commentIndexUrl.value = isUnapprovedIndex.value ?
-    commentStore.getUnapprovedIndexURL :
-    commentStore.getIndexURL
+  setIndexUrl()
 })
 
-watch(() => route.meta.unapproved, (newValue) => {
-  if (!tableRef.value) {
-    return
-  }
-
-  isUnapprovedIndex.value = !!newValue
-  commentIndexUrl.value = newValue ? commentStore.getUnapprovedIndexURL : commentStore.getIndexURL
+watch(() => route.meta, (newValue) => {
+  setIndexUrl()
   setTimeout(() => {
     if (tableRef.value) {
       tableRef.value.initTabulator()
     }
   }, 100);
-});
+})
+
+const setIndexUrl = () => {
+  isUnapprovedIndex.value = !!route.meta?.unapproved
+  isMyIndex.value = !!route.meta?.isMyIndex
+
+  if (isMyIndex.value) {
+    commentIndexUrl.value = commentStore.getMyIndexURL
+  } else {
+    commentIndexUrl.value = isUnapprovedIndex.value ? commentStore.getUnapprovedIndexURL : commentStore.getIndexURL
+  }
+}
 
 const deleteComment = async (commentId) => {
   if (await commentStore.deleteComment(commentId)) {
@@ -180,7 +184,8 @@ const tableColumns = [
 <template>
   <div v-if="user.can('comments.list')">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 v-if="isUnapprovedIndex" class="mr-auto text-lg font-medium">Onay Bekleyen Yorumlar</h2>
+      <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Yorumlarım</h2>
+      <h2 v-else-if="isUnapprovedIndex" class="mr-auto text-lg font-medium">Onay Bekleyen Yorumlar</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Yorumlar</h2>
     </div>
     <datatable ref="tableRef" :index-url="commentIndexUrl" :columns="tableColumns" />

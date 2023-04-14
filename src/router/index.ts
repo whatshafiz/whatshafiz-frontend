@@ -14,6 +14,36 @@ const routes = [
         component: async () => import("@/pages/Dashboard.vue"),
       },
       {
+        path: "my",
+        name: "my",
+        children: [
+          {
+            path: "whatsapp-groups",
+            name: "my.whatsappGroups",
+            component: async () => import("@/pages/whatsappGroups/Index.vue"),
+            meta: { isMyIndex: true },
+          },
+          {
+            path: "courses",
+            name: "my.courses",
+            component: async () => import("@/pages/courses/Index.vue"),
+            meta: { isMyIndex: true },
+          },
+          {
+            path: "complaints",
+            name: "my.complaints",
+            component: async () => import("@/pages/complaints/Index.vue"),
+            meta: { isMyIndex: true },
+          },
+          {
+            path: "comments",
+            name: "my.comments",
+            component: async () => import("@/pages/comments/Index.vue"),
+            meta: { isMyIndex: true },
+          },
+        ],
+      },
+      {
         path: "courses",
         name: "courses",
         children: [
@@ -40,7 +70,7 @@ const routes = [
         ],
       },
       {
-        path: "whatsappGroups",
+        path: "whatsapp-groups",
         name: "whatsappGroups",
         children: [
           {
@@ -130,7 +160,7 @@ const routes = [
         ],
       },
       {
-        path: "quranQuestions",
+        path: "quran-questions",
         name: "quranQuestions",
         children: [
           {

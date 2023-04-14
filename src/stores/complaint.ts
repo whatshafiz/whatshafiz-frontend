@@ -15,6 +15,9 @@ export const useComplaintsStore = defineStore('complaint', {
     getIndexURL() {
       return getBaseUrl('/complaints')
     },
+    getMyIndexURL() {
+      return getBaseUrl('/my/complaints')
+    },
     getUnresolvedIndexURL() {
       return getBaseUrl('/complaints?is_resolved=0')
     },

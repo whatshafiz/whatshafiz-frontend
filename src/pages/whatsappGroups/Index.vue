@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Datatable from "@/components/Datatable";
 import Button from "@/base-components/Button";
-import { ref, inject } from "vue";
-import { useRouter } from "vue-router";
+import { ref, inject, onBeforeMount, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import useClipboard from 'vue-clipboard3'
 import { stringToHTML } from "@/utils/helper";
 import { useUserStore } from "@/stores/user";
@@ -12,10 +12,6 @@ import userProfile from "@/assets/images/placeholders/user.png"
 import maleProfile from "@/assets/images/placeholders/male.jpg"
 import femaleProfile from "@/assets/images/placeholders/female.jpg"
 
-interface Response {
-  name?: string;
-}
-
 const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
 
@@ -23,8 +19,30 @@ const tableRef = ref();
 const { toClipboard } = useClipboard()
 const alertStore = useAlertStore()
 const router = useRouter()
+const route = useRoute()
 const user = useUserStore()
 const whatsappGroupStore = useWhatsappGroupStore()
+const whatsappGroupIndexUrl = ref('')
+const isMyIndex = ref(false)
+
+onBeforeMount(() => {
+  setIndexUrl()
+})
+
+watch(() => route.meta, (newValue) => {
+  setIndexUrl()
+  setTimeout(() => {
+    if (tableRef.value) {
+      tableRef.value.initTabulator()
+    }
+  }, 100);
+})
+
+const setIndexUrl = () => {
+  isMyIndex.value = !!route.meta?.isMyIndex
+
+  whatsappGroupIndexUrl.value = isMyIndex.value ? whatsappGroupStore.getMyIndexURL : whatsappGroupStore.getIndexURL
+}
 
 const deleteWhatsappGroup = async (whatsappGroupId) => {
   if (await whatsappGroupStore.deleteWhatsappGroup(whatsappGroupId)) {
@@ -199,10 +217,11 @@ const tableColumns = [
 </script>
 
 <template>
-  <div v-if="user.can('whatsappGroups.list')">
+  <div v-if="user.can('whatsappGroups.list') || isMyIndex">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 class="mr-auto text-lg font-medium">Whatsapp Grupları</h2>
-      <div v-if="user.can('whatsappGroups.create')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+      <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Whatsapp Gruplarım</h2>
+      <h2 v-else class="mr-auto text-lg font-medium">Tüm Whatsapp Grupları</h2>
+      <div v-if="user.can('whatsappGroups.create') && !isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
         <RouterLink :to="{ name: 'whatsappGroups.create' }">
           <Button variant="primary" class="mr-2 shadow-md">
             Yeni Whatsapp Grubu Ekle
@@ -210,6 +229,6 @@ const tableColumns = [
         </RouterLink>
       </div>
     </div>
-    <datatable ref="tableRef" :index-url="whatsappGroupStore.getIndexURL" :columns="tableColumns" />
+    <datatable ref="tableRef" :index-url="whatsappGroupIndexUrl" :columns="tableColumns" />
   </div>
 </template>

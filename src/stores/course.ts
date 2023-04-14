@@ -28,6 +28,9 @@ export const useCourseStore = defineStore('course', {
     getIndexURL() {
       return getBaseUrl('/courses/paginate')
     },
+    getMyIndexURL() {
+      return getBaseUrl('/my/courses')
+    },
   },
   actions: {
     async fetchCourses() {
