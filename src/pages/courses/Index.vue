@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Datatable from "@/components/Datatable";
 import Button from "@/base-components/Button";
-import { ref, inject } from "vue";
-import { useRouter } from "vue-router";
+import { ref, inject, onBeforeMount, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { stringToHTML } from "@/utils/helper";
 import { useUserStore } from "@/stores/user";
 import { useCourseStore } from "@/stores/course";
@@ -14,8 +14,30 @@ const errorNotificationToggle = inject('errorNotificationToggle')
 const tableRef = ref()
 const alertStore = useAlertStore()
 const router = useRouter()
+const route = useRoute()
 const user = useUserStore()
 const courseStore = useCourseStore()
+const courseIndexUrl = ref('')
+const isMyIndex = ref(false)
+
+onBeforeMount(() => {
+  setIndexUrl()
+})
+
+watch(() => route.meta, (newValue) => {
+  setIndexUrl()
+  setTimeout(() => {
+    if (tableRef.value) {
+      tableRef.value.initTabulator()
+    }
+  }, 100);
+})
+
+const setIndexUrl = () => {
+  isMyIndex.value = !!route.meta?.isMyIndex
+
+  courseIndexUrl.value = isMyIndex.value ? courseStore.getMyIndexURL : courseStore.getIndexURL
+}
 
 const deleteCourse = async (courseId) => {
   if (await courseStore.deleteCourse(courseId)) {
@@ -156,10 +178,11 @@ const tableColumns = [
 </script>
 
 <template>
-  <div v-if="user.can('courses.list')">
+  <div v-if="user.can('courses.list') || isMyIndex">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 class="mr-auto text-lg font-medium">Tüm Kurslar</h2>
-      <div v-if="user.can('courses.create')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+      <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Kurslarım</h2>
+      <h2 v-else class="mr-auto text-lg font-medium">Tüm Kurslar</h2>
+      <div v-if="user.can('courses.create') && !isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
         <RouterLink :to="{ name: 'courses.create' }">
           <Button variant="primary" class="mr-2 shadow-md">
             Yeni Kurs Oluştur
@@ -167,6 +190,6 @@ const tableColumns = [
         </RouterLink>
       </div>
     </div>
-    <datatable ref="tableRef" :index-url="courseStore.getIndexURL" :columns="tableColumns" />
+    <datatable ref="tableRef" :index-url="courseIndexUrl" :columns="tableColumns" />
   </div>
 </template>
