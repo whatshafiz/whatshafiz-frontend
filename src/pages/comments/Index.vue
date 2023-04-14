@@ -9,7 +9,6 @@ import userProfile from "@/assets/images/placeholders/user.png"
 import maleProfile from "@/assets/images/placeholders/male.jpg"
 import femaleProfile from "@/assets/images/placeholders/female.jpg"
 import { useAlertStore } from "@/stores/alert";
-import { ThumbsDown } from "lucide-vue-next";
 
 const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
