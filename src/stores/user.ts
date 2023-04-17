@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/utils/api'
+import { getBaseUrl } from '@/utils/api'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -11,6 +12,9 @@ export const useUserStore = defineStore('user', {
     }
   },
   getters: {
+    getIndexURL() {
+      return getBaseUrl('/users')
+    },
   },
   actions: {
     isLoggedIn() {
@@ -64,6 +68,57 @@ export const useUserStore = defineStore('user', {
     logout() {
       localStorage.removeItem('token')
       window.location.href = '/login'
+    },
+    async toggleUserBanStatus(userId, isBanned = true) {
+      try {
+        await api().post('/users/' + userId + '/ban', { is_banned: isBanned })
+
+        return true
+      } catch (response) {
+        console.log('banUser error', response)
+
+        return false
+      }
+    },
+    async fetchUser(userId) {
+      try {
+        return (await api().get('/users/' + userId)).data.user
+      } catch (response) {
+        console.log('fetchUser error', response)
+      }
+    },
+    async removeRole(userId, roleId) {
+      try {
+        await api().delete('/users/' + userId + '/roles/' + roleId)
+
+        return true
+      } catch (response) {
+        console.log('removeRole error', response)
+
+        return false
+      }
+    },
+    async removeCourse(userId, courseId) {
+      try {
+        await api().delete('/users/' + userId + '/courses/' + courseId)
+
+        return true
+      } catch (response) {
+        console.log('removeCourse error', response)
+
+        return false
+      }
+    },
+    async removeWhatsappGroup(userId, whatsappGroupId) {
+      try {
+        await api().delete('/users/' + userId + '/whatsapp-groups/' + whatsappGroupId)
+
+        return true
+      } catch (response) {
+        console.log('removeWhatsappGroup error', response)
+
+        return false
+      }
     },
   },
 })
