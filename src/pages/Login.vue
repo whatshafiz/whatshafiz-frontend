@@ -346,6 +346,7 @@ const updateForgotPassword = () => {
                   :value="phoneNumber"
                   type="number"
                   :autofocus="true"
+                  @keyup.enter.native="checkPhoneNumber"
                   class="block px-4 py-3 intro-x login__input min-w-full xl:min-w-[350px]"
                   :placeholder="countryPhoneCode === '90' ? '5XXXXXXXXX' : 'Telefon Numaranız'"
                 />
@@ -370,6 +371,7 @@ const updateForgotPassword = () => {
                 v-model="password"
                 :value="password"
                 :autofocus="true"
+                @keyup.enter.native="login"
                 class="block px-4 py-3 mt-4 intro-x login__input min-w-full xl:min-w-[350px]"
                 placeholder="Parolanızı Yazın"
               />
