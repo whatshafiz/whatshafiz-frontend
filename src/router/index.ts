@@ -44,32 +44,6 @@ const routes = [
         ],
       },
       {
-        path: "courses",
-        name: "courses",
-        children: [
-          {
-            path: "",
-            name: "courses.index",
-            component: async () => import("@/pages/courses/Index.vue"),
-          },
-          {
-            path: "new",
-            name: "courses.create",
-            component: async () => import("@/pages/courses/Create.vue"),
-          },
-          {
-            path: ":courseId",
-            name: "courses.view",
-            component: async () => import("@/pages/courses/View.vue"),
-          },
-          {
-            path: ":courseId/edit",
-            name: "courses.edit",
-            component: async () => import("@/pages/courses/Edit.vue"),
-          },
-        ],
-      },
-      {
         path: "whatsapp-groups",
         name: "whatsappGroups",
         children: [
@@ -92,6 +66,48 @@ const routes = [
             path: ":whatsappGroupId/edit",
             name: "whatsappGroups.edit",
             component: async () => import("@/pages/whatsappGroups/Edit.vue"),
+          },
+        ],
+      },
+      {
+        path: "users",
+        name: "users",
+        children: [
+          {
+            path: "",
+            name: "users.index",
+            component: async () => import("@/pages/users/Index.vue"),
+          },
+          {
+            path: ":userId",
+            name: "users.view",
+            component: async () => import("@/pages/users/View.vue"),
+          },
+        ],
+      },
+      {
+        path: "courses",
+        name: "courses",
+        children: [
+          {
+            path: "",
+            name: "courses.index",
+            component: async () => import("@/pages/courses/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "courses.create",
+            component: async () => import("@/pages/courses/Create.vue"),
+          },
+          {
+            path: ":courseId",
+            name: "courses.view",
+            component: async () => import("@/pages/courses/View.vue"),
+          },
+          {
+            path: ":courseId/edit",
+            name: "courses.edit",
+            component: async () => import("@/pages/courses/Edit.vue"),
           },
         ],
       },

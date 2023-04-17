@@ -51,6 +51,12 @@ export const useSideMenuStore = defineStore("sideMenu", {
       },
       "divider",
       {
+        icon: "User",
+        pageName: "users.index",
+        title: "Kullanıcılar",
+        permission: "users.list",
+      },
+      {
         icon: "Users",
         pageName: "whatsappGroups.index",
         title: "Whatsapp Grupları",
