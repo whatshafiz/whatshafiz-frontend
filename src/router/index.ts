@@ -109,6 +109,11 @@ const routes = [
             name: "courses.edit",
             component: async () => import("@/pages/courses/Edit.vue"),
           },
+          {
+            path: ":courseType/register",
+            name: "courses.register",
+            component: async () => import("@/pages/courses/Register.vue"),
+          },
         ],
       },
       {
