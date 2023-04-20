@@ -3,7 +3,7 @@ import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import TomSelect from '@/base-components/TomSelect'
 import UserCard from '@/components/UserCard'
-import { ref, onBeforeMount, inject } from "vue"
+import { ref, onBeforeMount } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useComplaintsStore } from "@/stores/complaint"
