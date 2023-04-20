@@ -53,6 +53,15 @@ export const useAlertStore = defineStore('alert', {
       this.warningMessages = []
       this.errorMessages = []
     },
+    flushSuccessMessage(key) {
+      this.successMessages.splice(key, 1);
+    },
+    flushWarningMessage(key) {
+      this.warningMessages.splice(key, 1);
+    },
+    flushErrorMessage(key) {
+      this.errorMessages.splice(key, 1);
+    },
     setDeleteModalPreview(newValue) {
       this.deleteModalPreview = newValue
     },

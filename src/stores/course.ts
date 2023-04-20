@@ -71,6 +71,15 @@ export const useCourseStore = defineStore('course', {
         console.log('fetchCourse error', response)
       }
     },
+    async registerUserToCourse(registrationData) {
+      try {
+        return await api().post('/profile/courses', registrationData)
+      } catch (response) {
+        console.log('register course error', response)
+
+        return response.response
+      }
+    },
     async createCourse(courseData) {
       try {
         await api().post('/courses', courseData)
