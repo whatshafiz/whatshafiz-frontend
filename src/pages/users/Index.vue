@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import Datatable from "@/components/Datatable";
-import { ref, inject } from "vue";
-import { useRouter } from "vue-router";
+import Datatable from "@/components/Datatable"
+import { ref, inject, onBeforeMount } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import useClipboard from 'vue-clipboard3'
-import { stringToHTML } from "@/utils/helper";
-import { useUserStore } from "@/stores/user";
+import { stringToHTML } from "@/utils/helper"
+import { useUserStore } from "@/stores/user"
+import { useCourseStore } from "@/stores/course"
+import { useWhatsappGroupStore } from "@/stores/whatsappGroup"
 import userProfile from "@/assets/images/placeholders/user.png"
 import maleProfile from "@/assets/images/placeholders/male.jpg"
 import femaleProfile from "@/assets/images/placeholders/female.jpg"
@@ -14,9 +16,31 @@ const errorNotificationToggle = inject('errorNotificationToggle')
 
 const tableRef = ref();
 const { toClipboard } = useClipboard()
+const route = useRoute()
 const router = useRouter()
 const user = useUserStore()
 const userStore = useUserStore()
+const courseStore = useCourseStore()
+const whatsappGroupStore = useWhatsappGroupStore()
+const usersIndexUrl = ref('')
+const whatsappGroup = ref({})
+const course = ref({})
+
+onBeforeMount(() => {
+  setIndexUrl()
+})
+
+const setIndexUrl = async () => {
+  if (route.query.whatsappGroupId) {
+    usersIndexUrl.value = userStore.getWhatsappGroupUsersIndexURL(route.query.whatsappGroupId)
+    whatsappGroup.value = await whatsappGroupStore.fetchWhatsappGroup(route.query.whatsappGroupId)
+  } else if (route.query.courseId) {
+    usersIndexUrl.value = userStore.getCourseUsersIndexURL(route.query.courseId)
+    course.value = await courseStore.fetchCourse(route.query.courseId)
+  } else {
+    usersIndexUrl.value = userStore.getIndexURL
+  }
+}
 
 const toggleUserBanStatus = async (user) => {
   if (await userStore.toggleUserBanStatus(user.id, !user.is_banned)) {
@@ -164,8 +188,10 @@ const tableColumns = [
 <template>
   <div v-if="user.can('users.list')">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
-      <h2 class="mr-auto text-lg font-medium">Tüm Kullanıcılar</h2>
+      <h2 v-if="whatsappGroup.id" class="mr-auto text-lg font-medium">{{ whatsappGroup.name }} Grubundaki Kullanıcılar</h2>
+      <h2 v-else-if="course.id" class="mr-auto text-lg font-medium">{{ course.name }} Kursundaki Kullanıcılar</h2>
+      <h2 v-else class="mr-auto text-lg font-medium">Tüm Kullanıcılar</h2>
     </div>
-    <datatable ref="tableRef" :index-url="userStore.getIndexURL" :columns="tableColumns" />
+    <datatable ref="tableRef" :index-url="usersIndexUrl" :columns="tableColumns" />
   </div>
 </template>
