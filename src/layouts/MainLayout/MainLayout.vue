@@ -84,9 +84,12 @@ watch(sideMenu, () => {
 });
 
 onBeforeMount(async () => {
-  // if (localStorage.getItem('newCourseRegisterType')) {
-  //   console.log('kullanıcı yeni kursa kayıt olmak istiyor!')
-  // }
+  if (localStorage.getItem('newCourseRegisterType')) {
+    return router.push({
+      name: 'courses.register',
+      params: { courseType: localStorage.getItem('newCourseRegisterType') }
+    })
+  }
 });
 
 onMounted(() => {
@@ -168,23 +171,32 @@ onMounted(() => {
       ]">
         <div v-if="alertStore.hasAlertMessage" class="mt-6">
           <Alert v-if="alertStore.hasSuccessMessage" variant="soft-success" class="items-center mb-2">
-            <div v-for="message in alertStore.getSuccessMessages" class="flex items-center">
+            <div v-for="(message, key) in alertStore.getSuccessMessages" class="flex items-center">
               <Lucide icon="AlertTriangle" class="w-6 h-6 mr-2" />
-              <div class="w-full">{{ message }}</div>
+              <div class="w-full" v-html="message"></div>
+              <Alert.DismissButton type="button" class="text-white" aria-label="Close" @click="() => alertStore.flushSuccessMessage(key)">
+                <Lucide icon="X" class="w-4 h-4" />
+              </Alert.DismissButton>
             </div>
           </Alert>
 
           <Alert v-if="alertStore.hasWarningMessage" variant="soft-warning" class="items-center mb-2">
-            <div v-for="message in alertStore.getWarningMessages" class="flex items-center">
+            <div v-for="(message, key) in alertStore.getWarningMessages" class="flex items-center">
               <Lucide icon="AlertCircle" class="w-6 h-6 mr-2" />
-              <div class="w-full">{{ message }}</div>
+              <div class="w-full" v-html="message"></div>
+              <Alert.DismissButton type="button" class="text-white" aria-label="Close" @click="() => alertStore.flushWarningMessage(key)">
+                <Lucide icon="X" class="w-4 h-4" />
+              </Alert.DismissButton>
             </div>
           </Alert>
 
           <Alert v-if="alertStore.hasErrorMessage" variant="soft-danger" class="items-center mb-2">
-            <div v-for="message in alertStore.getErrorMessages" class="flex items-center">
+            <div v-for="(message, key) in alertStore.getErrorMessages" class="flex items-center">
               <Lucide icon="AlertOctagon" class="w-6 h-6 mr-2" />
-              <div class="w-full">{{ message }}</div>
+              <div class="w-full" v-html="message"></div>
+              <Alert.DismissButton type="button" class="text-white" aria-label="Close" @click="() => alertStore.flushErrorMessage(key)">
+                <Lucide icon="X" class="w-4 h-4" />
+              </Alert.DismissButton>
             </div>
           </Alert>
         </div>

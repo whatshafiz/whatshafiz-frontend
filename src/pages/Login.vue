@@ -42,7 +42,13 @@ const forgotPasswordFormData = ref({
 })
 
 onBeforeMount(async () => {
+  if (route.name === 'register') {
+    localStorage.setItem('newCourseRegisterType', route.query.type)
+  }
+
   if (localStorage.getItem('token')) {
+    activeForm.value = null
+
     return router.push({ name: 'dashboard' })
   }
 
@@ -137,7 +143,9 @@ const login = () => {
 
       if (response.token) {
         localStorage.setItem('token', response.token)
-        router.push({ name: 'dashboard' })
+        activeForm.value = null
+
+        return router.push({ name: 'dashboard' })
       }
     })
     .catch(response => {
@@ -179,8 +187,9 @@ const register = () => {
 
       if (response.token) {
         localStorage.setItem('token', response.token)
-        localStorage.setItem('newCourseRegisterType', route.query.type)
-        router.push({ name: 'dashboard' })
+        activeForm.value = null
+
+        return router.push({ name: 'dashboard' })
       }
     })
     .catch(response => {
@@ -273,6 +282,7 @@ const updateForgotPassword = () => {
 
 <template>
   <div
+    v-if="activeForm !== null"
     :class="[
       'sm:-mx-8 p-3 sm:px-8 relative h-screen lg:overflow-hidden bg-primary xl:bg-white dark:bg-darkmode-800 xl:dark:bg-darkmode-600',
       'before:hidden before:xl:block before:content-[\'\'] before:w-[57%] before:-mt-[28%] before:-mb-[16%] before:-ml-[13%] before:absolute before:inset-y-0 before:left-0 before:transform before:rotate-[-4.5deg] before:bg-primary/20 before:rounded-[100%] before:dark:bg-darkmode-400',
