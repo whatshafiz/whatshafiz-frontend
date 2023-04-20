@@ -67,7 +67,10 @@ const userProfileImage = computed(() => {
             <Lucide icon="Mail" class="w-4 h-4 mr-2" /> İletişim Bilgileri
           </span>
           <span class="flex items-center mt-5" href="">
-            <Lucide icon="Phone" class="w-4 h-4 mr-2" /> {{ user.phone_number }} 
+            <Lucide icon="Phone" class="w-4 h-4 mr-2" /> {{ user.phone_number }}
+            <a class="flex items-center mr-3 text-success" target="_blank" :href="'https://wa.me/' + user.phone_number">
+              <Lucide icon="MessageSquare" class="w-4 h-4 ml-3 mr-1" /> Mesaj Gönder
+            </a>
           </span>
           <span class="flex items-center mt-5" href="">
             <Lucide icon="Navigation" class="w-4 h-4 mr-2" /> {{ user.city?.name }}
