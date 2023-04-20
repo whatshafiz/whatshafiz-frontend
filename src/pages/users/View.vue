@@ -105,14 +105,15 @@ onBeforeMount(async () => {
           Kullanıcıyı Banla
         </Button>
       </div>
-      <Button
-        v-if="!user.is_banned"
-        variant="soft-danger"
-        class="mr-2 shadow-md"
-        @click="() => reportUser()"
-      >
-        Şikayet Et
-      </Button>
+      <div v-if="!user.is_banned" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+          <Button
+          variant="soft-danger"
+          class="mr-2 shadow-md"
+          @click="() => reportUser()"
+          >
+          Şikayet Et
+        </Button>
+      </div>
     </div>
     <div class="grid lg:grid-cols-2 gap-6 mt-5">
       <profile v-if="user.id" :user="user"/>
