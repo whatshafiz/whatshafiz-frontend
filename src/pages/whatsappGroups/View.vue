@@ -22,7 +22,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-if="user.can('whatsappGroups.update')">
+  <div v-if="user.can('whatsappGroups.view')">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Whatsapp Grubu Detayları</h2>
     </div>

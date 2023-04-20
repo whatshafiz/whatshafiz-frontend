@@ -82,15 +82,37 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
-    title: "Başlama Zamanı",
+    title: "Kullanıcılar",
     responsive: 4,
+    width: 130,
+    field: "users_count",
+    vertAlign: "middle",
+    hozAlign: "center",
+    formatter(cell) {
+      const rowData = cell.getData()
+      const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
+      const usersButton = stringToHTML(
+        `<a class="flex items-center mr-3 text-primary hover:underline" href="javascript:;"> ${rowData.users_count} Kişi </a>`
+      );
+      usersButton.addEventListener("click", function () {
+        router.push({ name: 'users.index', query: { courseId: rowData.id } })
+      });
+
+      buttonsHolder.append(usersButton)
+
+      return buttonsHolder
+    },
+  },
+  {
+    title: "Başlama Zamanı",
+    responsive: 5,
     width: 165,
     field: "start_at",
     vertAlign: "middle",
   },
   {
     title: "Başvuru Durumu",
-    responsive: 5,
+    responsive: 6,
     width: 165,
     field: "can_be_applied",
     vertAlign: "middle",
@@ -104,14 +126,14 @@ const tableColumns = [
   },
   {
     title: "Son Başvuru Zamanı",
-    responsive: 4,
+    responsive: 7,
     width: 190,
     field: "can_be_applied_until",
     vertAlign: "middle",
   },
   {
     title: "Durum",
-    responsive: 5,
+    responsive: 8,
     width: 100,
     field: "is_active",
     vertAlign: "middle",

@@ -110,12 +110,26 @@ const tableColumns = [
     headerSort: false,
   },
   {
-    title: "Kullanıcı Sayısı",
+    title: "Kullanıcılar",
     responsive: 6,
-    width: 150,
+    width: 130,
     field: "users_count",
     vertAlign: "middle",
     hozAlign: "center",
+    formatter(cell) {
+      const rowData = cell.getData()
+      const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
+      const usersButton = stringToHTML(
+        `<a class="flex items-center mr-3 text-primary hover:underline" href="javascript:;"> ${rowData.users_count} Kişi </a>`
+      );
+      usersButton.addEventListener("click", function () {
+        router.push({ name: 'users.index', query: { whatsappGroupId: rowData.id } })
+      });
+
+      buttonsHolder.append(usersButton)
+
+      return buttonsHolder
+    },
   },
   {
     title: "Durum",
