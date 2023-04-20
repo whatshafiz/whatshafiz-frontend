@@ -18,6 +18,10 @@ const userId = route.params.userId
 const userStore = useUserStore()
 const user = ref({})
 
+const reportUser = () => {
+  router.push({ name: 'complaints.create', query: { userId: userId } })
+}
+
 const removeRoleFromUser = async (roleId) => {
   if (await userStore.removeRole(userId, roleId)) {
     successNotificationToggle('İşlem Başarılı', 'Rol Kullanıcıdan Kaldırıldı!')
@@ -101,6 +105,14 @@ onBeforeMount(async () => {
           Kullanıcıyı Banla
         </Button>
       </div>
+      <Button
+        v-if="!user.is_banned"
+        variant="soft-danger"
+        class="mr-2 shadow-md"
+        @click="() => reportUser()"
+      >
+        Şikayet Et
+      </Button>
     </div>
     <div class="grid lg:grid-cols-2 gap-6 mt-5">
       <profile v-if="user.id" :user="user"/>

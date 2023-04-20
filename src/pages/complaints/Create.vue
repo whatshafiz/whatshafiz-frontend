@@ -2,9 +2,11 @@
 import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
-import { ref, reactive, inject} from "vue"
+import UserCard from '@/components/UserCard'
+import { ref, reactive, inject, onBeforeMount } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useComplaintsStore } from "@/stores/complaint"
+import { useUserStore } from "@/stores/user";
 import _ from "lodash";
 
 const successNotificationToggle = inject('successNotificationToggle')
@@ -12,10 +14,19 @@ const isLoading = ref(false)
 const router = useRouter()
 const route = useRoute()
 const complaintStore = useComplaintsStore()
+const userStore = useUserStore()
+const relatedUser = ref({})
 const complaint = reactive({
   subject: '',
   description: '',
   related_user_id: '',
+})
+
+onBeforeMount(async () => {
+  if (route.query.userId) {
+    relatedUser.value = await userStore.fetchUser(route.query.userId)
+    complaint.related_user_id = relatedUser.value.id
+  }
 })
 
 const onSubmit = async () => {
@@ -24,7 +35,7 @@ const onSubmit = async () => {
   if (await complaintStore.createComplaint(complaint)) {
     isLoading.value = false
     successNotificationToggle('İşlem Başarılı', 'Şikayet Kaydedildi.')
-    router.go(-1)
+    router.push({ name: 'my.complaints' })
   } else {
     isLoading.value = false
     window.scrollTo(0, 0)
@@ -45,6 +56,12 @@ const onSubmit = async () => {
           </div>
           <div class="p-5">
             <form class="validate-form" @submit.prevent="onSubmit">
+              <div class="input-form mt-4" v-if="relatedUser.id">
+                <FormLabel htmlFor="related_user" class="flex flex-col w-full sm:flex-row">
+                  Şikayet Edilen
+                </FormLabel>
+                <user-card :user="relatedUser" />
+              </div>
               <div class="input-form mt-5">
                 <FormLabel htmlFor="subject" class="flex flex-col w-full sm:flex-row">
                   Şikayet Konusu
