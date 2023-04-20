@@ -17,6 +17,12 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
+    getWhatsappGroupUsersIndexURL(whatsappGroupId) {
+      return getBaseUrl('/users?whatsapp_group_id=' + whatsappGroupId)
+    },
+    getCourseUsersIndexURL(courseId) {
+      return getBaseUrl('/users?course_id=' + courseId)
+    },
     isLoggedIn() {
       if (!localStorage.getItem('token')) {
         return false
