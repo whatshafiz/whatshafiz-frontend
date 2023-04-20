@@ -82,7 +82,7 @@ onBeforeMount(async () => {
 <template>
   <div v-if="userStore.can('users.view')">
     <div class="flex items-center mt-8 intro-y">
-      <h2 class="mr-auto text-lg font-medium">Kullanıcı Detayları</h2>
+      <h2 class="mr-auto text-lg w-96 font-medium">Kullanıcı Detayları</h2>
       <div v-if="userStore.can('users.delete')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
         <Button
           v-if="user.is_banned"
@@ -147,7 +147,7 @@ onBeforeMount(async () => {
                 </Table.Tbody>
               </Table>
             </div>
-            <div v-else>
+            <div v-else class="text-center p-5">
               Henüz Rol Atanmamış
             </div>
           </div>
@@ -202,7 +202,7 @@ onBeforeMount(async () => {
                 </Table.Tbody>
               </Table>
             </div>
-            <div v-else>
+            <div v-else class="text-center p-5">
               Henüz Kursa Katılmamış
             </div>
           </div>
@@ -257,7 +257,7 @@ onBeforeMount(async () => {
                 </Table.Tbody>
               </Table>
             </div>
-            <div v-else>
+            <div v-else class="text-center p-5">
               Henüz Whatsapp Grubuna Katılmamış
             </div>
           </div>
