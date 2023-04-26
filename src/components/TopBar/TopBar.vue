@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Lucide from "../../base-components/Lucide";
 import logoUrl from "@/assets/images/logo-transparent.png"
 import userProfile from "@/assets/images/placeholders/user.png"
+import maleProfile from "@/assets/images/placeholders/male.jpg"
+import femaleProfile from "@/assets/images/placeholders/female.jpg"
 import Breadcrumb from "../../base-components/Breadcrumb";
-import { FormInput } from "../../base-components/Form";
-import { Menu, Popover } from "../../base-components/Headless";
-import fakerData from "../../utils/faker";
+import { Menu } from "../../base-components/Headless";
 import _ from "lodash";
-import { TransitionRoot } from "@headlessui/vue";
 import { useUserStore } from "@/stores/user";
 
 const user = useUserStore()
@@ -23,6 +22,10 @@ const showSearchDropdown = () => {
 const hideSearchDropdown = () => {
   searchDropdown.value = false;
 };
+
+const userProfileImage = computed(() => {
+  return user.profile.gender === 'male' ? maleProfile : (user.profile.gender === 'female' ? femaleProfile : userProfile)
+})
 </script>
 
 <template>
@@ -66,7 +69,7 @@ const hideSearchDropdown = () => {
         <Menu.Button
           class="w-8 h-8 overflow-hidden rounded-full shadow-lg image-fit zoom-in intro-x hidden md:block"
         >
-          <img alt="Profil" :src="userProfile" />
+          <img alt="Profil" :src="userProfileImage" />
         </Menu.Button>
         <Menu.Items
           class="w-56 mt-px relative bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white"

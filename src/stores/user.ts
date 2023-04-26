@@ -93,6 +93,17 @@ export const useUserStore = defineStore('user', {
         console.log('fetchUser error', response)
       }
     },
+    async assignRole(userId, roleId) {
+      try {
+        await api().post('/users/' + userId + '/roles', { role_id: roleId })
+
+        return true
+      } catch (response) {
+        console.log('assignRole error', response)
+
+        return false
+      }
+    },
     async removeRole(userId, roleId) {
       try {
         await api().delete('/users/' + userId + '/roles/' + roleId)

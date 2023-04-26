@@ -65,6 +65,10 @@ const registerUserToCourse = async () => {
     alertStore.addSuccessMessage(response.data.message)
     course.value.id = null
     window.scrollTo(0, 0)
+
+    setTimeout(() => {
+      router.push({ name: 'my.whatsappGroups' })
+    }, 1000);
   } else {
     alertStore.addErrorMessage(response.data.message)
 
