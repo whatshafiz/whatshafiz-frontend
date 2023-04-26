@@ -39,11 +39,8 @@ watch(sideMenu, () => {
 });
 
 onMounted(() => {
-  console.log('erkan0', scrollableRef.value)
   if (scrollableRef.value) {
-    console.log('erkan1', scrollableRef.value)
     new SimpleBar(scrollableRef.value);
-    console.log('erkan2', scrollableRef.value)
   }
 
   setFormattedMenu(sideMenu.value);

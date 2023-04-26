@@ -435,7 +435,7 @@ router.beforeEach(async (to, from) => {
   if (to.name !== 'verify-phone-number' && to.name !== 'profile.edit' && !user.profile.gender) {
     const alert = useAlertStore()
     alert.flushMessages()
-    alert.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
+    alert.addErrorMessage('Lütfen profil bilgilerinizi doldurun!')
 
     return router.push({ name: 'profile.edit' })
   }

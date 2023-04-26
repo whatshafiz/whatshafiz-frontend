@@ -4,6 +4,7 @@ import Button from "@/base-components/Button";
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from "@/base-components/TomSelect";
 import { ref, onMounted, inject } from "vue";
+import { useAlertStore } from "@/stores/alert";
 import { useUserStore } from "@/stores/user";
 import { useCountryStore } from "@/stores/country";
 import { useUniversityStore } from "@/stores/university";
@@ -13,6 +14,7 @@ const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
 const userStore = useUserStore()
 const { profile } = storeToRefs(userStore)
+const alertStore = useAlertStore()
 const countryStore = useCountryStore()
 const universityStore = useUniversityStore()
 
@@ -53,6 +55,13 @@ onMounted(async () => {
 
     if (profile.value.university_faculty_id) {
         fetchUniversityFacultyDepartments(profile.value.university_id, profile.value.university_faculty_id)
+    }
+
+    if (profile.value.gender === null) {
+        setTimeout(() => {
+            alertStore.flushMessages()
+            alertStore.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
+        }, 200);
     }
 })
 

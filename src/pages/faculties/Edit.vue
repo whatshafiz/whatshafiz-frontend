@@ -64,7 +64,7 @@ const onSubmit = async () => {
   <div v-if="user.can('universities.update')">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Fakülte Bilgilerini Düzenle</h2>
-        <div class="flex w-full mt-4 sm:w-auto sm:mt-0">
+      <div class="flex w-full mt-4 sm:w-auto sm:mt-0">
         <RouterLink :to="{
           name: 'departments.create',
           query: { universityId: faculty.university_id, facultyId: faculty.id }

@@ -2,39 +2,32 @@
 import Lucide from '@/base-components/Lucide'
 import Table from '@/base-components/Table'
 import Button from '@/base-components/Button'
+import LoadingIcon from '@/base-components/LoadingIcon'
+import { FormSelect } from '@/base-components/Form'
 import Profile from '@/pages/users/Profile.vue'
 import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
-import { useAlertStore } from "@/stores/alert";
-import _ from "lodash";
+import { useRoleStore } from "@/stores/role"
+import { useAlertStore } from "@/stores/alert"
+import _ from "lodash"
 
 const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
+const isLoading = ref(false)
 const alertStore = useAlertStore()
 const router = useRouter()
 const route = useRoute()
 const userId = route.params.userId
 const userStore = useUserStore()
+const roleStore = useRoleStore()
 const user = ref({})
+const roles = ref([])
+const assignNewRoleFormVisible = ref(false)
+const newRoleId = ref(0)
 
 const reportUser = () => {
   router.push({ name: 'complaints.create', query: { userId: userId } })
-}
-
-const removeRoleFromUser = async (roleId) => {
-  if (await userStore.removeRole(userId, roleId)) {
-    successNotificationToggle('İşlem Başarılı', 'Rol Kullanıcıdan Kaldırıldı!')
-    user.value.roles = []
-    user.value.roles = (await userStore.fetchUser(userId)).roles
-  } else {
-    errorNotificationToggle('HATA', 'Rol kaldırılamadı!')
-  }
-}
-
-const removeRoleFromUserWithModal = (roleId) => {
-  alertStore.setDeleteModalPreview(true)
-  alertStore.setDeleteModalAction(() => removeRoleFromUser(roleId))
 }
 
 const removeCourseFromUser = async (courseId) => {
@@ -78,6 +71,45 @@ const toggleUserBanStatus = async () => {
   }
 }
 
+const removeRoleFromUser = async (roleId) => {
+  if (await userStore.removeRole(userId, roleId)) {
+    successNotificationToggle('İşlem Başarılı', 'Rol Kullanıcıdan Kaldırıldı!')
+    user.value.roles = []
+    user.value.roles = (await userStore.fetchUser(userId)).roles
+    assignNewRoleFormVisible.value = false
+  } else {
+    errorNotificationToggle('HATA', 'Rol kaldırılamadı!')
+  }
+}
+
+const removeRoleFromUserWithModal = (roleId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => removeRoleFromUser(roleId))
+}
+
+const assignNewRole = async () => {
+  isLoading.value = true
+
+  if (roles.value.length === 0) {
+    roles.value = await roleStore.fetchRoles()
+  }
+
+  roles.value = roles.value.filter(role => !user.value.roles.find(r => r.id === role.id))
+
+  assignNewRoleFormVisible.value = true
+  isLoading.value = false
+}
+
+const saveNewRole = async () => {
+  isLoading.value = true
+  await userStore.assignRole(userId, newRoleId.value)
+  user.value.roles = []
+  user.value.roles = (await userStore.fetchUser(userId)).roles
+  assignNewRoleFormVisible.value = false
+  isLoading.value = false
+  newRoleId.value = 0
+}
+
 onBeforeMount(async () => {
   user.value = await userStore.fetchUser(userId)
 })
@@ -106,11 +138,11 @@ onBeforeMount(async () => {
         </Button>
       </div>
       <div v-if="!user.is_banned" class="flex w-full mt-4 sm:w-auto sm:mt-0">
-          <Button
+        <Button
           variant="soft-danger"
           class="mr-2 shadow-md"
           @click="() => reportUser()"
-          >
+        >
           Şikayet Et
         </Button>
       </div>
@@ -121,8 +153,26 @@ onBeforeMount(async () => {
         <div class="intro-y box">
           <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
             <h2 class="mr-auto text-base font-medium">Roller</h2>
+            <div v-if="userStore.hasRole('Admin')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+              <Button variant="primary" class="mr-2 shadow-md" @click.native="assignNewRole()">
+                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                Yeni Rol Ekle
+              </Button>
+            </div>
           </div>
           <div class="p-2">
+            <div v-if="assignNewRoleFormVisible" class="pb-4 border-b border-slate-200/60 dark:border-darkmode-400">
+              <div class="flex flex-col items-center sm:flex-row">
+                <FormSelect v-model="newRoleId" formSelectSize="lg" class="sm:mt-2 sm:mx-2">
+                  <option value="0" selected disabled hidden>Rol Seçin</option>
+                  <option v-for="role in roles" :value="role.id">{{ role.name }}</option>
+                </FormSelect>
+                <Button variant="primary" class="mr-2 mt-2 shadow-md" @click.native="saveNewRole()">
+                  <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                  Kaydet
+                </Button>
+              </div>
+            </div>
             <div v-if="user.roles?.length > 0" class="col-span-12 overflow-auto intro-y lg:overflow-visible">
               <Table class="border-spacing-y-[10px] border-separate -mt-2">
                 <Table.Thead>
