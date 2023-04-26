@@ -13,7 +13,7 @@ export const useRoleStore = defineStore('role', {
       return state.roles
     },
     getIndexURL() {
-      return getBaseUrl('/roles')
+      return getBaseUrl('/roles/paginate')
     }
   },
   actions: {
