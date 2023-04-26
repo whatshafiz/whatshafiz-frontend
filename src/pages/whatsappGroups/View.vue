@@ -2,6 +2,7 @@
 import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import TomSelect from '@/base-components/TomSelect'
+import Lucide from '@/base-components/Lucide'
 import FormSwitch from '@/base-components/Form/FormSwitch'
 import { ref, onBeforeMount } from "vue"
 import { useRouter, useRoute } from "vue-router"
@@ -37,9 +38,6 @@ onBeforeMount(async () => {
               <div class="input-form">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Kurs
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
                 </FormLabel>
                 <TomSelect
                   v-model="whatsappGroup.course_id"
@@ -55,9 +53,6 @@ onBeforeMount(async () => {
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Eğitim Türü
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
                 </FormLabel>
                 <TomSelect
                   v-model="whatsappGroup.type"
@@ -73,9 +68,6 @@ onBeforeMount(async () => {
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Cinsiyet
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
                 </FormLabel>
                 <TomSelect
                   v-model="whatsappGroup.gender"
@@ -90,9 +82,6 @@ onBeforeMount(async () => {
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Grup Adı
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
                 </FormLabel>
                 <FormInput
                   id="name"
@@ -107,9 +96,9 @@ onBeforeMount(async () => {
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Grup Katılma Linki
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
+                  <a class="flex items-center float-right text-success" target="_blank" :href="whatsappGroup.join_url">
+                    <Lucide icon="ExternalLink" class="w-4 h-4 ml-2 mr-1" /> Katıl
+                  </a>
                 </FormLabel>
                 <FormInput
                   id="join_url"
