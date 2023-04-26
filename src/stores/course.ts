@@ -1,5 +1,4 @@
-import { defineStore, getActivePinia } from 'pinia'
-import router from '@/router/index'
+import { defineStore } from 'pinia'
 import api from '@/utils/api'
 import { getBaseUrl } from '@/utils/api'
 
