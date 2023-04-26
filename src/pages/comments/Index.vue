@@ -183,7 +183,7 @@ const tableColumns = [
 </script>
 
 <template>
-  <div v-if="user.can('comments.list')">
+  <div v-if="user.can('comments.list') || isMyIndex">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
       <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Yorumlarım</h2>
       <h2 v-else-if="isUnapprovedIndex" class="mr-auto text-lg font-medium">Onay Bekleyen Yorumlar</h2>
