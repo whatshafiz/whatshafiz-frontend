@@ -106,11 +106,11 @@ onBeforeMount(async () => {
         </Button>
       </div>
       <div v-if="!user.is_banned" class="flex w-full mt-4 sm:w-auto sm:mt-0">
-          <Button
+        <Button
           variant="soft-danger"
           class="mr-2 shadow-md"
           @click="() => reportUser()"
-          >
+        >
           Şikayet Et
         </Button>
       </div>
