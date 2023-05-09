@@ -183,7 +183,7 @@ const tableColumns = [
         buttonsHolder.append(showButton)
       }
 
-      if (user.can('complaints.update')) {
+      if (user.can('complaints.update') || (rowData.created_by === user.profile.id && !rowData.is_resolved)) {
         buttonsHolder.append(editButton)
       }
 
