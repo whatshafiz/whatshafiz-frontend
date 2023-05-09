@@ -91,12 +91,22 @@ const tableColumns = [
     formatter(cell) {
       const rowData = cell.getData()
       const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
-      const usersButton = stringToHTML(
-        `<a class="flex items-center mr-3 text-primary hover:underline" href="javascript:;"> ${rowData.users_count} Kişi </a>`
-      );
-      usersButton.addEventListener("click", function () {
-        router.push({ name: 'users.index', query: { courseId: rowData.id } })
-      });
+      let usersButton = ''
+
+      if (user.can('users.index')) {
+        usersButton = stringToHTML(
+          `<a class="flex items-center mr-3 text-primary hover:underline" href="javascript:;">
+            <i data-lucide="users" class="w-4 h-4 mr-1"></i>
+            ${rowData.users_count} Kişi
+          </a>`
+        );
+
+        usersButton.addEventListener("click", function () {
+          router.push({ name: 'users.index', query: { courseId: rowData.id } })
+        });
+      } else {
+        usersButton = stringToHTML(rowData.users_count + ' Kişi');
+      }
 
       buttonsHolder.append(usersButton)
 

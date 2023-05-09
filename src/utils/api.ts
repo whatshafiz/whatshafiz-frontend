@@ -32,6 +32,7 @@ const api  = () => {
     error => {
       if (error.response.status === 422) {
         alert.addErrorMessage(error.response.data.message)
+        window.scrollTo(0, 0)
       }
 
       throw error

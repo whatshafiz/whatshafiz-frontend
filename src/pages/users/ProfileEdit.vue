@@ -47,9 +47,10 @@ onMounted(async () => {
   await universityStore.fetchUniversities()
   universities.value = universityStore.getUniversities
 
-  if (profile.value.country_id) {
-    fetchCountryCities(profile.value.country_id)
+  if (!profile.value.country_id) {
+    profile.value.country_id = 1
   }
+  fetchCountryCities(profile.value.country_id)
 
   if (profile.value.university_id) {
     fetchUniversityFaculties(profile.value.university_id)
@@ -61,9 +62,11 @@ onMounted(async () => {
 
   if (profile.value.gender === null) {
     setTimeout(() => {
-      alertStore.flushMessages()
-      alertStore.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
-    }, 200);
+      if (!alertStore.hasAlertMessage) {
+        alertStore.flushMessages()
+        alertStore.addWarningMessage('Lütfen profil bilgilerinizi doldurun!')
+      }
+    }, 20);
   }
 })
 
@@ -86,7 +89,6 @@ const onSubmit = async () => {
     isLoading.value = false
   }
 };
-
 </script>
 
 <template>
@@ -102,7 +104,7 @@ const onSubmit = async () => {
         <div class="p-5">
           <form class="validate-form" @submit.prevent="onSubmit">
             <div class="input-form">
-              <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Ad
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
@@ -111,7 +113,7 @@ const onSubmit = async () => {
               <FormInput id="name" v-model="profile.name" type="text" name="name" placeholder="Adınız" />
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="surname" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Soyad
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
@@ -120,7 +122,7 @@ const onSubmit = async () => {
               <FormInput id="surname" v-model="profile.surname" type="text" name="surname" placeholder="Soyadınız" />
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="phone_number" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Telefon No
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Değiştirilemez
@@ -130,7 +132,7 @@ const onSubmit = async () => {
                 placeholder="Telefon No" />
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="gender" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Cinsiyet
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
@@ -142,7 +144,7 @@ const onSubmit = async () => {
               </TomSelect>
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="email" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 E-posta
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   İsteğe Bağlı
@@ -151,51 +153,67 @@ const onSubmit = async () => {
               <FormInput id="email" v-model="profile.email" type="email" name="email" placeholder="ornek@gmail.com" />
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="country_id" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Ülke
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
                 </span>
               </FormLabel>
-              <TomSelect id="country_id" v-model="profile.country_id" :options="{
-                placeholder: 'Ülke Seçin',
-                onChange: (newCountryId) => { fetchCountryCities(newCountryId) },
-              }" class="w-full">
+              <TomSelect
+                id="country_id"
+                v-model="profile.country_id"
+                :options="{
+                  placeholder: 'Ülke Seçin',
+                  onChange: (newCountryId) => { fetchCountryCities(newCountryId) },
+                }"
+                class="w-full"
+              >
                 <option v-for="country in countries" :key="country.id" :value="country.id">
                   {{ country.name }}
                 </option>
               </TomSelect>
             </div>
-            <div class="mt-3 input-form">
-              <FormLabel htmlFor="city_id" class="flex flex-col w-full sm:flex-row">
+            <div v-show="profile.country_id" class="mt-3 input-form">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Şehir
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
                 </span>
               </FormLabel>
-              <TomSelect id="city_id" name="city_id" v-model="profile.city_id" :options="{
-                placeholder: 'Şehir Seçin',
-                maxOptions: 100,
-                create: async (newCityName) => {
-                  const newCityId = (await countryStore.createCity(profile.country_id, newCityName)).city.id
-                  cities = await countryStore.fetchCountryCities(profile.country_id)
-                  profile.city_id = newCityId
+              <TomSelect
+                id="city_id"
+                name="city_id"
+                v-model="profile.city_id"
+                :options="{
+                  placeholder: 'Şehir Seçin',
+                  maxOptions: 100,
+                  create: async (newCityName) => {
+                    const newCityId = (await countryStore.createCity(profile.country_id, newCityName)).city.id
+                    cities = await countryStore.fetchCountryCities(profile.country_id)
+                    profile.city_id = newCityId
 
-                  return true
-                },
-                render: {
-                  'option_create': (data: TomOption, escape: typeof escape_html) => {
-                    return '<div class=\'create !p-4\'>Yeni Şehir Oluştur: <strong>' + escape(data.input) + '</strong></div>';
+                    return true
                   },
-                }
-              }" :create="true">
-                <option v-for="city in cities" :key="city.id" :value="city.id">
-                  {{ city.name }}
-                </option>
+                  render: {
+                    'option_create': (data: TomOption, escape: typeof escape_html) => {
+                      return '<div class=\'create !p-4\'>Yeni Şehir Oluştur: <strong>' + escape(data.input) + '</strong></div>';
+                    },
+                  }
+                }"
+                :create="true"
+              >
+                <template v-if="cities.length > 0">
+                  <option v-for="city in cities" :key="city.id" :value="city.id">
+                    {{ city.name }}
+                  </option>
+                </template>
+                <template>
+                  <option>Şehir yok</option>
+                </template>
               </TomSelect>
             </div>
             <div class="mt-3 input-form">
-              <FormLabel htmlFor="university_id" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
@@ -227,7 +245,7 @@ const onSubmit = async () => {
               </TomSelect>
             </div>
             <div class="mt-3 input-form" v-if="profile.university_id">
-              <FormLabel htmlFor="university_faculty_id" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Fakülte
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
@@ -258,15 +276,19 @@ const onSubmit = async () => {
               </TomSelect>
             </div>
             <div class="mt-3 input-form" v-if="profile.university_faculty_id">
-              <FormLabel htmlFor="university_department_id" class="flex flex-col w-full sm:flex-row">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite Bölümü
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                   Zorunlu
                 </span>
               </FormLabel>
-              <TomSelect id="university_department_id" name="university_department_id"
-                v-model="profile.university_department_id" :options="{
+              <TomSelect
+                id="university_department_id"
+                name="university_department_id"
+                v-model="profile.university_department_id"
+                :options="{
                   placeholder: 'Bölüm Seçin',
+                  dropdownParent: '',
                   create: async (newDepartmentName) => {
                     const newDepartmentId = (await universityStore.createUniversityFacultyDepartment(profile.university_id, profile.university_faculty_id, newDepartmentName)).department.id
                     departments = await universityStore.fetchUniversityFacultyDepartments(profile.university_id, profile.university_faculty_id)
@@ -279,7 +301,9 @@ const onSubmit = async () => {
                       return '<div class=\'create !p-4\'>Yeni Bölüm Oluştur: <strong>' + escape(data.input) + '</strong></div>';
                     },
                   }
-                }" :create="true">
+                }"
+                :create="true"
+              >
                 <option v-for="department in departments" :key="department.id" :value="department.id">
                   {{ department.name }}
                 </option>

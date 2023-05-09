@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from '@/stores/user'
-import { useAlertStore } from "@/stores/alert";
 import { useSettingStore } from "@/stores/setting";
 
 const routes = [
@@ -433,10 +432,6 @@ router.beforeEach(async (to, from) => {
   }
 
   if (to.name !== 'verify-phone-number' && to.name !== 'profile.edit' && !user.profile.gender) {
-    const alert = useAlertStore()
-    alert.flushMessages()
-    alert.addErrorMessage('Lütfen profil bilgilerinizi doldurun!')
-
     return router.push({ name: 'profile.edit' })
   }
 

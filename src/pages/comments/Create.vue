@@ -3,22 +3,14 @@ import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from '@/base-components/TomSelect'
-import FormSwitch from '@/base-components/Form/FormSwitch'
-import { ref, reactive, onBeforeMount, inject, watch } from "vue"
-import { useRouter, useRoute } from "vue-router"
-import { useUserStore } from "@/stores/user"
+import { ref, reactive, inject } from "vue"
+import { useRouter } from "vue-router"
 import { useCommentsStore } from "@/stores/comment"
-import userProfile from "@/assets/images/placeholders/user.png"
-import maleProfile from "@/assets/images/placeholders/male.jpg"
-import femaleProfile from "@/assets/images/placeholders/female.jpg"
 import _ from "lodash";
 
 const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
 const router = useRouter()
-const route = useRoute()
-const commentId = route.params.commentId
-const user = useUserStore()
 const commentStore = useCommentsStore()
 const comment = reactive({
   type: '',
@@ -41,7 +33,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="user.can('comments.create')">
+  <div>
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Yeni Yorum Oluşturma</h2>
     </div>

@@ -22,7 +22,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-if="user.can('complaints.view')">
+  <div v-if="user.can('complaints.view') || complaint.created_by === user.profile.id">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Şikayet Detayları</h2>
     </div>

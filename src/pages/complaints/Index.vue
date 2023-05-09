@@ -179,7 +179,7 @@ const tableColumns = [
         router.push({ name: 'complaints.edit', params: { complaintId: rowData.id } })
       });
 
-      if (user.can('complaints.view')) {
+      if (user.can('complaints.view') || isMyIndex) {
         buttonsHolder.append(showButton)
       }
 

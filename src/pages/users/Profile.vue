@@ -68,7 +68,11 @@ const userProfileImage = computed(() => {
           </span>
           <span class="flex items-center mt-5" href="">
             <Lucide icon="Phone" class="w-4 h-4 mr-2" /> {{ user.phone_number }}
-            <a class="flex items-center mr-3 text-success" target="_blank" :href="'https://wa.me/' + user.phone_number">
+            <a v-if="userStore.profile.id !== user.id"
+              class="flex items-center mr-3 text-success"
+              target="_blank"
+              :href="'https://wa.me/' + user.phone_number"
+            >
               <Lucide icon="MessageSquare" class="w-4 h-4 ml-3 mr-1" /> Mesaj Gönder
             </a>
           </span>

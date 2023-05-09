@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user"
 import { useRouter } from "vue-router"
 import Button from "@/base-components/Button"
 import userProfile from "@/assets/images/placeholders/user.png"
 import maleProfile from "@/assets/images/placeholders/male.jpg"
 import femaleProfile from "@/assets/images/placeholders/female.jpg"
 
+const user = useUserStore()
 const router = useRouter()
 const props = defineProps({
   user: {
@@ -34,11 +36,12 @@ const props = defineProps({
         {{ props.user.city_name }} {{ props.user.country_name }}
       </div>
     </div>
-    <div class="flex mt-4 lg:mt-0">
+    <div v-if="props.user.id !== user.profile.id" class="flex mt-4 lg:mt-0">
       <a target="_blank" :href="'https://wa.me/' + props.user.phone_number">
         <Button type="button" variant="primary" class="px-3 py-2 mr-2"> Mesaj Gönder </Button>
       </a>
       <Button
+        v-if="user.can('users.view')"
         type="button"
         variant="outline-secondary"
         class="px-3 py-2"
