@@ -42,8 +42,8 @@ const onSubmit = async () => {
 
   if (await whatsappGroupStore.createWhatsappGroup(whatsappGroup)) {
     isLoading.value = false
-    successNotificationToggle('İşlem Başarılı', 'Yeni Whatsapp Grubu Oluşturuldu.')
-    router.push({ name: 'whatsappGroups.index' })
+    successNotificationToggle('İşlem Başarılı', whatsappGroup.name + ' Oluşturuldu.')
+    whatsappGroup.join_url = ''
   } else {
     isLoading.value = false
     window.scrollTo(0, 0)
@@ -136,7 +136,7 @@ const onSubmit = async () => {
               </div>
               <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
                 <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-                Kaydet
+                Kaydet ve Yeni Oluştur
               </Button>
               <Button variant="outline-secondary" type="button" class="mt-5 mr-5" @click="() => router.go(-1)">
                 İptal

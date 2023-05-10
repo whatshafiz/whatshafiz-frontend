@@ -39,7 +39,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="user.can('comments.update')">
+  <div v-if="user.can('comments.update') || (user.profile.id === comment.commented_by_id && !comment.is_approved)">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Yorum Düzenleme</h2>
     </div>
@@ -108,7 +108,7 @@ const onSubmit = async () => {
                   placeholder="Yorumunuzu Yazın"
                 />
               </div>
-              <div class="input-form mt-4" v-if="comment.id">
+              <div class="input-form mt-4" v-if="comment.id && user.can('comments.update')">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Yorumun Durumu
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">

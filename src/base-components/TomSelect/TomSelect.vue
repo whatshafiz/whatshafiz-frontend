@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import _ from "lodash";
+import _, { drop } from "lodash";
 import { setValue, init, updateValue } from "./tom-select";
 import { TomSettings, RecursivePartial } from "tom-select/src/types/index";
 import TomSelectPlugin from "tom-select";
@@ -12,6 +12,7 @@ import {
   ref,
   watch
 } from "vue";
+import { flexibleCompare } from "@fullcalendar/common";
 
 export interface TomSelectElement extends HTMLSelectElement {
   TomSelect: TomSelectPlugin;
@@ -48,6 +49,9 @@ const tomSelectRef = ref<TomSelectElement>();
 const computedOptions = computed(() => {
   let options: TomSelectProps["options"] = {
     ...props.options,
+    onDropdownOpen: function (dropdown) {
+      dropdown.style.display = 'flex'
+    },
     plugins: {
       dropdown_input: {},
       ...props.options?.plugins,

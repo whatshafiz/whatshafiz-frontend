@@ -69,9 +69,12 @@
     right: -1px;
     width: auto;
     z-index: 50;
-    margin-top: 1px;
+    margin-top: 0;
+    transform: translateY(-100%);
+    display: flex;
+    flex-direction: column-reverse;
     font-size: inherit;
-    box-shadow: theme("boxShadow.sm");
+    box-shadow: 0 6px 11px 7px rgb(0 0 0 / 0.20);
     border-radius: theme("borderRadius.DEFAULT");
     border: 1px solid theme("colors.slate.200");
     .dropdown-input-wrap {

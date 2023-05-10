@@ -39,7 +39,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="user.can('complaints.update')">
+  <div v-if="user.can('complaints.update') || (complaint.created_by === user.profile.id && !complaint.is_resolved)">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Şikayet Düzenleme</h2>
     </div>
@@ -97,41 +97,43 @@ const onSubmit = async () => {
                   placeholder="Şikayet Açıklamanızı Yazın"
                 />
               </div>
-              <div class="input-form mt-4">
-                <FormLabel htmlFor="result" class="flex flex-col w-full sm:flex-row">
-                  Sonuç
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <FormTextarea
-                  id="result"
-                  v-model="complaint.result"
-                  :value="complaint.result"
-                  type="text"
-                  name="result"
-                  required
-                  placeholder="Şikayet Sonucunu Yazın"
-                />
-              </div>
-              <div class="input-form mt-4" v-if="complaint.id">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                  Şikayetin Durumu
-                  <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                    Zorunlu
-                  </span>
-                </FormLabel>
-                <TomSelect
-                  v-model="complaint.is_resolved"
-                  :options="{
-                    placeholder: 'Şikayetin durumunu seçin.',
-                  }"
-                  class="w-full"
-                >
-                  <option :value="false"> Çözüm Bekliyor </option>
-                  <option :value="true"> Çözüldü </option>
-                </TomSelect>
-              </div>
+              <template v-if="user.can('complaints.update') && complaint.created_by !== user.profile.id">
+                <div class="input-form mt-4">
+                  <FormLabel htmlFor="result" class="flex flex-col w-full sm:flex-row">
+                    Sonuç
+                    <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
+                      Zorunlu
+                    </span>
+                  </FormLabel>
+                  <FormTextarea
+                    id="result"
+                    v-model="complaint.result"
+                    :value="complaint.result"
+                    type="text"
+                    name="result"
+                    required
+                    placeholder="Şikayet Sonucunu Yazın"
+                  />
+                </div>
+                <div class="input-form mt-4" v-if="complaint.id">
+                  <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                    Şikayetin Durumu
+                    <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
+                      Zorunlu
+                    </span>
+                  </FormLabel>
+                  <TomSelect
+                    v-model="complaint.is_resolved"
+                    :options="{
+                      placeholder: 'Şikayetin durumunu seçin.',
+                    }"
+                    class="w-full"
+                  >
+                    <option :value="false"> Çözüm Bekliyor </option>
+                    <option :value="true"> Çözüldü </option>
+                  </TomSelect>
+                </div>
+              </template>
               <div class="input-form mt-5" v-if="complaint.reviewed_user">
                 <FormLabel htmlFor="reviewed_user" class="flex flex-col w-full sm:flex-row">
                   Şikayet İle En Son İlgilenen
