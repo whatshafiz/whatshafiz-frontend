@@ -28,9 +28,10 @@ const props = defineProps({
       />
     </div>
     <div class="mt-3 text-center lg:ml-2 lg:mr-auto lg:text-left lg:mt-0">
-      <a href="" class="font-medium">
+      <span href="" class="font-medium">
         {{ props.user.name }} {{ props.user.surname }}
-      </a>
+        <span v-if="props.user.is_banned" class="text-danger"> (Banlı) </span>
+      </span>
       <div class="text-slate-500 text-xs mt-0.5">{{ props.user.university_name }}</div>
       <div class="text-slate-500 text-xs mt-0.5">
         {{ props.user.city_name }} {{ props.user.country_name }}

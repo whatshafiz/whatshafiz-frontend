@@ -140,7 +140,7 @@ const tableColumns = [
   },
   {
     title: "İŞLEMLER",
-    width: 210,
+    width: 300,
     field: "actions",
     responsive: 10,
     hozAlign: "left",
@@ -157,7 +157,7 @@ const tableColumns = [
                           <i data-lucide="${rowData.is_banned ? 'eraser' : 'trash-2'}" class="w-4 h-4 mr-1"></i>
                             ${ rowData.is_banned ? 'Ban Kaldır' : 'Banla' }
                         </a>`);
-      const complaintButton = stringToHTML(`<a class="flex items-center text-warning" href="javascript:;">
+      const complaintButton = stringToHTML(`<a class="flex items-center text-warning mr-3" href="javascript:;">
                           <i data-lucide="x-octagon" class="w-4 h-4 mr-1"></i>
                             Şikayet Et
                         </a>`);
