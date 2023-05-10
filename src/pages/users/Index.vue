@@ -34,9 +34,6 @@ const setIndexUrl = async () => {
   if (route.query.whatsappGroupId) {
     usersIndexUrl.value = userStore.getWhatsappGroupUsersIndexURL(route.query.whatsappGroupId)
     whatsappGroup.value = await whatsappGroupStore.fetchWhatsappGroup(route.query.whatsappGroupId)
-  } else if (route.query.courseId) {
-    usersIndexUrl.value = userStore.getCourseUsersIndexURL(route.query.courseId)
-    course.value = await courseStore.fetchCourse(route.query.courseId)
   } else {
     usersIndexUrl.value = userStore.getIndexURL
   }
@@ -78,10 +75,7 @@ const tableColumns = [
     vertAlign: "middle",
     formatter(cell) {
       const response: Response = cell.getData();
-      return `<div>
-        <div class="font-medium whitespace-nowrap">${response.name} ${response.surname}</div>
-        <div class="text-xs text-slate-500 whitespace-nowrap">${response.city_name ?? ''} / ${response.country_name ?? ''}</div>
-      </div>`;
+      return `<div class="font-medium whitespace-nowrap">${response.name} ${response.surname}</div>`;
     },
   },
   {
@@ -146,7 +140,7 @@ const tableColumns = [
   },
   {
     title: "İŞLEMLER",
-    width: 210,
+    width: 300,
     field: "actions",
     responsive: 10,
     hozAlign: "left",
@@ -163,6 +157,10 @@ const tableColumns = [
                           <i data-lucide="${rowData.is_banned ? 'eraser' : 'trash-2'}" class="w-4 h-4 mr-1"></i>
                             ${ rowData.is_banned ? 'Ban Kaldır' : 'Banla' }
                         </a>`);
+      const complaintButton = stringToHTML(`<a class="flex items-center text-warning mr-3" href="javascript:;">
+                          <i data-lucide="x-octagon" class="w-4 h-4 mr-1"></i>
+                            Şikayet Et
+                        </a>`);
 
       showButton.addEventListener("click", function () {
         router.push({ name: 'users.view', params: { userId: rowData.id } })
@@ -170,6 +168,13 @@ const tableColumns = [
       banButton.addEventListener("click", function (event) {
         toggleUserBanStatus(rowData)
       });
+      complaintButton.addEventListener("click", function () {
+        router.push({ name: 'complaints.create', query: { userId: rowData.id } })
+      });
+
+      if (rowData.id !== userStore.profile.id) {
+        buttonsHolder.append(complaintButton)
+      }
 
       if (user.can('users.view')) {
         buttonsHolder.append(showButton)
@@ -178,7 +183,7 @@ const tableColumns = [
       if (user.can('users.delete')) {
         buttonsHolder.append(banButton)
       }
-
+      
       return buttonsHolder
     },
   },
@@ -186,7 +191,7 @@ const tableColumns = [
 </script>
 
 <template>
-  <div v-if="user.can('users.list')">
+  <div v-if="usersIndexUrl">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
       <h2 v-if="whatsappGroup.id" class="mr-auto text-lg font-medium">{{ whatsappGroup.name }} Grubundaki Kullanıcılar</h2>
       <h2 v-else-if="course.id" class="mr-auto text-lg font-medium">{{ course.name }} Kursundaki Kullanıcılar</h2>

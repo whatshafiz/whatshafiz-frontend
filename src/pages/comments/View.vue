@@ -22,7 +22,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-if="user.can('comments.view')">
+  <div>
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Yorum Detayları</h2>
     </div>

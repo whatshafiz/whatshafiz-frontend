@@ -2,6 +2,8 @@
 import { FormLabel, FormInput, FormTextarea } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
+import Alert from "@/base-components/Alert"
+import Lucide from "@/base-components/Lucide"
 import UserCard from '@/components/UserCard'
 import { ref, reactive, inject, onBeforeMount } from "vue"
 import { useRouter, useRoute } from "vue-router"
@@ -57,6 +59,12 @@ const onSubmit = async () => {
           <div class="p-5">
             <form class="validate-form" @submit.prevent="onSubmit">
               <div class="input-form mt-4" v-if="relatedUser.id">
+                <Alert variant="soft-warning" class="items-center mb-8">
+                  <div class="flex items-center">
+                    <Lucide icon="AlertCircle" class="w-6 h-6 mr-2" />
+                    <div class="w-full">Bilgileriniz yalnızca yönetim tarafından görülür. <br> Bilgileriniz şikayet edilen kişi ile paylaşılmaz.</div>
+                  </div>
+                </Alert>
                 <FormLabel htmlFor="related_user" class="flex flex-col w-full sm:flex-row">
                   Şikayet Edilen
                 </FormLabel>

@@ -164,15 +164,13 @@ const tableColumns = [
         alertStore.setDeleteModalAction(() => deleteComment(rowData.id))
       });
 
-      if (user.can('comments.view')) {
-        buttonsHolder.append(showButton)
-      }
+      buttonsHolder.append(showButton)
 
-      if (user.can('comments.update')) {
+      if (user.can('comments.update') || (rowData.commented_by_id === user.profile.id && !rowData.is_approved)) {
         buttonsHolder.append(editButton)
       }
 
-      if (user.can('comments.delete')) {
+      if (user.can('comments.delete') || (rowData.commented_by_id === user.profile.id && !rowData.is_approved)) {
         buttonsHolder.append(deleteButton)
       }
 
@@ -188,7 +186,7 @@ const tableColumns = [
       <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Yorumlarım</h2>
       <h2 v-else-if="isUnapprovedIndex" class="mr-auto text-lg font-medium">Onay Bekleyen Yorumlar</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Yorumlar</h2>
-      <div v-if="user.can('comments.create') && isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+      <div v-if="isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
         <RouterLink :to="{ name: 'comments.create' }">
           <Button variant="primary" class="mr-2 shadow-md">
             Yeni Yorum Ekle
