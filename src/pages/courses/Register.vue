@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
-import Litepicker from "@/base-components/Litepicker"
+import Alert from "@/base-components/Alert"
 import Lucide from "@/base-components/Lucide"
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from '@/base-components/TomSelect'
 import FormSwitch from '@/base-components/Form/FormSwitch'
 import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
+import useClipboard from 'vue-clipboard3'
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
 import { useRegulationStore } from "@/stores/regulation"
@@ -17,6 +18,8 @@ import { useAlertStore } from "@/stores/alert"
 const successNotificationToggle = inject('successNotificationToggle')
 const alertStore = useAlertStore()
 const isLoading = ref(false)
+const whatsappGroupJoinUrl = ref('')
+const { toClipboard } = useClipboard()
 const router = useRouter()
 const route = useRoute()
 const courseType = route.params.courseType
@@ -39,6 +42,11 @@ onBeforeMount(async () => {
 
   regulation.value = await regulationStore.fetchRegulation(courseType)
 })
+
+const copyToClipboard = async (whatsappGroupJoinUrl) => {
+  toClipboard(whatsappGroupJoinUrl)
+  successNotificationToggle('Grup linki kopyalandı.', whatsappGroupJoinUrl)
+}
 
 const registerUserToCourse = async () => {
   isLoading.value = true
@@ -63,12 +71,13 @@ const registerUserToCourse = async () => {
     isLoading.value = false
     successNotificationToggle('İşlem Başarılı', 'Kursa kaydınız tamamlanmıştır.')
     alertStore.addSuccessMessage(response.data.message)
+
+    if (response.data.new_whatsapp_group_join_url) {
+      whatsappGroupJoinUrl.value = response.data.new_whatsapp_group_join_url
+    }
+
     course.value.id = null
     window.scrollTo(0, 0)
-
-    setTimeout(() => {
-      router.push({ name: 'my.whatsappGroups' })
-    }, 1000);
   } else {
     alertStore.addErrorMessage(response.data.message)
 
@@ -79,6 +88,35 @@ const registerUserToCourse = async () => {
 </script>
 
 <template>
+  <div v-if="whatsappGroupJoinUrl" class="grid grid-cols-12 gap-6 mt-5">
+    <div class="col-span-12 intro-y lg:col-span-12">
+      <div class="intro-y box">
+        <div class="p-5">
+          <Alert variant="secondary" class="mb-2">
+            <div class="flex items-center">
+              <div class="text-lg font-medium">
+                Whatsapp Grubu Katılma Linki
+              </div>
+            </div>
+            <div class="mt-3">
+              <code class="block overflow-scroll bg-white p-2 rounded">
+                http://localpanel.whatshafiz.com:5173/courses/whatsenglish/register
+              </code>
+            </div>
+          </Alert>
+
+          <Button variant="secondary" class="w-full mb-2 mr-1" @click="copyToClipboard(whatsappGroupJoinUrl)">
+            <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Kopyala
+          </Button>
+          <a class="" target="_blank" href="whatsappGroupJoinUrl">
+            <Button variant="secondary" class="w-full mb-2 mr-1">
+              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Linki Aç
+            </Button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
   <div v-if="course.id">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Kullanıcı Kurs Kaydı</h2>
