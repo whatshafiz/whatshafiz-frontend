@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import Datatable from "@/components/Datatable";
-import { ref, inject, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import Button from "@/base-components/Button";
-import { useRouter } from "vue-router";
-import { stringToHTML } from "@/utils/helper";
-import { useUserStore } from "@/stores/user";
 import { useWhatsappMessengerStore } from "@/stores/whatsappMessenger";
-
-import _ from "lodash";
-import fakerData from "@/utils/faker";
 import Tippy from "@/base-components/Tippy";
-import Pagination from "@/base-components/Pagination";
-import { FormInput, FormSelect } from "@/base-components/Form";
 import Lucide from "@/base-components/Lucide";
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TinySlider from "@/base-components/TinySlider";
-import { Dialog, Menu } from "@/base-components/Headless";
+import { Dialog } from "@/base-components/Headless";
 
 const isLoading = ref(false)
 const whatsappmessengerStore = useWhatsappMessengerStore()
-
 const whatsappMessengerNumbers = ref([])
+const tinySliderModalPreview = ref(false);
+const tinySliderImages = ref([])
 
 const refreshPage = async () => {
   isLoading.value = true
@@ -29,8 +21,6 @@ const refreshPage = async () => {
   isLoading.value = false
 }
 
-const tinySliderModalPreview = ref(false);
-const tinySliderImages = ref([])
 const setTinySliderModalPreview = (value, screenshots = []) => {
   tinySliderImages.value = screenshots
   tinySliderModalPreview.value = value
@@ -40,7 +30,6 @@ onMounted(async () => {
   refreshPage()
 })
 </script>
-
 
 <template>
   <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
