@@ -343,6 +343,17 @@ const routes = [
         ],
       },
       {
+        path: "whatsappMessenger",
+        name: "whatsappMessenger",
+        children: [
+          {
+            path: "",
+            name: "whatsappMessenger.index",
+            component: async () => import("@/pages/whatsappMessenger/Index.vue"),
+          },
+        ],
+      },
+      {
         path: "regulations",
         name: "regulations",
         children: [
