@@ -171,6 +171,20 @@ export const useSideMenuStore = defineStore("sideMenu", {
         pageName: "settings.index",
         title: "Sistem Ayarları",
         permission: "settings.update",
+        subMenu: [
+          {
+            icon: "Settings",
+            pageName: "settings.index",
+            title: "Sistem Ayarları",
+            permission: "settings.update",
+          },
+          {
+            icon: "Mails",
+            pageName: "whatsappMessenger.index",
+            title: "WhatsappMessenger",
+            permission: "whatsappMessenger.update",
+          },
+        ]
       },
       "divider",
       {
