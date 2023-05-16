@@ -3,9 +3,9 @@
   "display": "standalone",
   "name": "WhatsHafız Panel",
   "orientation": "portrait",
-  "scope": "https://panel.whatshafiz.com/",
+  "scope": "https://panel.whatshafiz.com",
   "short_name": "WhatsHafız",
-  "start_url": "https://panel.whatshafiz.com/",
+  "start_url": "https://panel.whatshafiz.com",
   "theme_color": "#164e63",
   "categories": [
     "education"
