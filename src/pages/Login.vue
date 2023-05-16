@@ -7,7 +7,7 @@ import LoadingIcon from '../base-components/LoadingIcon'
 import TomSelect from '../base-components/TomSelect'
 import Alert from '../base-components/Alert'
 import Lucide from '../base-components/Lucide'
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { getCountries } from '@/services/CountryService'
 import { checkUser, loginUser, registerUser, sendForgotPasswordCode, updatePassword } from '@/services/AuthService'
 import { useRouter, useRoute } from 'vue-router'
@@ -52,7 +52,15 @@ onBeforeMount(async () => {
     return router.push({ name: 'dashboard' })
   }
 
+  if (localStorage.getItem('countryCode')) {
+    countryPhoneCode.value = localStorage.getItem('countryCode')
+  }
+
   countries.value = await getCountries()
+})
+
+watch(countryPhoneCode, (newValue) => {
+  localStorage.setItem('countryCode', newValue)
 })
 
 const resetForm = () => {
@@ -309,7 +317,7 @@ const updateForgotPassword = () => {
             class="w-full px-5 py-8 mx-auto my-auto bg-white rounded-md shadow-md xl:ml-20 dark:bg-darkmode-600 xl:bg-transparent sm:px-8 xl:p-0 xl:shadow-none sm:w-3/4 lg:w-2/4 xl:w-auto"
           >
             <h2
-              class="text-2xl font-bold text-center intro-x xl:text-3xl xl:text-left"
+              class="text-2xl font-bold text-center intro-x xl:text-3xl xl:text-left !z-20"
             >
               WhatsHafız Panel
             </h2>
