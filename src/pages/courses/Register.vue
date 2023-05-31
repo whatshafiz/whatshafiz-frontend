@@ -85,6 +85,11 @@ const registerUserToCourse = async () => {
     window.scrollTo(0, 0)
   }
 }
+
+const cancelRegisterRequest = () => {
+  localStorage.removeItem('newCourseRegisterType')
+  router.push({ name: 'dashboard' })
+}
 </script>
 
 <template>
@@ -168,7 +173,7 @@ const registerUserToCourse = async () => {
               Yönetmeliği Okudum, Onaylıyorum, Üyeliğimi Kaydet
             </Button>
             <Button
-              @click.native="router.push({ name: 'dashboard' })"
+              @click.native="cancelRegisterRequest()"
               variant="outline-primary"
               type="button"
               class="mt-5 p-3 lg:ml-5 w-full md:w-full lg:w-5/12"
