@@ -34,6 +34,9 @@ const setIndexUrl = async () => {
   if (route.query.whatsappGroupId) {
     usersIndexUrl.value = userStore.getWhatsappGroupUsersIndexURL(route.query.whatsappGroupId)
     whatsappGroup.value = await whatsappGroupStore.fetchWhatsappGroup(route.query.whatsappGroupId)
+  } else if (route.query.courseId) {
+    usersIndexUrl.value = userStore.getCourseUsersIndexURL(route.query.courseId)
+    course.value = await courseStore.fetchCourse(route.query.courseId)
   } else {
     usersIndexUrl.value = userStore.getIndexURL
   }
