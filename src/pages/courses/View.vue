@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
-import Litepicker from "@/base-components/Litepicker"
 import Lucide from "@/base-components/Lucide"
 import TomSelect from '@/base-components/TomSelect'
 import FormSwitch from '@/base-components/Form/FormSwitch'
@@ -20,6 +19,8 @@ const course = ref({})
 
 onBeforeMount(async () => {
   course.value = await courseStore.fetchCourse(courseId)
+  course.value.can_be_applied_until = (new Date(course.value.can_be_applied_until + ' UTC')).toISOString().substring(0, 16)
+  course.value.start_at = (new Date(course.value.start_at + ' UTC')).toISOString().substring(0, 16)
 })
 </script>
 
@@ -61,48 +62,46 @@ onBeforeMount(async () => {
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                  Kurs Başlama Tarihi
+                  Son Başvuru Tarihi
                 </FormLabel>
                 <div class="relative w-90">
-                  <div
-                    class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
+                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
                     <Lucide icon="Calendar" class="w-4 h-4" />
                   </div>
-                  <Litepicker disabled v-model="course.start_at" :value="course.start_at" :options="{
-                    autoApply: false,
-                    showWeekNumbers: true,
-                    format: 'DD-MM-YYYY HH:mm',
-                    startDate: course.start_at,
-                    dropdowns: {
-                      minYear: 2021,
-                      maxYear: 2027,
-                      months: true,
-                      years: true,
-                    },
-                  }" class="pl-12" />
+                  <FormInput
+                    id="can_be_applied_until"
+                    v-model="course.can_be_applied_until"
+                    :value="course.can_be_applied_until"
+                    type="datetime-local"
+                    name="can_be_applied_until"
+                    required
+                    class="pl-12"
+                    min="2023-01-01T00:00"
+                    max="2040-01-01T00:00"
+                    disabled
+                  />
                 </div>
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                  Son Başvuru Tarihi
+                  Kurs Başlama Tarihi
                 </FormLabel>
                 <div class="relative w-90">
-                  <div
-                    class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
+                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
                     <Lucide icon="Calendar" class="w-4 h-4" />
                   </div>
-                  <Litepicker disabled v-model="course.can_be_applied_until" :value="course.can_be_applied_until" :options="{
-                    autoApply: false,
-                    showWeekNumbers: true,
-                    format: 'DD-MM-YYYY HH:mm',
-                    startDate: course.can_be_applied_until,
-                    dropdowns: {
-                      minYear: 2021,
-                      maxYear: 2027,
-                      months: true,
-                      years: true,
-                    },
-                  }" class="pl-12" />
+                  <FormInput
+                    id="start_at"
+                    v-model="course.start_at"
+                    :value="course.start_at"
+                    type="datetime-local"
+                    name="start_at"
+                    required
+                    class="pl-12"
+                    min="2023-01-01T00:00"
+                    max="2040-01-01T00:00"
+                    disabled
+                  />
                 </div>
               </div>
               <div class="mt-4">
