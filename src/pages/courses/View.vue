@@ -9,6 +9,7 @@ import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
 import _ from "lodash";
+import moment from 'moment';
 
 const router = useRouter()
 const route = useRoute()
@@ -19,8 +20,8 @@ const course = ref({})
 
 onBeforeMount(async () => {
   course.value = await courseStore.fetchCourse(courseId)
-  course.value.can_be_applied_until = (new Date(course.value.can_be_applied_until + ' UTC')).toISOString().substring(0, 16)
-  course.value.start_at = (new Date(course.value.start_at + ' UTC')).toISOString().substring(0, 16)
+  course.value.can_be_applied_until = moment(course.value.can_be_applied_until, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
+  course.value.start_at = moment(course.value.start_at, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
 })
 </script>
 
