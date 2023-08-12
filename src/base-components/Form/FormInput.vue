@@ -53,6 +53,10 @@ const computedClass = computed(() =>
 const localValue = ref(props.modelValue);
 const emit = defineEmits<FormInputEmit>();
 
+const onPaste = (event) => {
+  localValue.value = event.srcElement.value
+}
+
 watch(localValue, () => {
   emit("update:modelValue", localValue.value);
 });
@@ -64,5 +68,6 @@ watch(localValue, () => {
     :type="props.type"
     v-bind="_.omit(attrs, 'class')"
     v-model="localValue"
+    @paste="onPaste"
   />
 </template>
