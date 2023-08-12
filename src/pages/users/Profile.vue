@@ -87,6 +87,9 @@ const userProfileImage = computed(() => {
           <span class="flex items-center font-medium text-primary" href="">
             <Lucide icon="Activity" class="w-4 h-4 mr-2" /> Eğitim Bilgileri
           </span>
+          <span v-if="user.education_level" class="flex items-center mt-5" href="">
+            <Lucide icon="GraduationCap" class="w-4 h-4 mr-2" /> {{ user.education_level }}
+          </span>
           <span class="flex items-center mt-5" href="">
             <Lucide icon="GraduationCap" class="w-4 h-4 mr-2" /> {{ user.university?.name }}
           </span>
