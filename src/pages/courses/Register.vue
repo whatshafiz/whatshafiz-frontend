@@ -97,27 +97,14 @@ const cancelRegisterRequest = () => {
     <div class="col-span-12 intro-y lg:col-span-12">
       <div class="intro-y box">
         <div class="p-5">
-          <Alert variant="secondary" class="mb-2">
-            <div class="flex items-center">
-              <div class="text-lg font-medium">
-                Whatsapp Grubu Katılma Linki
-              </div>
-            </div>
-            <div class="mt-3">
-              <code class="block overflow-scroll bg-white p-2 rounded">
-                http://localpanel.whatshafiz.com:5173/courses/whatsenglish/register
-              </code>
-            </div>
-          </Alert>
-
-          <Button variant="secondary" class="w-full mb-2 mr-1" @click="copyToClipboard(whatsappGroupJoinUrl)">
-            <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Kopyala
-          </Button>
-          <a class="" target="_blank" href="whatsappGroupJoinUrl">
-            <Button variant="secondary" class="w-full mb-2 mr-1">
-              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Linki Aç
+          <a class="" target="_blank" :href="whatsappGroupJoinUrl">
+            <Button variant="primary" class="w-full mb-2 mr-1">
+              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1" /> Gruba Katıl
             </Button>
           </a>
+          <Button variant="secondary" class="w-full mb-2 mr-1 mt-5" @click="copyToClipboard(whatsappGroupJoinUrl)">
+            <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Katılma Linkini Kopyala
+          </Button>
         </div>
       </div>
     </div>

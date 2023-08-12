@@ -84,6 +84,8 @@ const onSubmit = async () => {
         name: 'courses.register',
         params: { courseType: localStorage.getItem('newCourseRegisterType') }
       })
+    } else {
+      return router.push({ name: 'profile' })
     }
   } catch (response) {
     isLoading.value = false
@@ -212,11 +214,33 @@ const onSubmit = async () => {
                 </template>
               </TomSelect>
             </div>
+              <div class="mt-3 input-form">
+              <FormLabel class="flex flex-col w-full sm:flex-row">
+                Eğitim Seviyesi
+                <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
+                  Zorunlu
+                </span>
+              </FormLabel>
+              <TomSelect
+                id="education_level"
+                v-model="profile.education_level"
+                :options="{ placeholder: 'Eğitim Seviyenizi Seçin' }"
+                class="w-full"
+              >
+                <option value="İlkokul Mezunu">İlkokul Mezunu</option>
+                <option value="Ortaokul Mezunu">Ortaokul Mezunu</option>
+                <option value="Lise Mezunu">Lise Mezunu</option>
+                <option value="Ön Lisans Mezunu">Ön Lisans Mezunu</option>
+                <option value="Lisans Mezunu">Lisans Mezunu</option>
+                <option value="Yüksek Lisans Mezunu">Yüksek Lisans Mezunu</option>
+                <option value="Doktora Mezunu">Doktora Mezunu</option>
+              </TomSelect>
+            </div>
             <div class="mt-3 input-form">
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                  Zorunlu
+                  İsteğe Bağlı
                 </span>
               </FormLabel>
               <TomSelect id="university_id" name="university_id" v-model="profile.university_id" :options="{
@@ -248,7 +272,7 @@ const onSubmit = async () => {
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Fakülte
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                  Zorunlu
+                  İsteğe Bağlı
                 </span>
               </FormLabel>
               <TomSelect id="university_faculty_id" name="university_faculty_id" v-model="profile.university_faculty_id"
@@ -279,7 +303,7 @@ const onSubmit = async () => {
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite Bölümü
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
-                  Zorunlu
+                  İsteğe Bağlı
                 </span>
               </FormLabel>
               <TomSelect
