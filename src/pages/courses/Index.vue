@@ -7,6 +7,7 @@ import { stringToHTML } from "@/utils/helper";
 import { useUserStore } from "@/stores/user";
 import { useCourseStore } from "@/stores/course";
 import { useAlertStore } from "@/stores/alert";
+import moment from 'moment';
 
 const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
@@ -129,8 +130,23 @@ const tableColumns = [
     hozAlign: "center",
     formatter(cell) {
       const rowData = cell.getData()
-      return `<div class="flex items-center lg:justify-center ${rowData.can_be_applied ? "text-success" : "text-danger"}">
-          </i> ${rowData.can_be_applied ? "Başvuru Açık" : "Başvuru Kapalı"}
+
+      let resultText = "Başvuru Kapalı"
+      let canBeApplied = rowData.can_be_applied
+
+      if (canBeApplied) {
+        if (moment(rowData.can_be_applied_until, "DD-MM-YYYY hh:mm").diff(moment(), 'minutes') > 0) {
+          resultText = "Başvuru Açık"
+        } else {
+          canBeApplied = false
+          resultText = "Süresi Geçmiş"
+        }
+      } else {
+        resultText = "Başvuru Kapalı"
+      }
+
+      return `<div class="flex items-center lg:justify-center ${canBeApplied ? "text-success" : "text-danger"}">
+          </i> ${resultText}
         </div>`;
     },
   },
