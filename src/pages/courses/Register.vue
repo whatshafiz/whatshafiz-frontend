@@ -18,6 +18,7 @@ import { useAlertStore } from "@/stores/alert"
 const successNotificationToggle = inject('successNotificationToggle')
 const alertStore = useAlertStore()
 const isLoading = ref(false)
+const registerSucceeded = ref(false)
 const whatsappGroupJoinUrl = ref('')
 const { toClipboard } = useClipboard()
 const router = useRouter()
@@ -76,7 +77,7 @@ const registerUserToCourse = async () => {
       whatsappGroupJoinUrl.value = response.data.new_whatsapp_group_join_url
     }
 
-    course.value.id = null
+    registerSucceeded.value = true
     window.scrollTo(0, 0)
   } else {
     alertStore.addErrorMessage(response.data.message)
@@ -109,13 +110,29 @@ const cancelRegisterRequest = () => {
       </div>
     </div>
   </div>
+  <div v-if="whatsappGroupJoinUrl" class="grid grid-cols-12 gap-6 mt-5">
+    <div class="col-span-12 intro-y lg:col-span-12">
+      <div class="intro-y box">
+        <div class="p-5">
+          <a class="" target="_blank" :href="whatsappGroupJoinUrl">
+            <Button variant="primary" class="w-full mb-2 mr-1">
+              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1" /> Gruba Katıl
+            </Button>
+          </a>
+          <Button variant="secondary" class="w-full mb-2 mr-1 mt-5" @click="copyToClipboard(whatsappGroupJoinUrl)">
+            <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Katılma Linkini Kopyala
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div v-if="course.id">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Kullanıcı Kurs Kaydı</h2>
     </div>
     <div class="grid grid-cols-12 gap-6 mt-5">
       <div class="col-span-12 intro-y lg:col-span-12">
-        <div class="intro-y box">
+        <div class="intro-y box mb-10">
           <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
             <h2 class="mr-auto text-base font-medium">Kurs Bilgileri</h2>
           </div>
@@ -128,12 +145,17 @@ const cancelRegisterRequest = () => {
               <Lucide icon="CalendarOff" class="w-4 h-4 mr-2 text-slate-500" />
               Kurs Son Başvuru Tarihi:&nbsp;&nbsp; <strong> {{ course.can_be_applied_until }}</strong>
             </div>
+            <div v-if="course.proficiency_exam_start_time" class="flex items-center mt-3">
+              <Lucide icon="CalendarCheck2" class="w-4 h-4 mr-2 text-slate-500" />
+              HafızOl Kabul Sınavı Başlangıç Zamanı:&nbsp;&nbsp; <strong> {{ course.proficiency_exam_start_time }}</strong>
+            </div>
             <div class="flex items-center mt-3">
-              <Lucide icon="CalendarClock" class="w-4 h-4 mr-2 text-slate-500" />
+              <Lucide icon="CalendarCheck" class="w-4 h-4 mr-2 text-slate-500" />
               Kurs Başlama Tarihi:&nbsp;&nbsp; <strong> {{ course.start_at }}</strong>
             </div>
           </div>
-
+        </div>
+        <div v-if="!registerSucceeded" class="intro-y box">
           <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60 dark:border-darkmode-400">
             <h2 class="mr-auto text-base font-medium">Kurs Yönetmelik Özeti</h2>
           </div>
