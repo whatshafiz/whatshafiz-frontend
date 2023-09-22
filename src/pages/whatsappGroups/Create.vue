@@ -5,7 +5,7 @@ import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from '@/base-components/TomSelect'
 import FormSwitch from '@/base-components/Form/FormSwitch'
 import { ref, reactive, onBeforeMount, inject, watch } from "vue"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
 import { useWhatsappGroupStore } from "@/stores/whatsappGroup"
@@ -13,6 +13,7 @@ import _ from "lodash";
 
 const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
+const route = useRoute()
 const router = useRouter()
 const user = useUserStore()
 const courseStore = useCourseStore()
@@ -29,6 +30,10 @@ const whatsappGroup = reactive({
 
 onBeforeMount(async () => {
   courses.value = await courseStore.fetchCourses()
+
+  if (route.query.courseId) {
+    whatsappGroup.course_id = route.query.courseId    
+  }
 })
 
 watch(() => whatsappGroup.course_id, (newValue) => {
