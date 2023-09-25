@@ -98,6 +98,56 @@ onBeforeMount(async () => {
                     <div class="text-base">{{ course.start_at }}</div>
                   </div>
                 </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <div class="text-slate-500">Toplam Kullanıcı Sayısı</div>
+                  <div class="mt-1.5 flex items-center">
+                    <div class="text-base">{{ course.total_users_count }}</div>
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <div class="text-slate-500">Whatsapp Grup Sayısı</div>
+                  <div class="mt-1.5 flex items-center">
+                    <div class="text-base">{{ course.whatsapp_groups_count }}</div>
+                  </div>
+                </div>
+                <template v-if="course.type === 'whatshafiz'">
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">HafızKal Başvuru Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.hafizkal_users_count }}</div>
+                    </div>
+                  </div>
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">HafızOl Başvuru Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.hafizol_users_count }}</div>
+                    </div>
+                  </div>
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">Eşleştirilen HafızKal Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.matched_hafizkal_users_count }}</div>
+                    </div>
+                  </div>
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">Eşleştirilen HafızOl Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.matched_hafizol_users_count }}</div>
+                    </div>
+                  </div>
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">Toplam Eşleştirilen Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.matched_users_count }}</div>
+                    </div>
+                  </div>
+                  <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                    <div class="text-slate-500">Eşleştirme Bekleyen Kullanıcı Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.unmatched_users_count }}</div>
+                    </div>
+                  </div>
+                </template>
               </div>
             </div>
           </div>
