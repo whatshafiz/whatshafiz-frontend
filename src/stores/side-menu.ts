@@ -22,12 +22,6 @@ export const useSideMenuStore = defineStore("sideMenu", {
         pageName: "dashboard",
         title: "Anasayfa",
       },
-      {
-        icon: "Book",
-        pageName: "level-history",
-        title: "Okuma Geçmişim",
-        permission: "levelHistory.list",
-      },
       "divider",
       {
         icon: "Users",

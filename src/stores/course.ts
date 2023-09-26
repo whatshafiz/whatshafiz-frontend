@@ -112,5 +112,16 @@ export const useCourseStore = defineStore('course', {
         return false
       }
     },
+    async startCourseStudentsMatchings(courseId) {
+      try {
+        await api().post('/courses/' + courseId + '/students')
+
+        return true
+      } catch (response) {
+        console.log('startCourseStudentsMatchings error', response)
+
+        return false
+      }
+    },
   },
 })
