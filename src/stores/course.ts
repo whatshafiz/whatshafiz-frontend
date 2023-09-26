@@ -114,7 +114,7 @@ export const useCourseStore = defineStore('course', {
     },
     async startCourseStudentsMatchings(courseId) {
       try {
-        await api().post('/courses/' + courseId + '/students')
+        await api().post('/courses/' + courseId + '/teacher-students-matchings')
 
         return true
       } catch (response) {
