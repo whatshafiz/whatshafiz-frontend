@@ -159,7 +159,7 @@ const organizeWhatsappGroups = async () => {
                       course.unmatched_users_count === 0 &&
                       course.total_users_count === course.matched_users_count &&
                       course.whatsapp_groups_count > 0 &&
-                      course.whatsapp_groups_users_count === 0
+                      course.total_users_count !== course.whatsapp_groups_users_count
                     "
                     :disabled="isLoading || matchingsHasStarted"
                     @click="organizeWhatsappGroups()"
