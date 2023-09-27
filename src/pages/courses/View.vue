@@ -75,8 +75,18 @@ const startMatchings = async () => {
   }
 }
 
-const generateWhatsappGroups = async () => {
-  console.log('whatsapp gruplarını oluştur')
+const organizeWhatsappGroups = async () => {
+    isLoading.value = true
+
+  if (await courseStore.startWhatsappGroupsOrganization(course.value.id)) {
+    isLoading.value = false
+    successNotificationToggle('İşlem Başarılı', 'Grupların organizasyonu başlatıldı, sayfayı yenileyerek durumu takip edebilirsiniz.')
+    matchingsHasStarted.value = true
+  } else {
+    isLoading.value = false
+    warningNotificationToggle('Bir hata oluştu', 'İşlem başlatılırken bir hata oluştu, lütfen teknik ekibe bildirin.')
+    window.scrollTo(0, 0)
+  }
 }
 
 </script>
@@ -136,9 +146,11 @@ const generateWhatsappGroups = async () => {
                   </div>
                 </div>
                 <div class="col-span-12 sm:col-span-6 md:col-span-3">
-                  <div class="text-slate-500">Whatsapp Grup Sayısı</div>
+                  <div class="text-slate-500">Whatsapp Grup/Kullanıcı Sayısı</div>
                   <div class="mt-1.5 flex items-center">
-                    <div class="text-base">{{ course.whatsapp_groups_count }}</div>
+                    <div class="text-base">
+                      {{ course.whatsapp_groups_count }} Grup / {{ course.whatsapp_groups_users_count }} Kullanıcı
+                    </div>
                   </div>
                   <Button
                     v-if="
@@ -146,16 +158,18 @@ const generateWhatsappGroups = async () => {
                       applicationTimeExpired && 
                       course.unmatched_users_count === 0 &&
                       course.total_users_count === course.matched_users_count &&
-                      course.whatsapp_groups_count > 0
+                      course.whatsapp_groups_count > 0 &&
+                      course.whatsapp_groups_users_count === 0
                     "
-                    :disabled="isLoading"
-                    @click="generateWhatsappGroups()"
+                    :disabled="isLoading || matchingsHasStarted"
+                    @click="organizeWhatsappGroups()"
                     variant="primary"
                     size="sm"
                     class="mb-2 mr-1"
                   >
                     <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-                    Kullanıcıları Gruplara Dağıt
+                    <span v-if="matchingsHasStarted">Kullanıcılar Gruplara Dağıtılıyor</span>
+                    <span v-else>Kullanıcıları Gruplara Dağıt</span>
                   </Button>
                 </div>
                 <div class="col-span-12 sm:col-span-6 md:col-span-3">
@@ -190,7 +204,7 @@ const generateWhatsappGroups = async () => {
                     </div>
                   </div>
                   <div class="col-span-12 sm:col-span-6 md:col-span-3">
-                    <div class="text-slate-500">Toplam Eşleştirilen Sayısı</div>
+                    <div class="text-slate-500">Toplam Eşleştirilen Kullanıcı Sayısı</div>
                     <div class="mt-1.5 flex items-center">
                       <div class="text-base">{{ course.matched_users_count }}</div>
                     </div>
@@ -219,6 +233,12 @@ const generateWhatsappGroups = async () => {
                     <div class="text-slate-500">En Son Eşleştirmenin Başladığı Zaman</div>
                     <div class="mt-1.5 flex items-center">
                       <div class="text-base">{{ course.students_matchings_started_at }}</div>
+                    </div>
+                  </div>
+                  <div v-if="course.whatsapp_groups_users_count > 0" class="col-span-12 sm:col-span-6 md:col-span-3">
+                    <div class="text-slate-500">WhatsappGruplarındaki Kullanıcı Sayısı</div>
+                    <div class="mt-1.5 flex items-center">
+                      <div class="text-base">{{ course.whatsapp_groups_users_count }}</div>
                     </div>
                   </div>
                 </template>

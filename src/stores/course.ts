@@ -126,5 +126,16 @@ export const useCourseStore = defineStore('course', {
         return false
       }
     },
+    async startWhatsappGroupsOrganization(courseId) {
+      try {
+        await api().post('/courses/' + courseId + '/whatsapp-groups')
+
+        return true
+      } catch (response) {
+        console.log('startWhatsappGroupsOrganization error', response)
+
+        return false
+      }
+    },
   },
 })
