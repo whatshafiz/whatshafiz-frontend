@@ -143,7 +143,7 @@ const tableColumns = [
 
       copyButton.addEventListener("click", function (button) {
         toClipboard(rowData.phone_number)
-        successNotificationToggle('Grup linki kopyalandı.', rowData.phone_number)
+        successNotificationToggle('Telefon No kopyalandı.', rowData.phone_number)
       });
 
       buttonsHolder.append(copyButton)

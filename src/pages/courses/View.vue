@@ -9,6 +9,7 @@ import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import UsersTable from '@/pages/users/Index.vue'
 import WhatsappGroupsTable from '@/pages/whatsappGroups/Index.vue'
+import CourseTeacherStudentsMatchingsTable from '@/pages/teacherStudents/MatchingsIndex.vue'
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
 import _ from "lodash";
@@ -74,6 +75,10 @@ const startMatchings = async () => {
   }
 }
 
+const generateWhatsappGroups = async () => {
+  console.log('whatsapp gruplarını oluştur')
+}
+
 </script>
 
 <template>
@@ -135,6 +140,23 @@ const startMatchings = async () => {
                   <div class="mt-1.5 flex items-center">
                     <div class="text-base">{{ course.whatsapp_groups_count }}</div>
                   </div>
+                  <Button
+                    v-if="
+                      course.type === 'whatshafiz' &&
+                      applicationTimeExpired && 
+                      course.unmatched_users_count === 0 &&
+                      course.total_users_count === course.matched_users_count &&
+                      course.whatsapp_groups_count > 0
+                    "
+                    :disabled="isLoading"
+                    @click="generateWhatsappGroups()"
+                    variant="primary"
+                    size="sm"
+                    class="mb-2 mr-1"
+                  >
+                    <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                    Kullanıcıları Gruplara Dağıt
+                  </Button>
                 </div>
                 <div class="col-span-12 sm:col-span-6 md:col-span-3">
                   <div class="text-slate-500">Toplam Kullanıcı Sayısı</div>
@@ -207,6 +229,11 @@ const startMatchings = async () => {
       </div>
     </div>
   </div>
+  <course-teacher-students-matchings-table
+    v-if="course.id && course.matched_users_count > 0"
+    :course-id="course.id"
+    :course-name="course.name"
+  />
   <users-table v-if="course.id" :course-id="course.id" :course-name="course.name" />
   <whatsapp-groups-table v-if="course.id" :course-id="course.id" :course-name="course.name" />
 </template>

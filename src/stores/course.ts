@@ -32,6 +32,9 @@ export const useCourseStore = defineStore('course', {
     },
   },
   actions: {
+    getCourseTeacherStudentsIndexURL(courseId) {
+      return getBaseUrl('/courses/' + courseId + '/teacher-students-matchings')
+    },
     async fetchCourses() {
       try {
         this.courses = (await api().get('/courses')).data.courses
