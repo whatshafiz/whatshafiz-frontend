@@ -12,6 +12,7 @@ import maleProfile from '@/assets/images/placeholders/male.jpg'
 import femaleProfile from '@/assets/images/placeholders/female.jpg'
 
 const successNotificationToggle = inject('successNotificationToggle')
+const errorNotificationToggle = inject('errorNotificationToggle')
 
 const isLoading = ref(false)
 const user = useUserStore()
@@ -30,10 +31,6 @@ onBeforeMount(async () => {
   if (user.hasRole('HafızKal')) {
     students.value = await user.fetchStudents()
   }
-})
-
-const userProfileImage = computed(() => {
-  return
 })
 
 const copyPhoneNumber = (phoneNumber) => {
@@ -55,10 +52,19 @@ const editStudent = async (student) => {
 const saveStudentStatus = async () => {
   isLoading.value = true
 
+  if (studentToEdit.value.proficiency_exam_passed === false && !studentToEdit.value.proficiency_exam_failed_description) {
+    errorNotificationToggle('İşlem Başarısız', 'Red sebebini yazmalısınız!')
+    isLoading.value = false
+
+    return
+  }
+
   if (await user.updateStudentStatus(studentToEdit.value.id, studentToEdit.value)) {
     studentToEdit.value = null
-    showStudentStatusModal.value = false
+    successNotificationToggle('İşlem Başarılı', 'Öğrenci Durum Bilgileri Güncellendi.')
   }
+  
+  showStudentStatusModal.value = false
 }
 </script>
 
@@ -109,7 +115,7 @@ const saveStudentStatus = async () => {
   <div v-if="user && user.hasRole('HafızKal') && students.length > 0" class="p-5 mt-5 mb-4 intro-y">
     <div class="col-span-12 mt-3 md:col-span-6 xl:col-span-4 2xl:col-span-12 2xl:mt-8">
       <div class="flex items-center h-10 intro-x">
-        <h2 class="mr-5 text-lg font-medium truncate">HafızOl Öğrencilerinizin Bilgileri</h2>
+        <h2 class="mr-5 text-lg font-medium truncate">HafızOl Öğrenci Adaylarınız</h2>
       </div>
       <div class="mt-5">
         <div v-for="student in students" class="intro-x">
