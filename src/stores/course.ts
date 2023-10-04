@@ -32,6 +32,9 @@ export const useCourseStore = defineStore('course', {
     },
   },
   actions: {
+    getCourseTeacherStudentsIndexURL(courseId) {
+      return getBaseUrl('/courses/' + courseId + '/teacher-students-matchings')
+    },
     async fetchCourses() {
       try {
         this.courses = (await api().get('/courses')).data.courses
@@ -108,6 +111,28 @@ export const useCourseStore = defineStore('course', {
         return true
       } catch (response) {
         console.log('deleteCourse error', response)
+
+        return false
+      }
+    },
+    async startCourseStudentsMatchings(courseId) {
+      try {
+        await api().post('/courses/' + courseId + '/teacher-students-matchings')
+
+        return true
+      } catch (response) {
+        console.log('startCourseStudentsMatchings error', response)
+
+        return false
+      }
+    },
+    async startWhatsappGroupsOrganization(courseId) {
+      try {
+        await api().post('/courses/' + courseId + '/whatsapp-groups')
+
+        return true
+      } catch (response) {
+        console.log('startWhatsappGroupsOrganization error', response)
 
         return false
       }

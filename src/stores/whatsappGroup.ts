@@ -20,6 +20,9 @@ export const useWhatsappGroupStore = defineStore('whatsappGroup', {
     },
   },
   actions: {
+    getCourseWhatsappGroupsIndexURL(courseId) {
+      return getBaseUrl('/whatsapp-groups?course_id=' + courseId)
+    },
     async fetchWhatsappGroups() {
       try {
         this.whatsappGroups = (await api().get('/whatsapp-groups')).data.whatsappGroups

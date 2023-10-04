@@ -137,5 +137,30 @@ export const useUserStore = defineStore('user', {
         return false
       }
     },
+    async fetchTeachers() {
+      try {
+        return (await api().get('/my/teachers')).data.teachers
+      } catch (response) {
+        console.log('getTeachers error', response)
+      }
+    },
+    async fetchStudents() {
+      try {
+        return (await api().get('/my/students')).data.students
+      } catch (response) {
+        console.log('fetchStudents error', response)
+      }
+    },
+    async updateStudentStatus(studentMatchingId, statusData) {
+      try {
+        await api().put('/my/students/' + studentMatchingId, statusData)
+
+        return true
+      } catch (response) {
+        console.log('fetchStudents error', response)
+
+        return false
+      }
+    },
   },
 })
