@@ -23,8 +23,9 @@ const course = ref({})
 
 onBeforeMount(async () => {
   course.value = await courseStore.fetchCourse(courseId)
-  course.value.can_be_applied_until = moment(course.value.can_be_applied_until, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
   course.value.start_at = moment(course.value.start_at, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
+  course.value.can_be_applied_until = moment(course.value.can_be_applied_until, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
+  course.value.proficiency_exam_start_time = moment(course.value.proficiency_exam_start_time, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
 })
 
 const onSubmit = async () => {
@@ -91,6 +92,27 @@ const onSubmit = async () => {
                     :value="course.can_be_applied_until"
                     type="datetime-local"
                     name="can_be_applied_until"
+                    required
+                    class="pl-12"
+                    min="2023-01-01T00:00"
+                    max="2040-01-01T00:00"
+                  />
+                </div>
+              </div>
+              <div v-if="course.type === 'whatshafiz'" class="input-form mt-4">
+                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                    HafızOl Kabul Sınavı Başlama Zamanı
+                </FormLabel>
+                <div class="relative w-90">
+                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
+                    <Lucide icon="Calendar" class="w-4 h-4" />
+                  </div>
+                  <FormInput
+                    id="proficiency_exam_start_time"
+                    v-model="course.proficiency_exam_start_time"
+                    :value="course.proficiency_exam_start_time"
+                    type="datetime-local"
+                    name="proficiency_exam_start_time"
                     required
                     class="pl-12"
                     min="2023-01-01T00:00"

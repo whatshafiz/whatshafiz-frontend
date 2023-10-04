@@ -25,6 +25,11 @@ const whatsappGroupStore = useWhatsappGroupStore()
 const whatsappGroupIndexUrl = ref('')
 const isMyIndex = ref(false)
 
+const props = defineProps<{
+  courseId?: number
+  courseName?: string
+}>()
+
 onBeforeMount(() => {
   setIndexUrl()
 })
@@ -39,6 +44,12 @@ watch(() => route.meta, (newValue) => {
 })
 
 const setIndexUrl = () => {
+  if (props.courseId) {
+    whatsappGroupIndexUrl.value = whatsappGroupStore.getCourseWhatsappGroupsIndexURL(props.courseId)
+
+    return
+  }
+
   isMyIndex.value = !!route.meta?.isMyIndex
 
   whatsappGroupIndexUrl.value = isMyIndex.value ? whatsappGroupStore.getMyIndexURL : whatsappGroupStore.getIndexURL
@@ -237,9 +248,10 @@ const tableColumns = [
   <div v-if="user.can('whatsappGroups.list') || isMyIndex">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
       <h2 v-if="isMyIndex" class="mr-auto text-lg font-medium">Whatsapp Gruplarım</h2>
+      <h2 v-else-if="props.courseName" class="mr-auto text-lg font-medium">{{ props.courseName }} Kursunun Whatsapp Grupları</h2>
       <h2 v-else class="mr-auto text-lg font-medium">Tüm Whatsapp Grupları</h2>
       <div v-if="user.can('whatsappGroups.create') && !isMyIndex" class="flex w-full mt-4 sm:w-auto sm:mt-0">
-        <RouterLink :to="{ name: 'whatsappGroups.create' }">
+        <RouterLink :to="{ name: 'whatsappGroups.create', query: {courseId: props.courseId} }">
           <Button variant="primary" class="mr-2 shadow-md">
             Yeni Whatsapp Grubu Ekle
           </Button>

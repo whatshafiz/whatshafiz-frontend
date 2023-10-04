@@ -26,6 +26,11 @@ const usersIndexUrl = ref('')
 const whatsappGroup = ref({})
 const course = ref({})
 
+const props =defineProps<{
+  courseId?: number
+  courseName?: string
+}>()
+
 onBeforeMount(() => {
   setIndexUrl()
 })
@@ -34,9 +39,15 @@ const setIndexUrl = async () => {
   if (route.query.whatsappGroupId) {
     usersIndexUrl.value = userStore.getWhatsappGroupUsersIndexURL(route.query.whatsappGroupId)
     whatsappGroup.value = await whatsappGroupStore.fetchWhatsappGroup(route.query.whatsappGroupId)
-  } else if (route.query.courseId) {
-    usersIndexUrl.value = userStore.getCourseUsersIndexURL(route.query.courseId)
-    course.value = await courseStore.fetchCourse(route.query.courseId)
+  } else if (route.query.courseId || props.courseId) {
+    const courseId = route.query.courseId || props.courseId
+    usersIndexUrl.value = userStore.getCourseUsersIndexURL(courseId)
+
+    if (props.courseName) {
+      course.value = { id: props.courseId, name: props.courseName }
+    } else {
+      course.value = await courseStore.fetchCourse(courseId)
+    }
   } else {
     usersIndexUrl.value = userStore.getIndexURL
   }
@@ -132,7 +143,7 @@ const tableColumns = [
 
       copyButton.addEventListener("click", function (button) {
         toClipboard(rowData.phone_number)
-        successNotificationToggle('Grup linki kopyalandı.', rowData.phone_number)
+        successNotificationToggle('Telefon No kopyalandı.', rowData.phone_number)
       });
 
       buttonsHolder.append(copyButton)
