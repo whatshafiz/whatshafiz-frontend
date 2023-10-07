@@ -155,7 +155,7 @@ const organizeWhatsappGroups = async () => {
                   <Button
                     v-if="
                       course.type === 'whatshafiz' &&
-                      applicationTimeExpired && 
+                      (!course.can_be_applied || applicationTimeExpired) && 
                       course.unmatched_users_count === 0 &&
                       course.total_users_count === course.matched_users_count &&
                       course.whatsapp_groups_count > 0 &&
