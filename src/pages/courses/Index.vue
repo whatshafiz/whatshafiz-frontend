@@ -21,6 +21,10 @@ const courseStore = useCourseStore()
 const courseIndexUrl = ref('')
 const isMyIndex = ref(false)
 
+const props = defineProps<{
+  myIndex?: Boolean
+}>()
+
 onBeforeMount(() => {
   setIndexUrl()
 })
@@ -35,7 +39,7 @@ watch(() => route.meta, (newValue) => {
 })
 
 const setIndexUrl = () => {
-  isMyIndex.value = !!route.meta?.isMyIndex
+  isMyIndex.value = !!route.meta?.isMyIndex || props.myIndex
 
   courseIndexUrl.value = isMyIndex.value ? courseStore.getMyIndexURL : courseStore.getIndexURL
 }

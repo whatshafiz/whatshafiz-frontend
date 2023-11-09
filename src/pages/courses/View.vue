@@ -250,7 +250,7 @@ const organizeWhatsappGroups = async () => {
     </div>
   </div>
   <course-teacher-students-matchings-table
-    v-if="course.id && course.matched_users_count > 0"
+    v-if="course.id && course.matched_users_count > 0"
     :course-id="course.id"
     :course-name="course.name"
   />
