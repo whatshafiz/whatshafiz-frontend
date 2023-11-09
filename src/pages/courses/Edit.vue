@@ -25,7 +25,10 @@ onBeforeMount(async () => {
   course.value = await courseStore.fetchCourse(courseId)
   course.value.start_at = moment(course.value.start_at, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
   course.value.can_be_applied_until = moment(course.value.can_be_applied_until, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
-  course.value.proficiency_exam_start_time = moment(course.value.proficiency_exam_start_time, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
+
+  if (course.value.proficiency_exam_start_time) {
+    course.value.proficiency_exam_start_time = moment(course.value.proficiency_exam_start_time, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
+  }
 })
 
 const onSubmit = async () => {

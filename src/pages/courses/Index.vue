@@ -132,7 +132,7 @@ const tableColumns = [
       const rowData = cell.getData()
 
       let resultText = "Başvuru Kapalı"
-      let canBeApplied = rowData.can_be_applied
+      let canBeApplied = rowData.can_be_applied && rowData.is_active
 
       if (canBeApplied) {
         if (moment(rowData.can_be_applied_until, "DD-MM-YYYY hh:mm").diff(moment(), 'minutes') > 0) {
@@ -142,7 +142,7 @@ const tableColumns = [
           resultText = "Süresi Geçmiş"
         }
       } else {
-        resultText = "Başvuru Kapalı"
+        resultText = rowData.is_active ? "Başvuru Kapalı" : "Pasif Kurs"
       }
 
       return `<div class="flex items-center lg:justify-center ${canBeApplied ? "text-success" : "text-danger"}">
