@@ -1072,9 +1072,9 @@ can-use-dom@^0.1.0:
   integrity sha512-ceOhN1DL7Y4O6M0j9ICgmTYziV89WMd96SvSl0REd8PMgrY0B/WBOPoed5S1KUmJqXgUXh8gzSe6E3ae27upsQ==
 
 caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.30001449:
-  version "1.0.30001460"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001460.tgz"
-  integrity sha512-Bud7abqjvEjipUkpLs4D7gR0l8hBYBHoa+tGtKJHvT2AYzLp1z7EmVkUT4ERpVUfca8S2HGIVs883D8pUH1ZzQ==
+  version "1.0.30001561"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001561.tgz"
+  integrity sha512-NTt0DNoKe958Q0BE0j0c1V9jbUzhBxHIEJy7asmGrpE0yG63KTV7PLHPnK2E1O9RsQrQ081I3NLuXGS6zht3cw==
 
 cfb@~1.2.1:
   version "1.2.2"
