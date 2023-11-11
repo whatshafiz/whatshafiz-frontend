@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
-import Lucide from "@/base-components/Lucide"
-import TomSelect from '@/base-components/TomSelect'
-import FormSwitch from '@/base-components/Form/FormSwitch'
 import LoadingIcon from '@/base-components/LoadingIcon'
 import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
