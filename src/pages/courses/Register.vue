@@ -110,22 +110,6 @@ const cancelRegisterRequest = () => {
       </div>
     </div>
   </div>
-  <div v-if="whatsappGroupJoinUrl" class="grid grid-cols-12 gap-6 mt-5">
-    <div class="col-span-12 intro-y lg:col-span-12">
-      <div class="intro-y box">
-        <div class="p-5">
-          <a class="" target="_blank" :href="whatsappGroupJoinUrl">
-            <Button variant="primary" class="w-full mb-2 mr-1">
-              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1" /> Gruba Katıl
-            </Button>
-          </a>
-          <Button variant="secondary" class="w-full mb-2 mr-1 mt-5" @click="copyToClipboard(whatsappGroupJoinUrl)">
-            <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Katılma Linkini Kopyala
-          </Button>
-        </div>
-      </div>
-    </div>
-  </div>
   <div v-if="course.id">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Kullanıcı Kurs Kaydı</h2>

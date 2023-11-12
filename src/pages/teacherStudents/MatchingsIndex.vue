@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import Datatable from "@/components/Datatable";
 import Button from "@/base-components/Button";
+import Lucide from '@/base-components/Lucide'
 import { ref, inject, onBeforeMount, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import useClipboard from 'vue-clipboard3'
+import { Dialog } from '@/base-components/Headless'
 import { stringToHTML } from "@/utils/helper";
 import { useUserStore } from "@/stores/user";
 import { useCourseStore } from "@/stores/course";
 import { useAlertStore } from "@/stores/alert";
-import userProfile from "@/assets/images/placeholders/user.png"
-import maleProfile from "@/assets/images/placeholders/male.jpg"
-import femaleProfile from "@/assets/images/placeholders/female.jpg"
 
 const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
@@ -24,6 +23,8 @@ const user = useUserStore()
 const courseStore = useCourseStore()
 const teacherStudentIndexUrl = ref('')
 const isMyIndex = ref(false)
+const teacherStudentStatuses = ref({})
+const showTeacherStudentStatusesModal = ref(false)
 
 const props = defineProps<{
   courseId: number
@@ -34,13 +35,19 @@ onBeforeMount(() => {
   teacherStudentIndexUrl.value = courseStore.getCourseTeacherStudentsIndexURL(props.courseId)
 })
 
-const deleteteacherStudent = async (teacherStudentId) => {
-  if (await courseStore.deleteteacherStudent(teacherStudentId)) {
-    successNotificationToggle('İşlem Başarılı', 'Whatsapp Grubu Silindi!')
-    tableRef.value.refreshData()
-  } else {
-    errorNotificationToggle('HATA', 'Whatsapp Grubu Silinemedi!')
-  }
+const copyPhoneNumber = (phoneNumber) => {
+  toClipboard(phoneNumber)
+  successNotificationToggle('Telefon No kopyalandı.', phoneNumber)
+}
+
+const hideTeacherStudentStatusesModal = () => {
+  showTeacherStudentStatusesModal.value = false
+  teacherStudentStatuses.value = {}
+}
+
+const showStudentsStatusList = async (teacherId) => {
+  teacherStudentStatuses.value = await courseStore.getCourseTeacherStudentsStatuses(props.courseId, teacherId)
+  showTeacherStudentStatusesModal.value = true
 }
 
 const tableColumns = [
@@ -132,6 +139,31 @@ const tableColumns = [
     width: 110,
     field: "awaiting_students_count",
     vertAlign: "middle",
+  },
+  {
+    title: "İŞLEMLER",
+    width: 130,
+    field: "actions",
+    responsive: 20,
+    hozAlign: "center",
+    headerHozAlign: "center",
+    vertAlign: "middle",
+    headerSort: false,
+    formatter(cell) {
+      const rowData = cell.getData()
+      const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
+      const showButton =
+        stringToHTML(`<a class="flex items-center mr-3" href="javascript:;">
+                                <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Görüntüle
+                            </a>`);
+      showButton.addEventListener("click", function () {
+        showStudentsStatusList(rowData.teacher_id)
+      });
+
+      buttonsHolder.append(showButton)
+
+      return buttonsHolder
+    },
   }
 ]
 </script>
@@ -144,5 +176,66 @@ const tableColumns = [
       </h2>
     </div>
     <datatable ref="tableRef" :index-url="teacherStudentIndexUrl" :columns="tableColumns" />
+    <Dialog :open="showTeacherStudentStatusesModal" @close="() => hideTeacherStudentStatusesModal()">
+      <Dialog.Panel class="h-5/6 overflow-auto">
+        <Dialog.Title>
+          <h2 class="mr-auto text-base font-medium">
+            HafızOl Durumları
+          </h2>
+        </Dialog.Title>
+        <Dialog.Description class="flex">
+          <template v-if="teacherStudentStatuses.length > 0">
+            <div class="w-full">
+              <div v-for="student in teacherStudentStatuses" class="intro-x">
+                <div class="flex items-center px-5 py-3 mb-3 box drop-shadow justify-between flex-col">
+                  <div class="flex w-auto">
+                    <div class="ml-4 mr-auto">
+                      <div class="font-medium">{{ student.student.name }} {{ student.student.surname }}</div>
+                    </div>
+                  </div>
+                  <div class="flex mt-5 w-max">
+                    <span class="flex mr-3 items-center">
+                      Durumu:
+                    </span>
+                    <span v-if="student.proficiency_exam_passed === null" class="flex mr-3 items-center text-warning">
+                      <Lucide icon="Timer" class="w-4 h-4 mr-1" /> Beklemede
+                    </span>
+                    <span v-if="student.proficiency_exam_passed === false" class="flex mr-3 items-center text-danger">
+                      <Lucide icon="XCircle" class="w-4 h-4 mr-1" /> Red
+                    </span>
+                    <span v-if="student.proficiency_exam_passed === true" class="flex mr-3 items-center text-success">
+                      <Lucide icon="CheckCircle" class="w-4 h-4 mr-1" /> Kabul
+                    </span>
+                  </div>
+                  <span v-if="student.proficiency_exam_failed_description" class="flex mr-3 items-center text-slate-500 my-5">
+                    {{ student.proficiency_exam_failed_description }}
+                  </span>
+                  <div class="flex mt-5 w-max">
+                    <span class="flex mr-3 items-center">
+                      Telefon No:
+                    </span>
+                    <a class="flex mr-3 items-center cursor-pointer" @click="copyPhoneNumber(student.student.phone_number)">
+                      <Lucide icon="Copy" class="w-4 h-4 mr-1" /> Kopyala
+                    </a>
+                    <a class="flex mr-3 items-center text-success" target="_blank"
+                      :href="'https://wa.me/' + student.student.phone_number">
+                      <Lucide icon="MessageSquare" class="w-4 h-4 mr-1" /> Mesaj Gönder
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </Dialog.Description>
+        <Dialog.Footer>
+          <Button type="button" variant="outline-secondary" @click="() => {
+            hideTeacherStudentStatusesModal();
+          }
+            " class="w-20 mr-1">
+            Kapat
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Panel>
+    </Dialog>
   </div>
 </template>
