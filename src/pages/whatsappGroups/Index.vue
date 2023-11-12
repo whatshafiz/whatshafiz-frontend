@@ -28,6 +28,7 @@ const isMyIndex = ref(false)
 const props = defineProps<{
   courseId?: number
   courseName?: string
+  myIndex?: Boolean
 }>()
 
 onBeforeMount(() => {
@@ -50,7 +51,7 @@ const setIndexUrl = () => {
     return
   }
 
-  isMyIndex.value = !!route.meta?.isMyIndex
+  isMyIndex.value = !!route.meta?.isMyIndex || props.myIndex
 
   whatsappGroupIndexUrl.value = isMyIndex.value ? whatsappGroupStore.getMyIndexURL : whatsappGroupStore.getIndexURL
 }

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
-import Lucide from "@/base-components/Lucide"
-import TomSelect from '@/base-components/TomSelect'
-import FormSwitch from '@/base-components/Form/FormSwitch'
 import LoadingIcon from '@/base-components/LoadingIcon'
 import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
@@ -250,7 +246,7 @@ const organizeWhatsappGroups = async () => {
     </div>
   </div>
   <course-teacher-students-matchings-table
-    v-if="course.id && course.matched_users_count > 0"
+    v-if="course.id && course.matched_users_count > 0"
     :course-id="course.id"
     :course-name="course.name"
   />
