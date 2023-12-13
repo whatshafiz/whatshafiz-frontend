@@ -114,6 +114,14 @@ const cancelRegisterRequest = () => {
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Kullanıcı Kurs Kaydı</h2>
     </div>
+    <Alert v-if="!registerSucceeded" variant="soft-warning" class="items-center my-4">
+      <div class="flex items-center">
+        <Lucide icon="AlertCircle" class="w-6 h-6 mr-2" />
+        <div class="w-full">
+          Kaydınızı tamamlamak için yönetmeliği <strong>dikkatlice okuyun</strong> ve <strong>onaylayın</strong>.
+        </div>
+      </div>
+    </Alert>
     <div class="grid grid-cols-12 gap-6 mt-5">
       <div class="col-span-12 intro-y lg:col-span-12">
         <div class="intro-y box mb-10">
