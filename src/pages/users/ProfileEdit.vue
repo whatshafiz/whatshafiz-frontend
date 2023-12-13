@@ -25,6 +25,7 @@ const cities = ref([])
 const universities = ref([])
 const faculties = ref([])
 const departments = ref([])
+const newCourseRegisterType = ref(null)
 
 const fetchCountryCities = async (countryId) => {
   cities.value = await countryStore.fetchCountryCities(countryId)
@@ -64,6 +65,10 @@ onMounted(async () => {
     fetchUniversityFacultyDepartments(profile.value.university_id, profile.value.university_faculty_id)
   }
 
+  if (localStorage.getItem('newCourseRegisterType')) {
+    newCourseRegisterType.value = localStorage.getItem('newCourseRegisterType')
+  }
+
   if (profile.value.gender === null) {
     setTimeout(() => {
       if (!alertStore.hasAlertMessage) {
@@ -83,10 +88,10 @@ const onSubmit = async () => {
     isLoading.value = false
     successNotificationToggle('İşlem Başarılı', 'Profil bilgileriniz kaydedildi.')
 
-    if (localStorage.getItem('newCourseRegisterType')) {
+    if (newCourseRegisterType.value) {
       return router.push({
         name: 'courses.register',
-        params: { courseType: localStorage.getItem('newCourseRegisterType') }
+        params: { courseType: newCourseRegisterType.value }
       })
     } else {
       return router.push({ name: 'profile' })
@@ -339,7 +344,12 @@ const onSubmit = async () => {
             </div>
             <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
               <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-              Kaydet
+              <template v-if="newCourseRegisterType">
+                Kaydet ve Devam et
+              </template>
+              <template v-else>
+                Kaydet
+              </template>
             </Button>
             <RouterLink :to="{ name: 'profile' }">
               <Button variant="outline-secondary" type="button" class="mt-5 mr-5">
