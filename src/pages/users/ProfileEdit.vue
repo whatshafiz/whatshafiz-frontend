@@ -3,7 +3,7 @@ import { FormLabel, FormInput } from "@/base-components/Form";
 import Button from "@/base-components/Button";
 import LoadingIcon from '@/base-components/LoadingIcon'
 import TomSelect from "@/base-components/TomSelect";
-import { ref, onMounted, inject } from "vue";
+import { computed, ref, onMounted, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useAlertStore } from "@/stores/alert";
 import { useUserStore } from "@/stores/user";
@@ -25,6 +25,7 @@ const cities = ref([])
 const universities = ref([])
 const faculties = ref([])
 const departments = ref([])
+const newCourseRegisterType = ref(null)
 
 const fetchCountryCities = async (countryId) => {
   cities.value = await countryStore.fetchCountryCities(countryId)
@@ -39,6 +40,10 @@ const fetchUniversityFacultyDepartments = async (universityId, facultyId) => {
     departments.value = await universityStore.fetchUniversityFacultyDepartments(universityId, facultyId)
   }
 }
+
+const showUniversityFields = computed(() => {
+  return ['Ön Lisans Mezunu', 'Lisans Mezunu', 'Yüksek Lisans Mezunu', 'Doktora Mezunu'].includes(profile.value.education_level)
+})
 
 onMounted(async () => {
   await countryStore.fetchCountries()
@@ -60,6 +65,10 @@ onMounted(async () => {
     fetchUniversityFacultyDepartments(profile.value.university_id, profile.value.university_faculty_id)
   }
 
+  if (localStorage.getItem('newCourseRegisterType')) {
+    newCourseRegisterType.value = localStorage.getItem('newCourseRegisterType')
+  }
+
   if (profile.value.gender === null) {
     setTimeout(() => {
       if (!alertStore.hasAlertMessage) {
@@ -79,10 +88,10 @@ const onSubmit = async () => {
     isLoading.value = false
     successNotificationToggle('İşlem Başarılı', 'Profil bilgileriniz kaydedildi.')
 
-    if (localStorage.getItem('newCourseRegisterType')) {
+    if (newCourseRegisterType.value) {
       return router.push({
         name: 'courses.register',
-        params: { courseType: localStorage.getItem('newCourseRegisterType') }
+        params: { courseType: newCourseRegisterType.value }
       })
     } else {
       return router.push({ name: 'profile' })
@@ -236,7 +245,7 @@ const onSubmit = async () => {
                 <option value="Doktora Mezunu">Doktora Mezunu</option>
               </TomSelect>
             </div>
-            <div class="mt-3 input-form">
+            <div v-show="showUniversityFields" class="mt-3 input-form">
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
@@ -268,7 +277,7 @@ const onSubmit = async () => {
                 </option>
               </TomSelect>
             </div>
-            <div class="mt-3 input-form" v-if="profile.university_id">
+            <div class="mt-3 input-form" v-if="profile.university_id && showUniversityFields">
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Fakülte
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
@@ -299,7 +308,7 @@ const onSubmit = async () => {
                 </option>
               </TomSelect>
             </div>
-            <div class="mt-3 input-form" v-if="profile.university_faculty_id">
+            <div class="mt-3 input-form" v-if="profile.university_faculty_id && showUniversityFields">
               <FormLabel class="flex flex-col w-full sm:flex-row">
                 Üniversite Bölümü
                 <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
@@ -335,7 +344,12 @@ const onSubmit = async () => {
             </div>
             <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
               <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-              Kaydet
+              <template v-if="newCourseRegisterType">
+                Kaydet ve Devam et
+              </template>
+              <template v-else>
+                Kaydet
+              </template>
             </Button>
             <RouterLink :to="{ name: 'profile' }">
               <Button variant="outline-secondary" type="button" class="mt-5 mr-5">

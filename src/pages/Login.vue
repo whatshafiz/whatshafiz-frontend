@@ -56,6 +56,10 @@ onBeforeMount(async () => {
     countryPhoneCode.value = localStorage.getItem('countryCode')
   }
 
+  if (localStorage.getItem('phoneNumber')) {
+    phoneNumber.value = localStorage.getItem('phoneNumber')
+  }
+
   countries.value = await getCountries()
 })
 
@@ -150,6 +154,7 @@ const login = () => {
       isLoading.value = false
 
       if (response.token) {
+        localStorage.setItem('phoneNumber', phoneNumber.value)
         localStorage.setItem('token', response.token)
         activeForm.value = null
 
