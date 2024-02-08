@@ -53,7 +53,7 @@ const onSubmit = async () => {
       <div class="flex flex-col items-center p-5 border-b sm:flex-row border-slate-200/60">
         <h2 class="mr-auto text-base font-medium">{{ regulation.name }} Yönetmeliği Güncelle</h2>
       </div>
-      <div class="p-5" v-if="regulation.id">
+      <div class="p-5" v-if="regulation.name">
         <Preview.Panel>
           <div class="overflow-x-auto">
             <div class="flex items-center mb-4">
