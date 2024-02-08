@@ -3,6 +3,7 @@ import Datatable from "@/components/Datatable";
 import Button from "@/base-components/Button";
 import { ref, inject, onBeforeMount, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import useClipboard from 'vue-clipboard3'
 import { stringToHTML } from "@/utils/helper";
 import { useUserStore } from "@/stores/user";
 import { useCourseStore } from "@/stores/course";
@@ -13,6 +14,7 @@ const successNotificationToggle = inject('successNotificationToggle')
 const errorNotificationToggle = inject('errorNotificationToggle')
 
 const tableRef = ref()
+const { toClipboard } = useClipboard()
 const alertStore = useAlertStore()
 const router = useRouter()
 const route = useRoute()
@@ -167,6 +169,42 @@ const tableColumns = [
     width: 230,
     field: "proficiency_exam_start_time",
     vertAlign: "middle",
+  },
+  {
+    title: "Whatsapp Duyuru Kanalı",
+    responsive: 8,
+    width: 170,
+    field: "join_url",
+    vertAlign: "middle",
+    headerHozAlign: "center",
+    headerSort: false,
+    formatter(cell) {
+      const rowData = cell.getData()
+
+      if (!rowData.whatsapp_channel_join_url) {
+        return ''
+      }
+
+      const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
+      const copyButton =
+        stringToHTML(`<a class="flex items-center mr-3" href="javascript:;">
+                          <i data-lucide="copy" class="w-4 h-4 mr-1"></i> Kopyala
+                      </a>`);
+      const joinButton =
+        stringToHTML(`<a class="flex items-center mr-3 text-success" target="_blank" href="${rowData.whatsapp_channel_join_url}">
+                          <i data-lucide="external-link" class="w-4 h-4 mr-1"></i> Katıl
+                      </a>`);
+
+      copyButton.addEventListener("click", function (button) {
+        toClipboard(rowData.whatsapp_channel_join_url)
+        successNotificationToggle('Whatsapp duyuru kanalı linki kopyalandı.', rowData.whatsapp_channel_join_url)
+      });
+
+      buttonsHolder.append(copyButton)
+      buttonsHolder.append(joinButton)
+
+      return buttonsHolder
+    },
   },
   {
     title: "Durum",

@@ -6,6 +6,7 @@ import { useRouter, useRoute } from "vue-router"
 import UsersTable from '@/pages/users/Index.vue'
 import WhatsappGroupsTable from '@/pages/whatsappGroups/Index.vue'
 import CourseTeacherStudentsMatchingsTable from '@/pages/teacherStudents/MatchingsIndex.vue'
+import useClipboard from 'vue-clipboard3'
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
 import _ from "lodash";
@@ -14,6 +15,7 @@ import moment from 'moment';
 const successNotificationToggle = inject('successNotificationToggle')
 const warningNotificationToggle = inject('warningNotificationToggle')
 const isLoading = ref(false)
+const { toClipboard } = useClipboard()
 const router = useRouter()
 const route = useRoute()
 const courseId = route.params.courseId
@@ -52,6 +54,11 @@ onBeforeMount(async () => {
     course.value.proficiency_exam_start_time = moment(course.value.proficiency_exam_start_time, "DD-MM-YYYY hh:mm").format('YYYY-MM-DD HH:mm')
   }
 })
+
+const copyToClipboard = async (data, message = 'Kopyalandı.') => {
+  toClipboard(data)
+  successNotificationToggle(message, data)
+}
 
 const startMatchings = async () => {
   if (!applicationTimeExpired.value && !confirm('Başvuru süresi henüz dolmamış! Devam etmek istiyor musunuz?')) {
@@ -113,9 +120,22 @@ const organizeWhatsappGroups = async () => {
           <div class="flex items-center justify-around">
             <span v-if="course.is_active" class="text-success">Aktif</span>
             <span v-else class="text-danger">Pasif</span>
-
+            
             <span v-if="course.can_be_applied" class="text-success">{{ statusText }}</span>
             <span v-else class="text-danger">{{ statusText }}</span>
+          </div>
+          <div v-if="course.whatsapp_channel_join_url" class="flex items-center justify-around mt-8">
+            <div>
+              <div class="text-slate-500">Whatsapp Duyuru Kanalı Linki</div>
+              <div class="mt-1.5 flex items-center justify-evenly">
+                <a class="flex items-center cursor-pointer hover:underline" @click="copyToClipboard(course.whatsapp_channel_join_url, 'Kanal bağlantısı kopyalandı.')">
+                  <i data-lucide="copy" class="w-4 h-4 mr-1"></i> Kopyala
+                </a>
+                <a class="flex items-center cursor-pointer hover:underline text-success" target="_blank" :href="course.whatsapp_channel_join_url">
+                  <i data-lucide="external-link" class="w-4 h-4 mr-1"></i> Katıl
+                </a>
+              </div>
+            </div>
           </div>
         </div>
         <div

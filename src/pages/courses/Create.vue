@@ -89,6 +89,19 @@ const onSubmit = async () => {
               </div>
               <div class="input-form mt-4">
                 <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                  Whatsapp Duyuru Kanalı Katılma Linki
+                </FormLabel>
+                <FormInput
+                  id="join_url"
+                  v-model="course.whatsapp_channel_join_url"
+                  :value="course.whatsapp_channel_join_url"
+                  type="text"
+                  name="join_url"
+                  placeholder="Kanal katılma linkini buraya yapıştırın."
+                />
+              </div>
+              <div class="input-form mt-4">
+                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
                   Son Başvuru Tarihi
                 </FormLabel>
                 <div class="relative w-90">
