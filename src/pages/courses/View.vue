@@ -188,7 +188,7 @@ const organizeWhatsappGroups = async () => {
                     </div>
                   </div>
                   <div class="tooltip-content">
-                    <TippyContent to="custom-tooltip-content">
+                    <TippyContent to="organize-whatsapp-groups-tooltip-content">
                       <div class="relative flex items-center py-1">
                         <div class="ml-4 mr-auto">
                           <div class="font-medium leading-relaxed dark:text-slate-200">
@@ -217,7 +217,12 @@ const organizeWhatsappGroups = async () => {
                     </TippyContent>
                   </div>
                   <div class="flex">
-                    <Button variant="secondary" size="sm" class="mb-2 mr-1" data-tooltip="custom-tooltip-content">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      class="mb-2 mr-1"
+                      data-tooltip="organize-whatsapp-groups-tooltip-content"
+                    >
                       <Lucide icon="Info" class="w-5 h-5" />
                     </Button>
                     <Button
@@ -278,17 +283,45 @@ const organizeWhatsappGroups = async () => {
                       </div>
                       <div class="text-base" v-else>{{ course.unmatched_users_count }}</div>
                     </div>
-                    <Button
-                      v-if="course.unmatched_users_count > 0 && !matchingsHasStarted"
-                      :disabled="isLoading"
-                      @click="startMatchings()"
-                      variant="primary"
-                      size="sm"
-                      class="mb-2 mr-1"
-                    >
-                      <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-                      Eşleştirmeyi Başlat
-                    </Button>
+                    <div class="tooltip-content">
+                      <TippyContent to="match-whatshafiz-users-tooltip-content">
+                        <div class="relative flex items-center py-1">
+                          <div class="ml-4 mr-auto">
+                            <div class="font-medium leading-relaxed dark:text-slate-200">
+                              WhatsHafız Kullanıcılarını Eşleştirmek İçin:
+                            </div>
+                            <div class="text-slate-500 dark:text-slate-400">
+                              <ul class="list-disc">
+                                <li>Kurs başvuruları tamamlandıktan sonra eşleştirilme yapılması tavsiye edilir.</li>
+                                <li :class="{ 'line-through': !course.unmatched_users_count > 0 }">
+                                  Eşleştirme bekleyen kullanıcı bulunmalı.
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </TippyContent>
+                    </div>
+                    <div class="flex">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        class="mb-2 mr-1"
+                        data-tooltip="match-whatshafiz-users-tooltip-content"
+                      >
+                        <Lucide icon="Info" class="w-5 h-5" />
+                      </Button>
+                      <Button
+                        :disabled="isLoading || !(course.unmatched_users_count > 0 && !matchingsHasStarted)"
+                        @click="startMatchings()"
+                        variant="primary"
+                        size="sm"
+                        class="mb-2 mr-1"
+                      >
+                        <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                        Eşleştirmeyi Başlat
+                      </Button>
+                    </div>
                   </div>
                   <div v-if="course.students_matchings_started_at" class="col-span-12 sm:col-span-6 md:col-span-3">
                     <div class="text-slate-500">En Son Eşleştirmenin Başladığı Zaman</div>
