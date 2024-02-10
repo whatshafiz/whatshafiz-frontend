@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
-import { ref, onBeforeMount, inject } from "vue"
+import TippyContent from '@/base-components/TippyContent'
+import Lucide from '@/base-components/Lucide'
+import { computed, ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import UsersTable from '@/pages/users/Index.vue'
 import WhatsappGroupsTable from '@/pages/whatsappGroups/Index.vue'
@@ -53,6 +55,16 @@ onBeforeMount(async () => {
   if (course.value.proficiency_exam_start_time) {
     course.value.proficiency_exam_start_time = moment(course.value.proficiency_exam_start_time, "DD-MM-YYYY hh:mm").format('YYYY-MM-DD HH:mm')
   }
+})
+
+const canOrganizeWhatsappGroups = computed(() => {
+  return course.value.whatsapp_groups_count > 0 &&
+    course.value.total_users_count !== course.value.whatsapp_groups_users_count &&
+    (!course.value.can_be_applied || applicationTimeExpired.value) &&
+    (
+      course.value.type !== 'whatshafiz' ||
+      (course.value.unmatched_users_count === 0 && course.value.total_users_count === course.value.matched_users_count)
+    )
 })
 
 const copyToClipboard = async (data, message = 'Kopyalandı.') => {
@@ -128,10 +140,17 @@ const organizeWhatsappGroups = async () => {
             <div>
               <div class="text-slate-500">Whatsapp Duyuru Kanalı Linki</div>
               <div class="mt-1.5 flex items-center justify-evenly">
-                <a class="flex items-center cursor-pointer hover:underline" @click="copyToClipboard(course.whatsapp_channel_join_url, 'Kanal bağlantısı kopyalandı.')">
+                <a
+                  class="flex items-center cursor-pointer hover:underline"
+                  @click="copyToClipboard(course.whatsapp_channel_join_url, 'Kanal bağlantısı kopyalandı.')"
+                >
                   <i data-lucide="copy" class="w-4 h-4 mr-1"></i> Kopyala
                 </a>
-                <a class="flex items-center cursor-pointer hover:underline text-success" target="_blank" :href="course.whatsapp_channel_join_url">
+                <a
+                  class="flex items-center cursor-pointer hover:underline text-success"
+                  target="_blank"
+                  :href="course.whatsapp_channel_join_url"
+                >
                   <i data-lucide="external-link" class="w-4 h-4 mr-1"></i> Katıl
                 </a>
               </div>
@@ -168,25 +187,51 @@ const organizeWhatsappGroups = async () => {
                       {{ course.whatsapp_groups_count }} Grup / {{ course.whatsapp_groups_users_count }} Kullanıcı
                     </div>
                   </div>
-                  <Button
-                    v-if="
-                      course.type === 'whatshafiz' &&
-                      (!course.can_be_applied || applicationTimeExpired) && 
-                      course.unmatched_users_count === 0 &&
-                      course.total_users_count === course.matched_users_count &&
-                      course.whatsapp_groups_count > 0 &&
-                      course.total_users_count !== course.whatsapp_groups_users_count
-                    "
-                    :disabled="isLoading || matchingsHasStarted"
-                    @click="organizeWhatsappGroups()"
-                    variant="primary"
-                    size="sm"
-                    class="mb-2 mr-1"
-                  >
-                    <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
-                    <span v-if="matchingsHasStarted">Kullanıcılar Gruplara Dağıtılıyor</span>
-                    <span v-else>Kullanıcıları Gruplara Dağıt</span>
-                  </Button>
+                  <div class="tooltip-content">
+                    <TippyContent to="custom-tooltip-content">
+                      <div class="relative flex items-center py-1">
+                        <div class="ml-4 mr-auto">
+                          <div class="font-medium leading-relaxed dark:text-slate-200">
+                            Kullanıcıları Gruplara Dağıtabilmek İçin:
+                          </div>
+                          <div class="text-slate-500 dark:text-slate-400">
+                            <ul class="list-disc">
+                              <li :class="{ 'line-through': (!course.can_be_applied || applicationTimeExpired) }">
+                                  Kurs başvuru süresi dolmuş veya başvuruya kapatılmış olmalı.
+                              </li>
+                              <li :class="{ 'line-through': course.whatsapp_groups_count > 0 }">
+                                En az 1 tane whatsapp grubu oluşturulmalı.
+                              </li>
+                              <li :class="{ 'line-through': course.total_users_count > course.whatsapp_groups_users_count }">
+                                Whatsapp grubuna atanmamış öğrenci bulunmalı.
+                              </li>
+                              <li v-if="course.type === 'whatshafiz'"
+                                :class="{ 'line-through': course.unmatched_users_count > 0 }"
+                              >
+                                HafızOl-HafızKal eşleştirmeleri tamamlanmış olmalı.
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </TippyContent>
+                  </div>
+                  <div class="flex">
+                    <Button variant="secondary" size="sm" class="mb-2 mr-1" data-tooltip="custom-tooltip-content">
+                      <Lucide icon="Info" class="w-5 h-5" />
+                    </Button>
+                    <Button
+                      :disabled="isLoading || matchingsHasStarted || !canOrganizeWhatsappGroups"
+                      @click="organizeWhatsappGroups()"
+                      variant="primary"
+                      size="sm"
+                      class="mb-2 mr-1"
+                    >
+                      <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                      <span v-if="matchingsHasStarted">Kullanıcılar Gruplara Dağıtılıyor</span>
+                      <span v-else>Kullanıcıları Gruplara Dağıt</span>
+                    </Button>
+                  </div>
                 </div>
                 <div class="col-span-12 sm:col-span-6 md:col-span-3">
                   <div class="text-slate-500">Toplam Kullanıcı Sayısı</div>
