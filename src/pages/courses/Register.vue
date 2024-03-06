@@ -19,7 +19,7 @@ const successNotificationToggle = inject('successNotificationToggle')
 const alertStore = useAlertStore()
 const isLoading = ref(false)
 const registerSucceeded = ref(false)
-const whatsappGroupJoinUrl = ref('')
+const whatsappChannelJoinUrl = ref('')
 const { toClipboard } = useClipboard()
 const router = useRouter()
 const route = useRoute()
@@ -44,9 +44,9 @@ onBeforeMount(async () => {
   regulation.value = await regulationStore.fetchRegulation(courseType)
 })
 
-const copyToClipboard = async (whatsappGroupJoinUrl) => {
-  toClipboard(whatsappGroupJoinUrl)
-  successNotificationToggle('Grup linki kopyalandı.', whatsappGroupJoinUrl)
+const copyToClipboard = async (whatsappChannelJoinUrl, message = 'Kopyalandı') => {
+  toClipboard(whatsappChannelJoinUrl)
+  successNotificationToggle(message, whatsappChannelJoinUrl)
 }
 
 const registerUserToCourse = async () => {
@@ -73,8 +73,8 @@ const registerUserToCourse = async () => {
     successNotificationToggle('İşlem Başarılı', 'Kursa kaydınız tamamlanmıştır.')
     alertStore.addSuccessMessage(response.data.message)
 
-    if (response.data.new_whatsapp_group_join_url) {
-      whatsappGroupJoinUrl.value = response.data.new_whatsapp_group_join_url
+    if (response.data.whatsapp_channel_join_url) {
+      whatsappChannelJoinUrl.value = response.data.whatsapp_channel_join_url
     }
 
     registerSucceeded.value = true
@@ -94,16 +94,20 @@ const cancelRegisterRequest = () => {
 </script>
 
 <template>
-  <div v-if="whatsappGroupJoinUrl" class="grid grid-cols-12 gap-6 mt-5">
+  <div v-if="whatsappChannelJoinUrl" class="grid grid-cols-12 gap-6 mt-5">
     <div class="col-span-12 intro-y lg:col-span-12">
       <div class="intro-y box">
         <div class="p-5">
-          <a class="" target="_blank" :href="whatsappGroupJoinUrl">
+          <a class="" target="_blank" :href="whatsappChannelJoinUrl">
             <Button variant="primary" class="w-full mb-2 mr-1">
-              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1" /> Gruba Katıl
+              <Lucide icon="ExternalLink" class="w-4 h-4 ml-3 mr-1" /> Whatsapp Duyuru Kanalına Katıl
             </Button>
           </a>
-          <Button variant="secondary" class="w-full mb-2 mr-1 mt-5" @click="copyToClipboard(whatsappGroupJoinUrl)">
+          <Button
+            variant="secondary"
+            class="w-full mb-2 mr-1 mt-5"
+            @click="copyToClipboard(whatsappChannelJoinUrl, 'Kanal linki kopyalandı.')"
+          >
             <Lucide icon="Copy" class="w-4 h-4 ml-3 mr-1 text-slate-500" /> Katılma Linkini Kopyala
           </Button>
         </div>
