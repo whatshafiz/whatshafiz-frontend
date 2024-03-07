@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, inject } from "vue";
 import Button from "@/base-components/Button";
 import { useWhatsappMessengerStore } from "@/stores/whatsappMessenger";
 import Tippy from "@/base-components/Tippy";
@@ -8,7 +8,10 @@ import LoadingIcon from '@/base-components/LoadingIcon'
 import TinySlider from "@/base-components/TinySlider";
 import { Dialog } from "@/base-components/Headless";
 
+const warningNotificationToggle = inject('warningNotificationToggle')
+const successNotificationToggle = inject('successNotificationToggle')
 const isLoading = ref(false)
+const isSendingTestMessage = ref(false)
 const whatsappmessengerStore = useWhatsappMessengerStore()
 const whatsappMessengerNumbers = ref([])
 const tinySliderModalPreview = ref(false);
@@ -19,6 +22,19 @@ const refreshPage = async () => {
   whatsappMessengerNumbers.value = []
   whatsappMessengerNumbers.value = await whatsappmessengerStore.fetchNumbers()
   isLoading.value = false
+}
+
+const sendTestMessage = async () => {
+  isSendingTestMessage.value = true
+  const response = await whatsappmessengerStore.sendTestMessage()
+
+  if (response.message) {
+    successNotificationToggle(response.message)
+  } else {
+    warningNotificationToggle('Bir hata oluştu, daha sonra tekrar deneyin!')
+  }
+
+  isSendingTestMessage.value = false
 }
 
 const setTinySliderModalPreview = (value, screenshots = []) => {
@@ -34,9 +50,13 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
     <h2 class="mr-auto text-lg font-medium">Whatsapp Messenger Numaraları</h2>
+    <Button @click="sendTestMessage()" variant="primary" class="mr-2 shadow-md" :disabled="isSendingTestMessage">
+      <Lucide icon="MessageCircle" class="mr-2" /> Test Mesajı Gönder
+    </Button>
     <Button @click="refreshPage()" variant="primary" class="mr-2 shadow-md" :disabled="isLoading">
-      Sayfayı Yenile <Lucide v-show="!isLoading" icon="RotateCw" class="ml-1" />
-      <LoadingIcon v-show="isLoading" icon="oval" color="white" class="ml-1" />
+      <Lucide v-show="!isLoading" icon="RotateCw" class="mr-2" />
+      <LoadingIcon v-show="isLoading" icon="oval" color="white" class="mr-2" />
+      Sayfayı Yenile
     </Button>
   </div>
   <div v-if="!isLoading" class="grid grid-cols-12 gap-6 mt-5">

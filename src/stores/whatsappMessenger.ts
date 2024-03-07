@@ -32,5 +32,14 @@ export const useWhatsappMessengerStore = defineStore('whatsappMessenger', {
         return false
       }
     },
+    async sendTestMessage() {
+      try {
+        return (await api().post('/whatsapp-messenger-numbers/send-test-message')).data
+      } catch (response) {
+        console.log('sendTestMessage error', response)
+
+        return false
+      }
+    },
   },
 })
