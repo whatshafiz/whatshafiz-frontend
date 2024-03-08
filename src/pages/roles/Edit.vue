@@ -81,12 +81,16 @@ const onSubmit = async () => {
                 <div class="mt-2" v-for="(permission, key) in permissionStore.getPermissions">
                   <FormSwitch>
                     <FormSwitch.Input :id="'checkbox-switch-' + key" type="checkbox" :value="permission.id"
-                      :checked="role.permissions.includes(permission.id)"
-                      @click="() => { selectPermission(permission.id) }" />
+                    :checked="role.permissions.includes(permission.id)"
+                    @click="() => { selectPermission(permission.id) }" />
                     <FormSwitch.Label :htmlFor="'checkbox-switch-' + key">
-                      {{ permission.name }}
+                      {{ permission.label }}
                     </FormSwitch.Label>
                   </FormSwitch>
+                  <hr v-if="permissionStore.getPermissions[key - 1] &&
+                      permission.name.split('.')[0] !== permissionStore.getPermissions[key + 1]?.name.split('.')[0]
+                    "
+                  />
                 </div>
               </div>
 
