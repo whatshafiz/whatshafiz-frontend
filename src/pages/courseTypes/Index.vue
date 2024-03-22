@@ -53,6 +53,14 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
+    title: "Ana Kurs Türü",
+    minWidth: 200,
+    responsive: 1,
+    field: "parent.name",
+    vertAlign: "middle",
+    headerSort: false,
+  },
+  {
     title: "Kurs Türü",
     minWidth: 200,
     responsive: 1,
