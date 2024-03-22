@@ -79,9 +79,10 @@ const tableColumns = [
   {
     title: "Kurs Tipi",
     responsive: 1,
-    width: 120,
-    field: "type",
+    width: 170,
+    field: "course_type.name",
     vertAlign: "middle",
+    headerSort: false
   },
   {
     title: "Yorum Yapan",

@@ -63,6 +63,12 @@ export const useSideMenuStore = defineStore("sideMenu", {
         permission: "courses.list",
       },
       {
+        icon: "GitPullRequest",
+        pageName: "courseTypes.index",
+        title: "Kurs Türleri",
+        permission: "courseType.list",
+      },
+      {
         icon: "MailWarning",
         pageName: "complaints.index",
         title: "Şikayetler",
@@ -171,12 +177,6 @@ export const useSideMenuStore = defineStore("sideMenu", {
             pageName: "settings.index",
             title: "Sistem Ayarları",
             permission: "settings.update",
-          },
-          {
-            icon: "GitPullRequest",
-            pageName: "courseTypes.index",
-            title: "Kurs Türleri",
-            permission: "courseType.update",
           },
           {
             icon: "Mails",
