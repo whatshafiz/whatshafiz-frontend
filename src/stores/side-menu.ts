@@ -173,6 +173,12 @@ export const useSideMenuStore = defineStore("sideMenu", {
             permission: "settings.update",
           },
           {
+            icon: "GitPullRequest",
+            pageName: "courseTypes.index",
+            title: "Kurs Türleri",
+            permission: "courseType.update",
+          },
+          {
             icon: "Mails",
             pageName: "whatsappMessenger.index",
             title: "WhatsappMessenger",
