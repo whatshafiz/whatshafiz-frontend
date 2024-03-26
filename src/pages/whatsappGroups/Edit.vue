@@ -11,6 +11,7 @@ import { ref, reactive, onBeforeMount, inject, watch } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
+import { useCourseTypeStore } from "@/stores/courseType"
 import { useWhatsappGroupStore } from "@/stores/whatsappGroup"
 import _ from "lodash";
 
@@ -22,18 +23,21 @@ const whatsappGroupId = route.params.whatsappGroupId
 const user = useUserStore()
 const courseStore = useCourseStore()
 const whatsappGroupStore = useWhatsappGroupStore()
+const courseTypeStore = useCourseTypeStore()
+const courseTypes = ref([])
 const courses = ref([])
 const whatsappGroup = ref({})
 
 onBeforeMount(async () => {
+  courseTypes.value = (await courseTypeStore.fetchCourseTypes())
   courses.value = await courseStore.fetchCourses()
   whatsappGroup.value = await whatsappGroupStore.fetchWhatsappGroup(whatsappGroupId)
 })
 
-watch(() => whatsappGroup.course_id, (newValue) => {
-  const selectedCourse = courses.value.find(c => c.id == whatsappGroup.course_id)
+watch(() => whatsappGroup.value.course_id, (newValue) => {
+  const selectedCourse = courses.value.find(c => c.id == whatsappGroup.value.course_id)
 
-  whatsappGroup.type = selectedCourse.type
+  whatsappGroup.value.course_type_id = selectedCourse.course_type_id
 });
 
 const onSubmit = async () => {
@@ -110,23 +114,18 @@ const onSubmit = async () => {
                   </span>
                 </FormLabel>
                 <TomSelect
-                  v-model="whatsappGroup.type"
-                  :options="{ placeholder: 'Eğitim türü seçin.' }"
-                  disabled
+                  v-model="whatsappGroup.course_type_id"
+                  :options="{ placeholder: 'Kurs türünü seçin.' }"
                   class="w-full"
+                  disabled
                 >
                   <option
-                    key="whatshafiz"
-                    value="whatshafiz"
-                  > WhatsHafız </option>
-                  <option
-                    key="whatshafiz"
-                    value="whatsenglish"
-                  > WhatsEnglish </option>
-                  <option
-                    key="whatshafiz"
-                    value="whatsarapp"
-                  > WhatsArapp </option>
+                    v-for="(courseType, key) in courseTypes"
+                    :key="key"
+                    :value="courseType.id"
+                  >
+                    {{ courseType.name }}
+                  </option>
                 </TomSelect>
               </div>
               <div
