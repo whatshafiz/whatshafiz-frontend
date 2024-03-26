@@ -110,9 +110,15 @@ const organizeWhatsappGroups = async () => {
   <div v-if="user.can('courses.view') && course.id">
     <div class="flex flex-col items-center mt-8 intro-y sm:flex-row">
       <h2 class="mr-auto text-lg font-medium">Kurs Bilgileri</h2>
-      <div v-if="user.can('courses.update')" class="flex w-full mt-4 sm:w-auto sm:mt-0">
+      <div
+        v-if="user.can('courses.update')"
+        class="flex w-full mt-4 sm:w-auto sm:mt-0"
+      >
         <RouterLink :to="{ name: 'courses.edit', params: { courseId: course.id } }">
-          <Button variant="primary" class="mr-2 shadow-md">
+          <Button
+            variant="primary"
+            class="mr-2 shadow-md"
+          >
             Bilgileri Düzenle
           </Button>
         </RouterLink>
@@ -121,8 +127,8 @@ const organizeWhatsappGroups = async () => {
     <div class="mt-5 intro-y">
       <div class="grid grid-cols-12 box">
         <div class="flex flex-col justify-center col-span-12 px-4 py-8 lg:col-span-3">
-          <div class="flex items-center justify-center text-slate-600 dark:text-slate-300 uppercase">
-            {{ course.type }}
+          <div class="flex items-center justify-center text-slate-600 dark:text-slate-300">
+            {{ course.course_type.name }}
           </div>
           <div class="flex items-center justify-center">
             <div class="relative text-2xl font-medium">
@@ -130,13 +136,28 @@ const organizeWhatsappGroups = async () => {
             </div>
           </div>
           <div class="flex items-center justify-around">
-            <span v-if="course.is_active" class="text-success">Aktif</span>
-            <span v-else class="text-danger">Pasif</span>
-            
-            <span v-if="course.can_be_applied" class="text-success">{{ statusText }}</span>
-            <span v-else class="text-danger">{{ statusText }}</span>
+            <span
+              v-if="course.is_active"
+              class="text-success"
+            >Aktif</span>
+            <span
+              v-else
+              class="text-danger"
+            >Pasif</span>
+
+            <span
+              v-if="course.can_be_applied"
+              class="text-success"
+            >{{ statusText }}</span>
+            <span
+              v-else
+              class="text-danger"
+            >{{ statusText }}</span>
           </div>
-          <div v-if="course.whatsapp_channel_join_url" class="flex items-center justify-around mt-8">
+          <div
+            v-if="course.whatsapp_channel_join_url"
+            class="flex items-center justify-around mt-8"
+          >
             <div>
               <div class="text-slate-500">Whatsapp Duyuru Kanalı Linki</div>
               <div class="mt-1.5 flex items-center justify-evenly">
@@ -144,21 +165,28 @@ const organizeWhatsappGroups = async () => {
                   class="flex items-center cursor-pointer hover:underline"
                   @click="copyToClipboard(course.whatsapp_channel_join_url, 'Kanal bağlantısı kopyalandı.')"
                 >
-                  <i data-lucide="copy" class="w-4 h-4 mr-1"></i> Kopyala
+                  <i
+                    data-lucide="copy"
+                    class="w-4 h-4 mr-1"
+                  ></i> Kopyala
                 </a>
                 <a
                   class="flex items-center cursor-pointer hover:underline text-success"
                   target="_blank"
                   :href="course.whatsapp_channel_join_url"
                 >
-                  <i data-lucide="external-link" class="w-4 h-4 mr-1"></i> Katıl
+                  <i
+                    data-lucide="external-link"
+                    class="w-4 h-4 mr-1"
+                  ></i> Katıl
                 </a>
               </div>
             </div>
           </div>
         </div>
         <div
-          class="col-span-12 p-8 border-t border-dashed lg:col-span-9 lg:border-t-0 lg:border-l border-slate-200 dark:border-darkmode-300">
+          class="col-span-12 p-8 border-t border-dashed lg:col-span-9 lg:border-t-0 lg:border-l border-slate-200 dark:border-darkmode-300"
+        >
           <div>
             <div class="px-5">
               <div class="grid grid-cols-12 gap-y-8 gap-x-10">
@@ -168,7 +196,10 @@ const organizeWhatsappGroups = async () => {
                     <div class="text-base">{{ course.can_be_applied_until }}</div>
                   </div>
                 </div>
-                <div v-if="course.proficiency_exam_start_time" class="col-span-12 sm:col-span-6 md:col-span-3">
+                <div
+                  v-if="course.proficiency_exam_start_time"
+                  class="col-span-12 sm:col-span-6 md:col-span-3"
+                >
                   <div class="text-slate-500">HafızOl Kabul Sınavı Başlangıç Zamanı</div>
                   <div class="mt-1.5 flex items-center">
                     <div class="text-base">{{ course.proficiency_exam_start_time }}</div>
@@ -197,15 +228,18 @@ const organizeWhatsappGroups = async () => {
                           <div class="text-slate-500 dark:text-slate-400">
                             <ul class="list-disc">
                               <li :class="{ 'line-through': (!course.can_be_applied || applicationTimeExpired) }">
-                                  Kurs başvuru süresi dolmuş veya başvuruya kapatılmış olmalı.
+                                Kurs başvuru süresi dolmuş veya başvuruya kapatılmış olmalı.
                               </li>
                               <li :class="{ 'line-through': course.whatsapp_groups_count > 0 }">
                                 En az 1 tane whatsapp grubu oluşturulmalı.
                               </li>
-                              <li :class="{ 'line-through': course.total_users_count > course.whatsapp_groups_users_count }">
+                              <li
+                                :class="{ 'line-through': course.total_users_count > course.whatsapp_groups_users_count }"
+                              >
                                 Whatsapp grubuna atanmamış öğrenci bulunmalı.
                               </li>
-                              <li v-if="course.type === 'whatshafiz'"
+                              <li
+                                v-if="course.type === 'whatshafiz'"
                                 :class="{ 'line-through': course.unmatched_users_count > 0 }"
                               >
                                 HafızOl-HafızKal eşleştirmeleri tamamlanmış olmalı.
@@ -223,7 +257,10 @@ const organizeWhatsappGroups = async () => {
                       class="mb-2 mr-1"
                       data-tooltip="organize-whatsapp-groups-tooltip-content"
                     >
-                      <Lucide icon="Info" class="w-5 h-5" />
+                      <Lucide
+                        icon="Info"
+                        class="w-5 h-5"
+                      />
                     </Button>
                     <Button
                       :disabled="isLoading || matchingsHasStarted || !canOrganizeWhatsappGroups"
@@ -232,7 +269,12 @@ const organizeWhatsappGroups = async () => {
                       size="sm"
                       class="mb-2 mr-1"
                     >
-                      <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                      <LoadingIcon
+                        v-show="isLoading"
+                        icon="oval"
+                        color="white"
+                        class="w-4 h-4 mr-5"
+                      />
                       <span v-if="matchingsHasStarted">Kullanıcılar Gruplara Dağıtılıyor</span>
                       <span v-else>Kullanıcıları Gruplara Dağıt</span>
                     </Button>
@@ -278,10 +320,16 @@ const organizeWhatsappGroups = async () => {
                   <div class="col-span-12 sm:col-span-6 md:col-span-3">
                     <div class="text-slate-500">Eşleştirme Bekleyen Kullanıcı Sayısı</div>
                     <div class="mt-1.5 flex items-center">
-                      <div class="text-base" v-if="course.unmatched_users_count > 0 && matchingsHasStarted">
+                      <div
+                        class="text-base"
+                        v-if="course.unmatched_users_count > 0 && matchingsHasStarted"
+                      >
                         Eşleştiriliyor...
                       </div>
-                      <div class="text-base" v-else>{{ course.unmatched_users_count }}</div>
+                      <div
+                        class="text-base"
+                        v-else
+                      >{{ course.unmatched_users_count }}</div>
                     </div>
                     <div class="tooltip-content">
                       <TippyContent to="match-whatshafiz-users-tooltip-content">
@@ -309,7 +357,10 @@ const organizeWhatsappGroups = async () => {
                         class="mb-2 mr-1"
                         data-tooltip="match-whatshafiz-users-tooltip-content"
                       >
-                        <Lucide icon="Info" class="w-5 h-5" />
+                        <Lucide
+                          icon="Info"
+                          class="w-5 h-5"
+                        />
                       </Button>
                       <Button
                         :disabled="isLoading || !(course.unmatched_users_count > 0 && !matchingsHasStarted)"
@@ -318,18 +369,29 @@ const organizeWhatsappGroups = async () => {
                         size="sm"
                         class="mb-2 mr-1"
                       >
-                        <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+                        <LoadingIcon
+                          v-show="isLoading"
+                          icon="oval"
+                          color="white"
+                          class="w-4 h-4 mr-5"
+                        />
                         Eşleştirmeyi Başlat
                       </Button>
                     </div>
                   </div>
-                  <div v-if="course.students_matchings_started_at" class="col-span-12 sm:col-span-6 md:col-span-3">
+                  <div
+                    v-if="course.students_matchings_started_at"
+                    class="col-span-12 sm:col-span-6 md:col-span-3"
+                  >
                     <div class="text-slate-500">En Son Eşleştirmenin Başladığı Zaman</div>
                     <div class="mt-1.5 flex items-center">
                       <div class="text-base">{{ course.students_matchings_started_at }}</div>
                     </div>
                   </div>
-                  <div v-if="course.whatsapp_groups_users_count > 0" class="col-span-12 sm:col-span-6 md:col-span-3">
+                  <div
+                    v-if="course.whatsapp_groups_users_count > 0"
+                    class="col-span-12 sm:col-span-6 md:col-span-3"
+                  >
                     <div class="text-slate-500">WhatsappGruplarındaki Kullanıcı Sayısı</div>
                     <div class="mt-1.5 flex items-center">
                       <div class="text-base">{{ course.whatsapp_groups_users_count }}</div>
@@ -348,6 +410,14 @@ const organizeWhatsappGroups = async () => {
     :course-id="course.id"
     :course-name="course.name"
   />
-  <users-table v-if="course.id" :course-id="course.id" :course-name="course.name" />
-  <whatsapp-groups-table v-if="course.id" :course-id="course.id" :course-name="course.name" />
+  <users-table
+    v-if="course.id"
+    :course-id="course.id"
+    :course-name="course.name"
+  />
+  <whatsapp-groups-table
+    v-if="course.id"
+    :course-id="course.id"
+    :course-name="course.name"
+  />
 </template>
