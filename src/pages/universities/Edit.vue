@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
@@ -58,9 +61,15 @@ const onSubmit = async () => {
   <div v-if="user.can('universities.update')">
     <div class="flex items-center mt-8 intro-y">
       <h2 class="mr-auto text-lg font-medium">Üniversite Düzenleme</h2>
-      <div class="flex w-full mt-4 sm:w-auto sm:mt-0" v-if="universityId">
-        <RouterLink :to="{ name: 'faculties.create', query: { universityId: universityId }}">
-          <Button variant="primary" class="mr-2 shadow-md">
+      <div
+        class="flex w-full mt-4 sm:w-auto sm:mt-0"
+        v-if="universityId"
+      >
+        <RouterLink :to="{ name: 'faculties.create', query: { universityId: universityId } }">
+          <Button
+            variant="primary"
+            class="mr-2 shadow-md"
+          >
             Yeni Fakülte Ekle
           </Button>
         </RouterLink>
@@ -73,20 +82,43 @@ const onSubmit = async () => {
             <h2 class="mr-auto text-base font-medium">Üniversite Bilgileri</h2>
           </div>
           <div class="p-5">
-            <form class="validate-form" @submit.prevent="onSubmit">
+            <form
+              class="validate-form"
+              @submit.prevent="onSubmit"
+            >
               <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Üniversite Adı
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="name" v-model="university.name" :value="university.name" type="text" name="name" required
-                  placeholder="Üniversite Adını Yazın" />
+                <FormInput
+                  id="name"
+                  v-model="university.name"
+                  :value="university.name"
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="Üniversite Adını Yazın"
+                />
               </div>
 
-              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
-                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+              <Button
+                variant="primary"
+                type="submit"
+                class="w-1/2 mt-5 mr-2"
+                :disabled="isLoading"
+              >
+                <LoadingIcon
+                  v-show="isLoading"
+                  icon="oval"
+                  color="white"
+                  class="w-4 h-4 mr-5"
+                />
                 Kaydet
               </Button>
               <Button
@@ -107,7 +139,10 @@ const onSubmit = async () => {
             <h2 class="mr-auto text-base font-medium">Fakülteler</h2>
           </div>
           <div class="p-5">
-            <div v-if="university.faculties && university.faculties.length > 0" class="col-span-12 overflow-auto intro-y lg:overflow-visible">
+            <div
+              v-if="university.faculties && university.faculties.length > 0"
+              class="col-span-12 overflow-auto intro-y lg:overflow-visible"
+            >
               <Table class="border-spacing-y-[10px] border-separate -mt-2">
                 <Table.Thead>
                   <Table.Tr>
@@ -117,7 +152,11 @@ const onSubmit = async () => {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  <Table.Tr v-for="(faculty, key) in university.faculties" :key="key" class="intro-x">
+                  <Table.Tr
+                    v-for="(faculty, key) in university.faculties"
+                    :key="key"
+                    class="intro-x"
+                  >
                     <Table.Td
                       class="first:rounded-l-md last:rounded-r-md w-10 bg-white border-b-0 dark:bg-darkmode-600 shadow-[20px_3px_20px_#0000000b]"
                     >
@@ -136,13 +175,19 @@ const onSubmit = async () => {
                           class="flex items-center mr-3 w-20 cursor-pointer"
                           @click="() => router.push({ name: 'faculties.edit', params: { facultyId: faculty.id } })"
                         >
-                          <Lucide icon="CheckSquare" class="w-4 h-4 mr-1" /> Düzenle
+                          <Lucide
+                            icon="CheckSquare"
+                            class="w-4 h-4 mr-1"
+                          /> Düzenle
                         </span>
                         <span
                           class="flex items-center text-danger cursor-pointer"
                           @click="() => deleteFacultyWithModal(faculty.id)"
                         >
-                          <Lucide icon="Trash2" class="w-4 h-4 mr-1" /> Sil
+                          <Lucide
+                            icon="Trash2"
+                            class="w-4 h-4 mr-1"
+                          /> Sil
                         </span>
                       </div>
                     </Table.Td>

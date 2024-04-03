@@ -25,6 +25,11 @@ const city = reactive({
 
 onBeforeMount(async () => {
   countries.value = await countryStore.fetchCountries()
+  const countryId = route.query.countryId
+
+  if (countryId) {
+    city.country_id = countryId
+  }
 })
 
 const onSubmit = async () => {
