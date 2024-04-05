@@ -25,7 +25,7 @@ export const useWhatsappGroupStore = defineStore('whatsappGroup', {
     },
     async fetchWhatsappGroups() {
       try {
-        this.whatsappGroups = (await api().get('/whatsapp-groups')).data.whatsappGroups
+        this.whatsappGroups = (await api().get('/whatsapp-groups')).data.data
 
         return this.whatsappGroups
       } catch (response) {
