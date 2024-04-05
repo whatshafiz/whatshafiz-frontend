@@ -3,6 +3,7 @@ import Lucide from '@/base-components/Lucide'
 import Table from '@/base-components/Table'
 import Button from '@/base-components/Button'
 import LoadingIcon from '@/base-components/LoadingIcon'
+import TomSelect from '@/base-components/TomSelect'
 import { FormSelect } from '@/base-components/Form'
 import Profile from '@/pages/users/Profile.vue'
 import { ref, onBeforeMount, inject } from "vue"
@@ -40,36 +41,6 @@ const reportUser = () => {
   router.push({ name: 'complaints.create', query: { userId: userId } })
 }
 
-const removeCourseFromUser = async (courseId) => {
-  if (await userStore.removeCourse(userId, courseId)) {
-    successNotificationToggle('İşlem Başarılı', 'Kurs Kullanıcıdan Kaldırıldı!')
-    user.value.courses = []
-    user.value.courses = (await userStore.fetchUser(userId)).courses
-  } else {
-    errorNotificationToggle('HATA', 'Kurs kaldırılamadı!')
-  }
-}
-
-const removeCourseFromUserWithModal = (courseId) => {
-  alertStore.setDeleteModalPreview(true)
-  alertStore.setDeleteModalAction(() => removeCourseFromUser(courseId))
-}
-
-const removeWhatsappGroupFromUser = async (whatsappGroupId) => {
-  if (await userStore.removeWhatsappGroup(userId, whatsappGroupId)) {
-    successNotificationToggle('İşlem Başarılı', 'Whatsapp Grubu Kullanıcıdan Kaldırıldı!')
-    user.value.whatsapp_groups = []
-    user.value.whatsapp_groups = (await userStore.fetchUser(userId)).whatsapp_groups
-  } else {
-    errorNotificationToggle('HATA', 'Whatsapp Grubu kaldırılamadı!')
-  }
-}
-
-const removeWhatsappGroupFromUserWithModal = (whatsappGroupId) => {
-  alertStore.setDeleteModalPreview(true)
-  alertStore.setDeleteModalAction(() => removeWhatsappGroupFromUser(whatsappGroupId))
-}
-
 const toggleUserBanStatus = async () => {
   if (await userStore.toggleUserBanStatus(user.value.id, !user.value.is_banned)) {
     successNotificationToggle('İşlem Başarılı', (user.value.is_banned ? 'Kullanıcı banı kaldırıldı!' : 'Kullanıcı Banlandı!'))
@@ -80,23 +51,6 @@ const toggleUserBanStatus = async () => {
     errorNotificationToggle('HATA', 'İşlem sırasında hata oluştu!')
   }
 }
-
-const removeRoleFromUser = async (roleId) => {
-  if (await userStore.removeRole(userId, roleId)) {
-    successNotificationToggle('İşlem Başarılı', 'Rol Kullanıcıdan Kaldırıldı!')
-    user.value.roles = []
-    user.value.roles = (await userStore.fetchUser(userId)).roles
-    assignNewRoleFormVisible.value = false
-  } else {
-    errorNotificationToggle('HATA', 'Rol kaldırılamadı!')
-  }
-}
-
-const removeRoleFromUserWithModal = (roleId) => {
-  alertStore.setDeleteModalPreview(true)
-  alertStore.setDeleteModalAction(() => removeRoleFromUser(roleId))
-}
-
 const assignNewRole = async () => {
   isLoading.value = true
 
@@ -120,6 +74,22 @@ const saveNewRole = async () => {
   newRoleId.value = 0
 }
 
+const removeRoleFromUserWithModal = (roleId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => removeRoleFromUser(roleId))
+}
+
+const removeRoleFromUser = async (roleId) => {
+  if (await userStore.removeRole(userId, roleId)) {
+    successNotificationToggle('İşlem Başarılı', 'Rol Kullanıcıdan Kaldırıldı!')
+    user.value.roles = []
+    user.value.roles = (await userStore.fetchUser(userId)).roles
+    assignNewRoleFormVisible.value = false
+  } else {
+    errorNotificationToggle('HATA', 'Rol kaldırılamadı!')
+  }
+}
+
 const attachNewCourse = async () => {
   isLoading.value = true
 
@@ -138,17 +108,31 @@ const saveNewCourse = async () => {
   await userStore.attachCourse(userId, newCourseId.value)
   user.value.courses = []
   user.value.courses = (await userStore.fetchUser(userId)).courses
-  assignNewRoleFormVisible.value = false
+  attachNewCourseFormVisible.value = false
   isLoading.value = false
   newCourseId.value = 0
+}
+
+const removeCourseFromUserWithModal = (courseId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => removeCourseFromUser(courseId))
+}
+
+const removeCourseFromUser = async (courseId) => {
+  if (await userStore.removeCourse(userId, courseId)) {
+    successNotificationToggle('İşlem Başarılı', 'Kurs Kullanıcıdan Kaldırıldı!')
+    user.value.courses = []
+    user.value.courses = (await userStore.fetchUser(userId)).courses
+  } else {
+    errorNotificationToggle('HATA', 'Kurs kaldırılamadı!')
+  }
 }
 
 const attachNewWhatsappGroup = async () => {
   isLoading.value = true
 
   if (whatsappGroups.value.length === 0) {
-    whatsappGroups.value = await whatsappGroupStore.fetchWhatsappGroups()
-    console.log(whatsappGroups.value)
+    whatsappGroups.value = await whatsappGroupStore.fetchWhatsappGroups({ size: 5000, gender: user.value.gender })
   }
 
   whatsappGroups.value = whatsappGroups.value.filter(whatsappGroup => !user.value.whatsapp_groups.find(c => c.id === whatsappGroup.id))
@@ -162,9 +146,25 @@ const saveNewWhatsappGroup = async () => {
   await userStore.attachWhatsappGroup(userId, newWhatsappGroupId.value)
   user.value.whatsapp_groups = []
   user.value.whatsapp_groups = (await userStore.fetchUser(userId)).whatsapp_groups
-  assignNewRoleFormVisible.value = false
+  attachNewWhatsappGroupFormVisible.value = false
   isLoading.value = false
   newWhatsappGroupId.value = 0
+}
+
+const removeWhatsappGroupFromUserWithModal = (whatsappGroupId) => {
+  alertStore.setDeleteModalPreview(true)
+  alertStore.setDeleteModalAction(() => removeWhatsappGroupFromUser(whatsappGroupId))
+}
+
+const removeWhatsappGroupFromUser = async (whatsappGroupId) => {
+  if (await userStore.removeWhatsappGroup(userId, whatsappGroupId)) {
+    successNotificationToggle('İşlem Başarılı', 'Whatsapp Grubu Kullanıcıdan Kaldırıldı!')
+    user.value.whatsapp_groups = []
+    user.value.whatsapp_groups = (await userStore.fetchUser(userId)).whatsapp_groups
+    attachNewWhatsappGroupFormVisible.value = false
+  } else {
+    errorNotificationToggle('HATA', 'Whatsapp Grubu kaldırılamadı!')
+  }
 }
 
 onBeforeMount(async () => {
@@ -243,23 +243,19 @@ onBeforeMount(async () => {
               v-if="assignNewRoleFormVisible"
               class="pb-4 border-b border-slate-200/60 dark:border-darkmode-400"
             >
-              <div class="flex flex-col items-center sm:flex-row">
-                <FormSelect
+              <div class="flex flex-col-reverse items-center sm:flex-row-reverse">
+                <TomSelect
                   v-model="newRoleId"
-                  formSelectSize="lg"
-                  class="sm:mt-2 sm:mx-2"
+                  :options="{
+                    placeholder: 'Rol Seçin',
+                  }"
+                  class="w-full sm:mt-2 sm:mx-2"
                 >
-                  <option
-                    value="0"
-                    selected
-                    disabled
-                    hidden
-                  >Rol Seçin</option>
                   <option
                     v-for="role in roles"
                     :value="role.id"
                   >{{ role.name }}</option>
-                </FormSelect>
+                </TomSelect>
                 <Button
                   variant="primary"
                   class="mr-2 mt-2 shadow-md"
@@ -357,23 +353,19 @@ onBeforeMount(async () => {
               v-if="attachNewCourseFormVisible"
               class="pb-4 border-b border-slate-200/60 dark:border-darkmode-400"
             >
-              <div class="flex flex-col items-center sm:flex-row">
-                <FormSelect
+              <div class="flex flex-col-reverse items-center sm:flex-row-reverse">
+                <TomSelect
                   v-model="newCourseId"
-                  formSelectSize="lg"
-                  class="sm:mt-2 sm:mx-2"
+                  :options="{
+                    placeholder: 'Kurs Seçin',
+                  }"
+                  class="w-full sm:mt-2 sm:mx-2"
                 >
-                  <option
-                    value="0"
-                    selected
-                    disabled
-                    hidden
-                  >Kurs Seçin</option>
                   <option
                     v-for="course in courses"
                     :value="course.id"
                   >{{ course.name }}</option>
-                </FormSelect>
+                </TomSelect>
                 <Button
                   variant="primary"
                   class="mr-2 mt-2 shadow-md"
@@ -482,23 +474,19 @@ onBeforeMount(async () => {
               v-if="attachNewWhatsappGroupFormVisible"
               class="pb-4 border-b border-slate-200/60 dark:border-darkmode-400"
             >
-              <div class="flex flex-col items-center sm:flex-row">
-                <FormSelect
+              <div class="flex flex-col-reverse items-center sm:flex-row-reverse">
+                <TomSelect
                   v-model="newWhatsappGroupId"
-                  formSelectSize="lg"
-                  class="sm:mt-2 sm:mx-2"
+                  :options="{
+                    placeholder: 'Whatsapp Grubu Seçin',
+                  }"
+                  class="w-full sm:mt-2 sm:mx-2"
                 >
-                  <option
-                    value="0"
-                    selected
-                    disabled
-                    hidden
-                  >Kurs Seçin</option>
                   <option
                     v-for="whatsappGroup in whatsappGroups"
                     :value="whatsappGroup.id"
                   >{{ whatsappGroup.name }}</option>
-                </FormSelect>
+                </TomSelect>
                 <Button
                   variant="primary"
                   class="mr-2 mt-2 shadow-md"
