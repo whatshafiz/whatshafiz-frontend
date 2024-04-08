@@ -24,8 +24,8 @@ const regulationStore = useRegulationStore()
 
 console.log()
 
-const deleteregulation = async (regulationId) => {
-  if (await regulationStore.deleteregulation(regulationId)) {
+const deleteRegulation = async (regulationId) => {
+  if (await regulationStore.deleteRegulation(regulationId)) {
     successNotificationToggle('İşlem Başarılı', 'Yönetmelik Silindi!')
     tableRef.value.refreshData()
   } else {
@@ -101,7 +101,7 @@ const tableColumns = [
       });
       deleteButton.addEventListener("click", function (event) {
         alertStore.setDeleteModalPreview(true)
-        alertStore.setDeleteModalAction(() => deleteregulation(rowData.id))
+        alertStore.setDeleteModalAction(() => deleteRegulation(rowData.id))
       });
 
       buttonsHolder.append(showButton)
