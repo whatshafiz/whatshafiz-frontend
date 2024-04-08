@@ -1,5 +1,6 @@
 import api from '@/utils/api'
 import { defineStore } from 'pinia'
+import { getBaseUrl } from '@/utils/api'
 
 export const useRegulationStore = defineStore('regulation', {
   state: () => {
@@ -10,7 +11,10 @@ export const useRegulationStore = defineStore('regulation', {
   getters: {
     getRegulations(state) {
       return state.regulations
-    }
+    },
+    getIndexURL() {
+      return getBaseUrl('/regulations/paginate')
+    },
   },
   actions: {
     async fetchRegulations() {

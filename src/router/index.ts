@@ -389,14 +389,19 @@ const routes = [
             component: async () => import("@/pages/regulations/Index.vue"),
           },
           {
-            path: ":regulation",
-            name: "regulations.view",
-            component: async () => import("@/pages/regulations/View.vue"),
+            path: "new",
+            name: "regulations.create",
+            component: async () => import("@/pages/regulations/Create.vue"),
           },
           {
-            path: ":regulation/edit",
+            path: ":regulationId/edit",
             name: "regulations.edit",
             component: async () => import("@/pages/regulations/Edit.vue"),
+          },
+          {
+            path: ":regulationId",
+            name: "regulations.view",
+            component: async () => import("@/pages/regulations/View.vue"),
           },
         ],
       },
