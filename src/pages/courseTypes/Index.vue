@@ -53,60 +53,95 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
-    title: "Ana Kurs Türü",
-    minWidth: 200,
-    responsive: 1,
-    field: "parent.name",
-    vertAlign: "middle",
-    headerSort: false,
-  },
-  {
     title: "Kurs Türü",
     minWidth: 200,
-    responsive: 1,
+    responsive: 2,
     field: "name",
     vertAlign: "middle",
+    formatter(cell) {
+      const rowData = cell.getData()
+
+      if (rowData.parent_id === null) {
+        return `<div class=ont-medium whitespace-nowrap">${rowData.name}</div>`;
+      }
+
+      return `<div>
+          <div class=ont-medium whitespace-nowrap">${rowData.name}</div>
+          <div class="text-xs text-slate-500 whitespace-nowrap">Ana Kurs Türü: ${rowData.parent.name}</div>
+          </div>
+          `;
+    }
+  },
+  {
+    title: "Yönetmelik",
+    width: 230,
+    responsive: 3,
+    field: "regulation.name",
+    vertAlign: "middle",
+    formatter(cell) {
+      const rowData = cell.getData()
+
+      if (rowData.regulation.name === null) {
+        if (user.can('regulations.create')) {
+          const buttonsHolder = stringToHTML(`<div class="flex items-center lg:justify-center"></div>`);
+          const cerateButton =
+            stringToHTML(`<a class="flex items-center mr-3 text-success" href="javascript:;">
+                                <i data-lucide="file-plus" class="w-4 h-4 mr-1"></i> Oluştur
+                            </a>`);
+          cerateButton.addEventListener("click", function () {
+            router.push({ name: 'regulations.create', query: { courseTypeId: rowData.id } })
+          });
+          buttonsHolder.append(cerateButton)
+
+          return buttonsHolder
+        }
+
+        return 'YOK'
+      }
+
+      return rowData.regulation.name
+    }
   },
   {
     title: "Kurs Sayısı",
-    minWidth: 150,
-    responsive: 2,
+    width: 140,
+    responsive: 4,
     field: "courses_count",
     vertAlign: "middle",
   },
   {
     title: "Whatsapp Grup Sayısı",
-    minWidth: 150,
-    responsive: 3,
+    width: 200,
+    responsive: 5,
     field: "whatsapp_groups_count",
     vertAlign: "middle",
   },
   {
     title: "Toplam Başvuru Sayısı",
-    minWidth: 150,
-    responsive: 3,
+    width: 200,
+    responsive: 6,
     field: "total_users_count",
     vertAlign: "middle",
   },
   {
     title: "Aktif Kullanıcı Sayısı",
-    minWidth: 150,
-    responsive: 3,
+    width: 190,
+    responsive: 7,
     field: "active_users_count",
     vertAlign: "middle",
   },
   {
     title: "Yorum Sayısı",
-    minWidth: 150,
-    responsive: 3,
+    width: 150,
+    responsive: 8,
     field: "comments_count",
     vertAlign: "middle",
   },
   {
     title: "İŞLEMLER",
-    width: 150,
+    width: 200,
     field: "actions",
-    responsive: 4,
+    responsive: 10,
     hozAlign: "center",
     headerHozAlign: "center",
     vertAlign: "middle",

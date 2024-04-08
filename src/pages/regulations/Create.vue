@@ -25,6 +25,7 @@ const user = useUserStore()
 const isLoading = ref(false)
 const courseTypeStore = useCourseTypeStore()
 const courseTypes = ref([])
+const courseTypeId = route.query.courseTypeId
 const regulationStore = useRegulationStore()
 const regulation = reactive({
   'course_type_id': '',
@@ -36,6 +37,10 @@ const regulation = reactive({
 
 onBeforeMount(async () => {
   courseTypes.value = (await courseTypeStore.fetchCourseTypes()).filter(courseType => courseType.regulation === null)
+  console.log(courseTypeId)
+  if (courseTypeId) {
+    regulation.course_type_id = courseTypeId
+  }
 })
 
 watch(() => regulation.course_type_id, (newValue) => {
