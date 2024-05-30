@@ -92,11 +92,12 @@ const tableColumns = [
     vertAlign: "middle",
   },
   {
-    title: "Eğitim Türü",
-    responsive: 2,
-    width: 130,
-    field: "type",
+    title: "Kurs Tipi",
+    responsive: 1,
+    width: 170,
+    field: "course_type.name",
     vertAlign: "middle",
+    headerSort: false
   },
   {
     title: "Cinsiyet",

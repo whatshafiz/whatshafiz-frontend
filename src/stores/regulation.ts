@@ -1,5 +1,6 @@
 import api from '@/utils/api'
 import { defineStore } from 'pinia'
+import { getBaseUrl } from '@/utils/api'
 
 export const useRegulationStore = defineStore('regulation', {
   state: () => {
@@ -10,7 +11,10 @@ export const useRegulationStore = defineStore('regulation', {
   getters: {
     getRegulations(state) {
       return state.regulations
-    }
+    },
+    getIndexURL() {
+      return getBaseUrl('/regulations/paginate')
+    },
   },
   actions: {
     async fetchRegulations() {
@@ -22,20 +26,42 @@ export const useRegulationStore = defineStore('regulation', {
         console.log('fetchRegulations error', response)
       }
     },
-    async fetchRegulation(slug: string) {
+    async fetchRegulation(regulationId) {
       try {
-        return (await api().get('/regulations/' + slug)).data
+        return (await api().get('/regulations/' + regulationId)).data
       } catch (response) {
         console.log('fetchRegulation error', response)
 
         return false
       }
     },
-    async updateRegulation(slug: string, regulationData: FormData) {
+    async createRegulation(regulationData) {
       try {
-        return (await api().post('/regulations/' + slug, regulationData)).data
+        await api().post('/regulations', regulationData)
+
+        return true
+      } catch (response) {
+        console.log('create regulation error', response)
+
+        return false
+      }
+    },
+    async updateRegulation(regulationId, regulationData: FormData) {
+      try {
+        return (await api().put('/regulations/' + regulationId, regulationData)).data
       } catch (response) {
         console.log('update regulation error', response)
+
+        return false
+      }
+    },
+    async deleteRegulation(regulationId) {
+      try {
+        await api().delete('/regulations/' + regulationId)
+
+        return true
+      } catch (response) {
+        console.log('deleteRegulation error', response)
 
         return false
       }

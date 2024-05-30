@@ -343,6 +343,32 @@ const routes = [
         ],
       },
       {
+        path: "courseTypes",
+        name: "courseTypes",
+        children: [
+          {
+            path: "",
+            name: "courseTypes.index",
+            component: async () => import("@/pages/courseTypes/Index.vue"),
+          },
+          {
+            path: "new",
+            name: "courseTypes.create",
+            component: async () => import("@/pages/courseTypes/Create.vue"),
+          },
+          {
+            path: ":courseTypeId/edit",
+            name: "courseTypes.edit",
+            component: async () => import("@/pages/courseTypes/Edit.vue"),
+          },
+          {
+            path: ":courseTypeId",
+            name: "courseTypes.view",
+            component: async () => import("@/pages/courseTypes/View.vue"),
+          },
+        ],
+      },
+      {
         path: "whatsappMessenger",
         name: "whatsappMessenger",
         children: [
@@ -363,14 +389,19 @@ const routes = [
             component: async () => import("@/pages/regulations/Index.vue"),
           },
           {
-            path: ":regulation",
-            name: "regulations.view",
-            component: async () => import("@/pages/regulations/View.vue"),
+            path: "new",
+            name: "regulations.create",
+            component: async () => import("@/pages/regulations/Create.vue"),
           },
           {
-            path: ":regulation/edit",
+            path: ":regulationId/edit",
             name: "regulations.edit",
             component: async () => import("@/pages/regulations/Edit.vue"),
+          },
+          {
+            path: ":regulationId",
+            name: "regulations.view",
+            component: async () => import("@/pages/regulations/View.vue"),
           },
         ],
       },
