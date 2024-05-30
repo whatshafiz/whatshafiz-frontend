@@ -8,9 +8,10 @@ import Preview from "@/base-components/Preview";
 const route = useRoute()
 const regulationStore = useRegulationStore()
 const regulation = ref({})
+const regulationId = route.params.regulationId
 
 onBeforeMount(async () => {
-  regulation.value = await regulationStore.fetchRegulation(route.params.regulation as string)
+  regulation.value = await regulationStore.fetchRegulation(regulationId)
 })
 </script>
 

@@ -20,57 +20,55 @@ const successNotificationToggle: any = inject('successNotificationToggle')
 const errorNotificationToggle: any = inject('errorNotificationToggle')
 const route = useRoute()
 const alert = useAlertStore()
-const regulationId = route.params.regulationId
 const router = useRouter()
 const user = useUserStore()
 const isLoading = ref(false)
 const courseTypeStore = useCourseTypeStore()
 const courseTypes = ref([])
+const courseTypeId = route.query.courseTypeId
 const regulationStore = useRegulationStore()
-const regulation = ref({})
-
-onBeforeMount(async () => {
-  regulation.value = await regulationStore.fetchRegulation(regulationId)
-
-  if (regulation.value.summary === null) {
-    regulation.value.summary = '<p></p>'
-  }
-
-  courseTypes.value = (await courseTypeStore.fetchCourseTypes()).filter(courseType => {
-    return courseType.id == regulation.value.course_type_id || courseType.regulation === null
-  })
+const regulation = reactive({
+  'course_type_id': '',
+  'name': '',
+  'slug': '',
+  'summary': '',
+  'text': '',
 })
 
-watch(() => regulation.value.course_type_id, (newValue) => {
-  const courseType = courseTypes.value.find(courseType => courseType.id == newValue)
-
-  if (courseType) {
-    regulation.value.name = courseType.name + ' Yönetmeliği'
-    regulation.value.slug = _.kebabCase(regulation.value.name)
+onBeforeMount(async () => {
+  courseTypes.value = (await courseTypeStore.fetchCourseTypes()).filter(courseType => courseType.regulation === null)
+  console.log(courseTypeId)
+  if (courseTypeId) {
+    regulation.course_type_id = courseTypeId
   }
+})
+
+watch(() => regulation.course_type_id, (newValue) => {
+  regulation.name = courseTypes.value.find(courseType => courseType.id == newValue).name + ' Yönetmeliği'
+  regulation.slug = _.kebabCase(regulation.name)
 });
 
 const onSubmit = async () => {
   isLoading.value = true
 
-  if (await regulationStore.updateRegulation(regulationId, regulation.value)) {
-    successNotificationToggle('İşlem Başarılı', 'Yönetmelik Güncellendi.')
+  if (await regulationStore.createRegulation(regulation)) {
+    successNotificationToggle('İşlem Başarılı', 'Yönetmelik Oluşturuldu.')
     isLoading.value = false
     router.push({ name: 'regulations.index' })
   } else {
     isLoading.value = false
     window.scrollTo(0, 0)
-    errorNotificationToggle('Hata Oluştu.', 'Yönetmelik güncellenirken bir hata oluştu!')
+    errorNotificationToggle('Hata Oluştu.', 'Yönetmelik oluştururken bir hata oluştu!')
   }
 }
 </script>
 
 <template>
   <div class="flex items-center mt-8 intro-y">
-    <h2 class="mr-auto text-lg font-medium">Yönetmelik Bilgileri Düzenleme</h2>
+    <h2 class="mr-auto text-lg font-medium">Yeni Yönetmelik Oluştur</h2>
   </div>
   <div
-    v-if="user.can('regulations.update')"
+    v-if="user.can('regulations.create')"
     class="overflow-x-auto"
   >
     <Preview class="mt-5 intro-y box h-min sm:w-full md:w-2/3">
@@ -81,7 +79,6 @@ const onSubmit = async () => {
         <form
           class="validate-form"
           @submit.prevent="onSubmit"
-          v-if="regulation.id"
         >
           <div class="input-form">
             <FormLabel
@@ -153,9 +150,7 @@ const onSubmit = async () => {
                 <div class="flex items-center mb-4">
                   <div class="text-lg font-medium">Özet</div>
                 </div>
-                <ClassicEditor
-                  v-model="regulation.summary"
-                />
+                <ClassicEditor v-model="regulation.summary" />
                 <div class="flex items-center mt-5 mb-4">
                   <div class="text-lg font-medium">Yönetmelik</div>
                 </div>

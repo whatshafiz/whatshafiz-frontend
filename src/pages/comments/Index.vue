@@ -79,9 +79,10 @@ const tableColumns = [
   {
     title: "Kurs Tipi",
     responsive: 1,
-    width: 120,
-    field: "type",
+    width: 170,
+    field: "course_type.name",
     vertAlign: "middle",
+    headerSort: false
   },
   {
     title: "Yorum Yapan",
@@ -159,7 +160,7 @@ const tableColumns = [
       editButton.addEventListener("click", function () {
         router.push({ name: 'comments.edit', params: { commentId: rowData.id } })
       });
-      deleteButton.addEventListener("click", function (event) {
+      deleteButton.addEventListener("click", function () {
         alertStore.setDeleteModalPreview(true)
         alertStore.setDeleteModalAction(() => deleteComment(rowData.id))
       });

@@ -115,6 +115,17 @@ export const useUserStore = defineStore('user', {
         return false
       }
     },
+    async attachCourse(userId, courseId) {
+      try {
+        await api().post('/users/' + userId + '/courses', { course_id: courseId })
+
+        return true
+      } catch (response) {
+        console.log('attachCourse error', response)
+
+        return false
+      }
+    },
     async removeCourse(userId, courseId) {
       try {
         await api().delete('/users/' + userId + '/courses/' + courseId)
@@ -122,6 +133,17 @@ export const useUserStore = defineStore('user', {
         return true
       } catch (response) {
         console.log('removeCourse error', response)
+
+        return false
+      }
+    },
+    async attachWhatsappGroup(userId, whatsappGroupId) {
+      try {
+        await api().post('/users/' + userId + '/whatsapp-groups', { whatsapp_group_id: whatsappGroupId })
+
+        return true
+      } catch (response) {
+        console.log('attachWhatsappGroup error', response)
 
         return false
       }

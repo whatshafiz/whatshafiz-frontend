@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import { FormLabel, FormInput } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import Lucide from "@/base-components/Lucide"
@@ -9,6 +12,7 @@ import { ref, onBeforeMount, inject } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { useCourseStore } from "@/stores/course"
+import { useCourseTypeStore } from "@/stores/courseType"
 import _ from "lodash";
 import moment from 'moment';
 
@@ -20,8 +24,11 @@ const courseId = route.params.courseId
 const user = useUserStore()
 const courseStore = useCourseStore()
 const course = ref({})
+const courseTypeStore = useCourseTypeStore()
+const courseTypes = ref([])
 
 onBeforeMount(async () => {
+  courseTypes.value = (await courseTypeStore.fetchCourseTypes()).filter(courseType => courseType.parent_id !== null)
   course.value = await courseStore.fetchCourse(courseId)
   course.value.start_at = moment(course.value.start_at, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
   course.value.can_be_applied_until = moment(course.value.can_be_applied_until, "DD-MM-YYYY hh:mm").format('YYYY-MM-DDTHH:mm')
@@ -57,32 +64,60 @@ const onSubmit = async () => {
             <h2 class="mr-auto text-base font-medium">Kurs Bilgileri</h2>
           </div>
           <div class="p-5">
-            <form class="validate-form" @submit.prevent="onSubmit" v-if="course.id">
+            <form
+              class="validate-form"
+              @submit.prevent="onSubmit"
+              v-if="course.id"
+            >
               <div class="input-form">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Kurs Türü
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                     Zorunlu
                   </span>
                 </FormLabel>
-                <TomSelect v-model="course.type" :options="{ placeholder: 'Kurs türü seçin.' }" class="w-full">
-                  <option key="whatshafiz" value="whatshafiz"> WhatsHafız </option>
-                  <option key="whatsenglish" value="whatsenglish"> WhatsEnglish </option>
-                  <option key="whatsarapp" value="whatsarapp"> WhatsArapp </option>
+                <TomSelect
+                  v-model="course.course_type_id"
+                  :options="{ placeholder: 'Kurs türünü seçin.' }"
+                  class="w-full"
+                >
+                  <option
+                    v-for="(courseType, key) in courseTypes"
+                    :key="key"
+                    :value="courseType.id"
+                  >
+                    {{ courseType.name }}
+                  </option>
                 </TomSelect>
               </div>
               <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Kurs Adı
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="name" v-model="course.name" :value="course.name" type="text" name="name" required
-                  placeholder="Kurs Adını Yazın" />
+                <FormInput
+                  id="name"
+                  v-model="course.name"
+                  :value="course.name"
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="Kurs Adını Yazın"
+                />
               </div>
               <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Whatsapp Duyuru Kanalı Katılma Linki
                 </FormLabel>
                 <FormInput
@@ -95,12 +130,20 @@ const onSubmit = async () => {
                 />
               </div>
               <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Son Başvuru Tarihi
                 </FormLabel>
                 <div class="relative w-90">
-                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
-                    <Lucide icon="Calendar" class="w-4 h-4" />
+                  <div
+                    class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"
+                  >
+                    <Lucide
+                      icon="Calendar"
+                      class="w-4 h-4"
+                    />
                   </div>
                   <FormInput
                     id="can_be_applied_until"
@@ -115,13 +158,24 @@ const onSubmit = async () => {
                   />
                 </div>
               </div>
-              <div v-if="course.type === 'whatshafiz'" class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
-                    HafızOl Kabul Sınavı Başlama Zamanı
+              <div
+                v-if="course.type === 'whatshafiz'"
+                class="input-form mt-4"
+              >
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
+                  HafızOl Kabul Sınavı Başlama Zamanı
                 </FormLabel>
                 <div class="relative w-90">
-                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
-                    <Lucide icon="Calendar" class="w-4 h-4" />
+                  <div
+                    class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"
+                  >
+                    <Lucide
+                      icon="Calendar"
+                      class="w-4 h-4"
+                    />
                   </div>
                   <FormInput
                     id="proficiency_exam_start_time"
@@ -137,12 +191,20 @@ const onSubmit = async () => {
                 </div>
               </div>
               <div class="input-form mt-4">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Kurs Başlama Tarihi
                 </FormLabel>
                 <div class="relative w-90">
-                  <div class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
-                    <Lucide icon="Calendar" class="w-4 h-4" />
+                  <div
+                    class="absolute flex items-center justify-center w-10 h-full border rounded-l bg-slate-100 text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"
+                  >
+                    <Lucide
+                      icon="Calendar"
+                      class="w-4 h-4"
+                    />
                   </div>
                   <FormInput
                     id="start_at"
@@ -161,7 +223,12 @@ const onSubmit = async () => {
                 <label>Aktif Kurs mu?</label>
                 <div class="mt-2">
                   <FormSwitch>
-                    <FormSwitch.Input id="is_active" type="checkbox" name="is_active" v-model="course.is_active" />
+                    <FormSwitch.Input
+                      id="is_active"
+                      type="checkbox"
+                      name="is_active"
+                      v-model="course.is_active"
+                    />
                     <FormSwitch.Label htmlFor="is_active">
                       Aktif
                     </FormSwitch.Label>
@@ -172,19 +239,38 @@ const onSubmit = async () => {
                 <label>Başvuruya Açık mı?</label>
                 <div class="mt-2">
                   <FormSwitch>
-                    <FormSwitch.Input id="can_be_applied" type="checkbox" name="can_be_applied"
-                      v-model="course.can_be_applied" />
+                    <FormSwitch.Input
+                      id="can_be_applied"
+                      type="checkbox"
+                      name="can_be_applied"
+                      v-model="course.can_be_applied"
+                    />
                     <FormSwitch.Label htmlFor="can_be_applied">
                       Açık
                     </FormSwitch.Label>
                   </FormSwitch>
                 </div>
               </div>
-              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
-                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+              <Button
+                variant="primary"
+                type="submit"
+                class="w-1/2 mt-5 mr-2"
+                :disabled="isLoading"
+              >
+                <LoadingIcon
+                  v-show="isLoading"
+                  icon="oval"
+                  color="white"
+                  class="w-4 h-4 mr-5"
+                />
                 Kaydet
               </Button>
-              <Button variant="outline-secondary" type="button" class="mt-5 mr-5" @click="() => router.go(-1)">
+              <Button
+                variant="outline-secondary"
+                type="button"
+                class="mt-5 mr-5"
+                @click="() => router.go(-1)"
+              >
                 İptal
               </Button>
             </form>

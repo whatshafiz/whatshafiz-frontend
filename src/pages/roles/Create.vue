@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import { FormLabel, FormInput, FormSwitch } from "@/base-components/Form"
 import Button from "@/base-components/Button"
 import LoadingIcon from '@/base-components/LoadingIcon'
@@ -62,36 +65,72 @@ const onSubmit = async () => {
             <h2 class="mr-auto text-base font-medium">Rol Bilgileri</h2>
           </div>
           <div class="p-5">
-            <form class="validate-form" @submit.prevent="onSubmit">
+            <form
+              class="validate-form"
+              @submit.prevent="onSubmit"
+            >
               <div class="input-form">
-                <FormLabel htmlFor="name" class="flex flex-col w-full sm:flex-row">
+                <FormLabel
+                  htmlFor="name"
+                  class="flex flex-col w-full sm:flex-row"
+                >
                   Rol Adı
                   <span class="mt-1 text-xs sm:ml-auto sm:mt-0 text-slate-500">
                     Zorunlu
                   </span>
                 </FormLabel>
-                <FormInput id="name" v-model="role.name" type="text" name="name" placeholder="Rol Adı Yazın" />
+                <FormInput
+                  id="name"
+                  v-model="role.name"
+                  type="text"
+                  name="name"
+                  placeholder="Rol Adı Yazın"
+                />
               </div>
               <div class="mt-3">
                 <label>Rol Yetkilerini Belirleyin</label>
-                <div class="mt-2" v-for="(permission, key) in permissionStore.getPermissions">
+                <div
+                  class="mt-2"
+                  v-for="(permission, key) in permissionStore.getPermissions"
+                >
                   <FormSwitch>
-                    <FormSwitch.Input :id="'checkbox-switch-' + key" type="checkbox" :value="permission.id"
+                    <FormSwitch.Input
+                      :id="'checkbox-switch-' + key"
+                      type="checkbox"
+                      :value="permission.id"
                       :cheked="role.permissions.includes(permission.id)"
-                      @click="() => { selectPermission(permission.id) }" />
+                      @click="() => { selectPermission(permission.id) }"
+                    />
                     <FormSwitch.Label :htmlFor="'checkbox-switch-' + key">
-                      {{ permission.name }}
+                      {{ permission.label }}
                     </FormSwitch.Label>
                   </FormSwitch>
+                  <hr v-if="permissionStore.getPermissions[key - 1] &&
+                    permission.name.split('.')[0] !== permissionStore.getPermissions[key + 1]?.name.split('.')[0]
+                    " />
                 </div>
               </div>
 
-              <Button variant="primary" type="submit" class="w-1/2 mt-5 mr-2" :disabled="isLoading">
-                <LoadingIcon v-show="isLoading" icon="oval" color="white" class="w-4 h-4 mr-5" />
+              <Button
+                variant="primary"
+                type="submit"
+                class="w-1/2 mt-5 mr-2"
+                :disabled="isLoading"
+              >
+                <LoadingIcon
+                  v-show="isLoading"
+                  icon="oval"
+                  color="white"
+                  class="w-4 h-4 mr-5"
+                />
                 Kaydet
               </Button>
               <RouterLink :to="{ name: 'roles.index' }">
-                <Button variant="outline-secondary" type="button" class="mt-5 mr-5">
+                <Button
+                  variant="outline-secondary"
+                  type="button"
+                  class="mt-5 mr-5"
+                >
                   İptal
                 </Button>
               </RouterLink>
